@@ -80,7 +80,6 @@ ewma = function(x, n_days, window){
 #' acwr(tl)
 #' acwr(window_acute = 7, window_chronic = 21, fun = "ewma", coupling = "uncoupled")
 #'
-#' load("tl-basketball.rda")
 #' acwr(d_basketball$tl)
 #' acwr(d_basketball$tl, fun = "ewma")
 #' acwr(d_basketball$tl, fun = "ewma", coupling = "uncoupled")
@@ -136,11 +135,8 @@ acwr = function(x, n_acute = 7, n_chronic = 28, window_acute = 1, window_chronic
 
 # ###------------------------------------------------------- Quality Control
 #
-# # testing the function on real data
+# # testing the function on real data inlcuded in the OSTRC package
 # # downloaded from https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/r-acwr-intro/tl-data.csv
-#
-# # reading data from O: server.
-# load("tl-basketball.rda")
 #
 # # Adding columns of EWMA-ACWR and RA-ACWR calculated per athlete
 # d_basketball = d_basketball %>% dplyr::group_by(athlete) %>% dplyr::mutate(acwr_ra = acwr(tl),

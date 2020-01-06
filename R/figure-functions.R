@@ -72,7 +72,7 @@ move_up = function(y, text, height = .015) {
 #'        the sample size for each label (n). Defaults to percentages.
 #' @export
 #' @examples
-#' load("tl-injury-studies.rda")
+#' # data d_study is included in the ostrc-package
 #' d_n_sports = d_study %>%
 #'              dplyr::count(sport) %>%
 #'              dplyr::mutate(denominator = sum(n),
