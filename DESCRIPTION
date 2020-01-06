@@ -1,0 +1,30 @@
+Package: ostrc
+Title: Oslo Sporta Trauma Research Center Tools
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Lena Kristin",
+           family = "Bache-Mathiesen",
+           role = c("aut", "cre"),
+           email = "l.k.bache-mathiesen@nih.no",
+           comment = c(ORCID = "0000-0002-9466-7003"))
+Description: Several functions useful for working with sports science data.
+License: What license it uses
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Imports:
+    dplyr,
+    tidyr,
+    magrittr,
+    purrr,
+    tibble,
+    ggplot2,
+    lubridate,
+    stringr,
+    readr,
+    forcats,
+    colorspace,
+    scales,
+    testthat
+Suggests: 
+    testthat (>= 2.1.0)
