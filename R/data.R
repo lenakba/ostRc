@@ -1,7 +1,7 @@
 #' Basketball data
 #'
 #' Undocumented data on the training load of basketball players during a 2017 Fall season.
-#' Available from this webpage: https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/r-acwr-intro/
+#' Available from this webpage: \url{https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/r-acwr-intro/}
 #'
 #' @docType data
 #'
