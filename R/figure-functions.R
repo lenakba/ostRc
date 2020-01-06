@@ -5,12 +5,12 @@ NULL
 
 #' Percent labels on axes
 #'
-#' Converts a proportion to a percentage and adds "%" behind them for use on a plot axis
+#' Converts a proportion to a percentage and adds "\%" behind them for use on a plot axis
 #' @param x a vector of proportions
 #' @param accuracy the interval size of calculation. Default = 1
 #' @param decimal.mark What you would like to use as decimal mark, default = "."
-#' @param suffix What to add as a suffix to all the labels, default is the correct English percentage symbol "%".
-#'               In Norwegian, percentages have a space between the number and the percentage, " %".
+#' @param suffix What to add as a suffix to all the labels, default is the correct English percentage symbol "\%".
+#'               In Norwegian, percentages have a space between the number and the percentage, " \%".
 #' @export
 axis_percent = function(x, suffix="%", accuracy = 1, decimal.mark = ".", ...) {
   scales::percent(x, suffix=suffix, accuracy = accuracy, decimal.mark = decimal.mark, ...)
