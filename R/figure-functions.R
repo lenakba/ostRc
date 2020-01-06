@@ -59,10 +59,10 @@ move_up = function(y, text, height = .015) {
   y[match(text, text_new)]
 }
 
-#' Add n and percentages to labels e.g. "Male 5/10 (50%)"
+#' Add n and percentages to labels
 #'
 #' Function adds the sample size and percentage behind value in a factor,
-#' made for adding these to each label in a graph
+#' made for adding these to each label in a graph. E.g. "Male 5/10 (50%)"
 #'
 #' @param d dataframe with vector of labels. Sample size column must be named "n". Proportion column must be named "prop".
 #'          Denominator must be in a column named "denominator".
@@ -71,6 +71,16 @@ move_up = function(y, text, height = .015) {
 #' @param perc whether to add percentages (numerator/ denominator and percentage) or to just add
 #'        the sample size for each label (n). Defaults to percentages.
 #' @export
+#' @examples
+#' load("tl-injury-studies.rda")
+#' d_n_sports = d_study %>%
+#'              dplyr::count(sport) %>%
+#'              dplyr::mutate(denominator = sum(n),
+#'                            prop = n/denominator) %>%
+#'              dplyr::arrange(desc(prop))
+#'
+#' d_n_sports = d_n_sports %>% mutate(labels = label_n(., sport)
+#' d_n_sports
 label_n = function(d, x, accuracy = 0.1, perc = TRUE){
 
   # column names in dataset used to test whether
@@ -111,7 +121,7 @@ label_n = function(d, x, accuracy = 0.1, perc = TRUE){
   } else {
 
     if(!any("n" %in% cols)){
-      stop(paste0("Dataset is missing required columns: \"n\""))
+      stop(paste0("Dataset is missing required column: \"n\""))
     }
 
     names = paste0(x, " (",d$n,")")
