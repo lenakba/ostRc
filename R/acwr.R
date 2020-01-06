@@ -79,6 +79,11 @@ ewma = function(x, n_days, window){
 #' tl = sample(500:1300, 28, replace = TRUE)
 #' acwr(tl)
 #' acwr(window_acute = 7, window_chronic = 21, fun = "ewma", coupling = "uncoupled")
+#'
+#' load("tl-basketball.rda")
+#' acwr(d_basketball$tl)
+#' acwr(d_basketball$tl, fun = "ewma")
+#' acwr(d_basketball$tl, fun = "ewma", coupling = "uncoupled")
 acwr = function(x, n_acute = 7, n_chronic = 28, window_acute = 1, window_chronic = 1, fun = "ra", coupling = "coupled"){
 
   stopifnot(is.numeric(x))
@@ -135,19 +140,7 @@ acwr = function(x, n_acute = 7, n_chronic = 28, window_acute = 1, window_chronic
 # # downloaded from https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/r-acwr-intro/tl-data.csv
 #
 # # reading data from O: server.
-# data_path = "O:\\Prosjekter\\Bache-Mathiesen-Biostatistikk\\Lena Kristin Bache-Mathiesen\\r-code\\data\\"
-# file_name = "tl-example-data.csv"
-# adress = paste0(data_path, file_name)
-# col_specs = readr::cols(
-#   season = readr::col_character(),
-#   training.date = readr::col_date(format = "%Y-%m-%d"),
-#   athlete = readr::col_character(),
-#   tl = readr::col_double()
-# )
-# d = readr::read_delim(adress, delim = ",", col_types = col_specs)
-#
-# # Arranging data by athlete to easier see training loads per athlete
-# d = d %>% dplyr::arrange(athlete)
+# d = load("tl-basketball.rda")
 #
 # # Adding columns of EWMA-ACWR and RA-ACWR calculated per athlete
 # d = d %>% dplyr::group_by(athlete) %>% dplyr::mutate(acwr_ra = acwr(tl),
