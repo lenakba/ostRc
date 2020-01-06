@@ -2,7 +2,7 @@
 % Please edit documentation in R/figure-functions.R
 \name{label_n}
 \alias{label_n}
-\title{Add n and percentages to labels e.g. "Male 5/10 (50%)"}
+\title{Add n and percentages to labels}
 \usage{
 label_n(d, x, accuracy = 0.1, perc = TRUE)
 }
@@ -19,5 +19,16 @@ the sample size for each label (n). Defaults to percentages.}
 }
 \description{
 Function adds the sample size and percentage behind value in a factor,
-made for adding these to each label in a graph
+made for adding these to each label in a graph. E.g. "Male 5/10 (50%)"
+}
+\examples{
+load("tl-injury-studies.rda")
+d_n_sports = d_study \%>\%
+             dplyr::count(sport) \%>\%
+             dplyr::mutate(denominator = sum(n),
+                           prop = n/denominator) \%>\%
+             dplyr::arrange(desc(prop))
+
+d_n_sports = d_n_sports \%>\% mutate(labels = label_n(., sport)
+d_n_sports
 }
