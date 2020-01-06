@@ -140,10 +140,10 @@ acwr = function(x, n_acute = 7, n_chronic = 28, window_acute = 1, window_chronic
 # # downloaded from https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/r-acwr-intro/tl-data.csv
 #
 # # reading data from O: server.
-# d = load("tl-basketball.rda")
+# load("tl-basketball.rda")
 #
 # # Adding columns of EWMA-ACWR and RA-ACWR calculated per athlete
-# d = d %>% dplyr::group_by(athlete) %>% dplyr::mutate(acwr_ra = acwr(tl),
+# d_basketball = d_basketball %>% dplyr::group_by(athlete) %>% dplyr::mutate(acwr_ra = acwr(tl),
 #                                        acwr_ewma = acwr(tl, fun = "ewma"),
 #                                        acwr_ewma_uc = acwr(tl, fun = "ewma", coupling = "uncoupled"))
 #
@@ -154,21 +154,21 @@ acwr = function(x, n_acute = 7, n_chronic = 28, window_acute = 1, window_chronic
 #
 # # Figures are made with the exact same code as Matt sams for reproducability.
 # # Figure
-# ggplot(d, aes(x = training.date)) + geom_col(aes(y = tl)) +
+# ggplot(d_basketball, aes(x = training.date)) + geom_col(aes(y = tl)) +
 #   geom_line(aes(y = acwr_ra * 1000)) +
 #   scale_y_continuous(sec.axis = sec_axis(~./1000, name = 'RA ACWR')) +
 #   theme_bw() + facet_wrap(~athlete) +
 #   labs(title = 'TL with RA ACWR', x = 'Training Date', y = 'TL')
 #
 # # Figure 3
-# ggplot(d, aes(x = training.date)) + geom_col(aes(y = tl)) +
+# ggplot(d_basketball, aes(x = training.date)) + geom_col(aes(y = tl)) +
 #   geom_line(aes(y = acwr_ewma * 1000)) +
 #   scale_y_continuous(sec.axis = sec_axis(~./1000, name = 'EWMA ACWR')) +
 #   theme_bw() + facet_wrap(~athlete) +
 #   labs(title = 'TL with EWMA ACWR', x = 'Training Date', y = 'TL')
 #
 # # Corresponds to the coupled vs. uncoupled figure (Figure 5)
-# ggplot(d %>% filter(athlete == 'Urja Chaudhry'), aes(x = as.Date(training.date), group = 1)) +
+# ggplot(d_basketball %>% filter(athlete == 'Urja Chaudhry'), aes(x = as.Date(training.date), group = 1)) +
 #   geom_col(aes(y = tl)) + geom_line(aes(y = acwr_ewma * 1000, colour = 'Coupled')) +
 #   geom_line(aes(y = acwr_ewma_uc * 1000, colour = 'Uncoupled')) +
 #   scale_y_continuous(sec.axis = sec_axis(~./1000, name = 'ACWR')) +
