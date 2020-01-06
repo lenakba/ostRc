@@ -9,13 +9,13 @@ axis_percent(x, suffix = "\%", accuracy = 1, decimal.mark = ".", ...)
 \arguments{
 \item{x}{a vector of proportions}
 
-\item{suffix}{What to add as a suffix to all the labels, default is the correct English percentage symbol "%".
-In Norwegian, percentages have a space between the number and the percentage, " %".}
+\item{suffix}{What to add as a suffix to all the labels, default is the correct English percentage symbol "\%".
+In Norwegian, percentages have a space between the number and the percentage, " \%".}
 
 \item{accuracy}{the interval size of calculation. Default = 1}
 
 \item{decimal.mark}{What you would like to use as decimal mark, default = "."}
 }
 \description{
-Converts a proportion to a percentage and adds "%" behind them for use on a plot axis
+Converts a proportion to a percentage and adds "\%" behind them for use on a plot axis
 }
