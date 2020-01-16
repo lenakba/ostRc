@@ -7,6 +7,18 @@
 NULL
 
 #--------------------------- Functions
+#' Rolling Difference
+#'
+#' Function for calculating the difference between one value in a vector and the previous value.
+#' The purpose is to calculate day-to-day or week-to-week differences in training load
+#'
+#' @param x a vector of training load values
+#' @export
+rolling_diff  = function(x){
+  x_lag = lag(x)
+  x_diff = x-x_lag
+  x_diff
+}
 
 #' Rolling Averages
 #'
