@@ -15,7 +15,7 @@ NULL
 #' @param x a vector of training load values
 #' @export
 rolling_diff  = function(x){
-  x_lag = lag(x)
+  x_lag = dplyr::lag(x)
   x_diff = x-x_lag
   x_diff
 }
