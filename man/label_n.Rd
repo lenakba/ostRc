@@ -22,7 +22,7 @@ Function adds the sample size and percentage behind value in a factor,
 made for adding these to each label in a graph. E.g. "Male 5/10 (50%)"
 }
 \examples{
-load("tl-injury-studies.rda")
+# data d_study is included in the ostrc-package
 d_n_sports = d_study \%>\%
              dplyr::count(sport) \%>\%
              dplyr::mutate(denominator = sum(n),
