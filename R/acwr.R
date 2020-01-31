@@ -16,7 +16,7 @@ NULL
 #' @export
 moving_range  = function(x){
   x_lag = dplyr::lag(x)
-  x_diff = x-x_lag
+  x_diff = abs(x-x_lag)
   x_diff
 }
 
