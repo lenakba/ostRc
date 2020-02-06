@@ -18,16 +18,17 @@ Denominator must be in a column named "denominator".}
 the sample size for each label (n). Defaults to percentages.}
 }
 \description{
-Function adds the sample size and percentage behind value in a factor,
-made for adding these to each label in a graph. E.g. "Male 5/10 (50%)"
+The function adds the sample size and percentage behind each value in a factor,
+purposefully for adding these to each label in a graph. E.g. "Male 5/10 (50%)"
 }
 \examples{
 # data d_study is included in the ostrc-package
+library(dplyr)
 d_n_sports = d_study \%>\%
-             dplyr::count(sport) \%>\%
-             dplyr::mutate(denominator = sum(n),
+             count(sport) \%>\%
+             mutate(denominator = sum(n),
                            prop = n/denominator) \%>\%
-             dplyr::arrange(desc(prop))
+             arrange(desc(prop))
 
 d_n_sports = d_n_sports \%>\% mutate(labels = label_n(., sport)
 d_n_sports

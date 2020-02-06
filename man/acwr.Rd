@@ -49,7 +49,7 @@ not until reaching value n
 \examples{
 tl = sample(500:1300, 28, replace = TRUE)
 acwr(tl)
-acwr(window_acute = 7, window_chronic = 21, fun = "ewma", coupling = "uncoupled")
+acwr(tl, window_acute = 7, window_chronic = 21, fun = "ewma", coupling = "uncoupled")
 
 acwr(d_basketball$tl)
 acwr(d_basketball$tl, fun = "ewma")
