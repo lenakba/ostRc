@@ -4,6 +4,8 @@
 # for calculating ACWR.
 
 #' @importFrom magrittr %>%
+#' @importFrom zoo rollapplyr
+#' @importFrom TTR EMA
 NULL
 
 #--------------------------- Functions
@@ -90,7 +92,7 @@ ewma = function(x, n_days, window){
 #' @examples
 #' tl = sample(500:1300, 28, replace = TRUE)
 #' acwr(tl)
-#' acwr(window_acute = 7, window_chronic = 21, fun = "ewma", coupling = "uncoupled")
+#' acwr(tl, window_acute = 7, window_chronic = 21, fun = "ewma", coupling = "uncoupled")
 #'
 #' acwr(d_basketball$tl)
 #' acwr(d_basketball$tl, fun = "ewma")
