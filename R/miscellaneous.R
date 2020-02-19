@@ -1,32 +1,16 @@
-
-#' Smart Rounding Function
+#' Confidence interval for binomial distribution
 #'
-#' Considers the smallest difference between values of a vector when rounding.
-#' Use with caution. Will not work on vectors where differences are smaller than 0.1
+#' Use the Wilson-interval, as recommended in «Binomial confidence intervals
+#' and contingency tests: mathematical fundamentals and the evaluation of
+#' alternative methods», by Sean Wallis, University College London.
 #'
-#' @param x          a numeric vector with decimals to be rounded
-#'
+#' Returns a tibble with lower and upper limits for a 95 \%
+#' wilson-confidence interval.
+#' @param x Number of successes/events in the attempt.
+#' @param n Number of independent attempts.
 #' @export
-smart_round = function(x){
-
-  if(length(x)<=1){
-    stop("x is not a vector of length >= 1")
-  }
-
-  diff = diff(na.omit(x))
-
-  if(length(diff)<=1){
-    largest_diff = abs(diff)
-  }else{
-    largest_diff = abs(max(diff)-min(diff))
-  }
-
-  if(largest_diff >= 2){
-    x = round(x)
-  } else if(largest_diff < 2 & largest_diff > 0.1){
-    x = round(x, 1)
-  } else if(largest_diff <= 0.1){
-    x = round(x, 2)
-  }
-  x
+ci_bin = function(x, n) {
+  ci = binom::binom.wilson(x, n)
+  tibble(low = pmax(0, ci$lower), # A fix as limist can to a tiny bit outside [0,1]
+         high = pmin(1, ci$upper))
 }
