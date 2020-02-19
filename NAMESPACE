@@ -2,6 +2,8 @@
 
 export(acwr)
 export(axis_percent)
+export(bjsm_blue)
+export(bjsm_green)
 export(ci_bin)
 export(color_darker)
 export(ewma)
