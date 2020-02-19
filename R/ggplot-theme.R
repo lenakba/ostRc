@@ -161,3 +161,10 @@ nih_lightred = color_darker(nih_red, -10)
 #' @export
 nih_ordinal = c(nih_lightred, nih_red, nih_darkred)
 
+#' British Journal of Sports Medicine (BJSM) green
+#' @export
+bjsm_green = "#346702"
+
+#' British Journal of Sports Medicine (BJSM) blue
+#' @export
+bjsm_blue = "#0070b9"
