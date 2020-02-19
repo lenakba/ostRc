@@ -11,6 +11,6 @@
 #' @export
 ci_bin = function(x, n) {
   ci = binom::binom.wilson(x, n)
-  tibble(low = pmax(0, ci$lower), # A fix as limist can to a tiny bit outside [0,1]
-         high = pmin(1, ci$upper))
+  tibble(lower = pmax(0, ci$lower), # A fix as limist can to a tiny bit outside [0,1]
+         upper = pmin(1, ci$upper))
 }
