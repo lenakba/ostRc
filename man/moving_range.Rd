@@ -4,10 +4,12 @@
 \alias{moving_range}
 \title{Rolling Difference}
 \usage{
-moving_range(x)
+moving_range(x, abs = FALSE)
 }
 \arguments{
 \item{x}{a vector of training load values}
+
+\item{abs}{Whether to calculate the absolute values of the differences TRUE, or not, FALSE. Defaults to FALSE.}
 }
 \description{
 Function for calculating the difference between one value in a vector and the previous value.
