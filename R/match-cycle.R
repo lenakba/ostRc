@@ -24,8 +24,6 @@ add_match_cycle = function(d, date, match){
   date = enquo(date)
   date_name = as_string(quo_name(date))
 
-  stopifnot(is.Date(d$date))
-
   # index for days until match
   index_distinct = d %>%
     filter({{match}} == 1 | !!date == max(!!date)) %>%
