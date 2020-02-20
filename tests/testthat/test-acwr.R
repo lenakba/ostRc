@@ -45,7 +45,7 @@ test_that("Returns error message at incorrect data types", {
 # where n is the number of days chosen - 1
 # This was mostly for curiosty's sake,
 # as the rolling average function is based off of rollapplyr, not built from scratch
-test_that("Calculation of Rolling averages does not use values immediately after NA for claculation", {
+test_that("Calculation of rolling averages does not use values immediately after NA for calculation", {
   tl_miss = sample(500:1300, 28, replace = TRUE) %>% dplyr::replace(., 9:12, NA)
   last_missing = max(which(is.na((tl_miss))))
   seq_missing = seq(last_missing, last_missing + 6)
