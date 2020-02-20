@@ -6,6 +6,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom zoo rollapplyr
 #' @importFrom TTR EMA
+#' @importFrom dplyr lag
 NULL
 
 #--------------------------- Functions
@@ -15,10 +16,14 @@ NULL
 #' The purpose is to calculate day-to-day or week-to-week differences in training load
 #'
 #' @param x a vector of training load values
+#' @param abs Whether to calculate the absolute values of the differences TRUE, or not, FALSE. Defaults to FALSE.
 #' @export
-moving_range  = function(x){
+moving_range  = function(x, abs = FALSE){
   x_lag = dplyr::lag(x)
-  x_diff = abs(x-x_lag)
+  x_diff = x-x_lag
+   if(abs){
+   x_diff = abs(x_diff)
+   }
   x_diff
 }
 
