@@ -1,4 +1,3 @@
-
 #' The function make_ano_func() needs two arguments.
 #' The first (x) is a vector with IDs and the other (startnr)
 #' is the starting number for the anonymized IDs (the standard value is 101).
