@@ -126,7 +126,7 @@ label_n = function(d, x, accuracy = 0.1, perc = TRUE){
       stop(paste0("Dataset is missing required column: \"n\""))
     }
 
-    names = paste0(x, " (",d$n,")")
+    names = paste0(x, "\n",d$n,"")
   }
   names
 }
