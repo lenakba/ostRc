@@ -8,7 +8,7 @@ Authors@R:
            email = "l.k.bache-mathiesen@nih.no",
            comment = c(ORCID = "0000-0002-9466-7003"))
 Description: Several functions useful for working with sports science data.
-License: What license it uses
+License: OSTRC license.
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
