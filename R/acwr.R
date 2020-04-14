@@ -99,9 +99,6 @@ ewma = function(x, n_days, window){
 #' acwr(tl)
 #' acwr(tl, window_acute = 7, window_chronic = 21, fun = "ewma", coupling = "uncoupled")
 #'
-#' acwr(d_basketball$tl)
-#' acwr(d_basketball$tl, fun = "ewma")
-#' acwr(d_basketball$tl, fun = "ewma", coupling = "uncoupled")
 acwr = function(x, n_acute = 7, n_chronic = 28, window_acute = 1, window_chronic = 1, fun = "ra", coupling = "coupled"){
 
   stopifnot(is.numeric(x))

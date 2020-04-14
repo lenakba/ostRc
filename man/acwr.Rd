@@ -51,7 +51,4 @@ tl = sample(500:1300, 28, replace = TRUE)
 acwr(tl)
 acwr(tl, window_acute = 7, window_chronic = 21, fun = "ewma", coupling = "uncoupled")
 
-acwr(d_basketball$tl)
-acwr(d_basketball$tl, fun = "ewma")
-acwr(d_basketball$tl, fun = "ewma", coupling = "uncoupled")
 }
