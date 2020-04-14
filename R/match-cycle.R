@@ -12,7 +12,7 @@
 #' @import dplyr
 NULL
 
-#'Add Micro Cycle
+#' Add Micro Cycle
 #'
 #' Function to add an index to an existing training-load dataset
 #' for each micro-cycle between matches. That is, all days up to first match in one cycle,
