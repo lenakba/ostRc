@@ -25,6 +25,9 @@ Imports:
     forcats,
     colorspace,
     scales,
-    testthat
+    testthat,
+    slider,
+    zoo,
+    TTR
 Suggests: 
     testthat (>= 2.1.0)
