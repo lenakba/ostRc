@@ -18,7 +18,7 @@ but any index, either of irregular length or not (eg. weeks) will work.}
 Example, n_chronic_cycles = 2 will calculate EWMA over 1 + 2 = 3 cycles. Defaults to 2. Needs to be atleast 1.}
 }
 \description{
-Function for calculating chronic loads for every 3 match cycles in a sliding window.
+Function for calculating chronic loads for every X number of match cycles in a sliding window.
 The final index does not indicate a single match_cycle, but is rather an index for each chronic window
 EWMA is the method of calculations. Missing values are removed from each chronic window before calculation.
 }
