@@ -68,3 +68,43 @@ test_that("Running equation on coupled ACWR to recieve uncoupled ACWR gives the 
 
   expect_equal(acwr_uncoupled, acwr_uncoupled_eq)
 })
+
+# ###------------------------------------------------------- Quality Control
+#
+# # testing the function on real data inlcuded in the OSTRC package
+# # downloaded from https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/r-acwr-intro/tl-data.csv
+#
+# library(ggplot2)
+# library(dplyr)
+# # Adding columns of EWMA-ACWR and RA-ACWR calculated per athlete
+# d_basketball = d_basketball %>% dplyr::group_by(athlete) %>% dplyr::mutate(acwr_ra = acwr(tl),
+#                                        acwr_ewma = acwr(tl, fun = "ewma"),
+#                                        acwr_ewma_uc = acwr(tl, fun = "ewma", coupling = "uncoupled"))
+#
+# # Since Matt Sams has done ACWR calculations on the exampled dataset previously,
+# # we can check that our results are the same.
+# # Also, the figure code below should create figures exactly equal to the figures in his blogpost:
+# # https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/r-acwr-intro/
+#
+# # Figures are made with the exact same code as Matt sams for reproducability.
+# # Figure
+# ggplot(d_basketball, aes(x = training.date)) + geom_col(aes(y = tl)) +
+#   geom_line(aes(y = acwr_ra * 1000)) +
+#   scale_y_continuous(sec.axis = sec_axis(~./1000, name = 'RA ACWR')) +
+#   theme_bw() + facet_wrap(~athlete) +
+#   labs(title = 'TL with RA ACWR', x = 'Training Date', y = 'TL')
+#
+# # Figure 3
+# ggplot(d_basketball, aes(x = training.date)) + geom_col(aes(y = tl)) +
+#   geom_line(aes(y = acwr_ewma * 1000)) +
+#   scale_y_continuous(sec.axis = sec_axis(~./1000, name = 'EWMA ACWR')) +
+#   theme_bw() + facet_wrap(~athlete) +
+#   labs(title = 'TL with EWMA ACWR', x = 'Training Date', y = 'TL')
+#
+# # Corresponds to the coupled vs. uncoupled figure (Figure 5)
+# ggplot(d_basketball %>% filter(athlete == 'Urja Chaudhry'), aes(x = as.Date(training.date), group = 1)) +
+#   geom_col(aes(y = tl)) + geom_line(aes(y = acwr_ewma * 1000, colour = 'Coupled')) +
+#   geom_line(aes(y = acwr_ewma_uc * 1000, colour = 'Uncoupled')) +
+#   scale_y_continuous(sec.axis = sec_axis(~./1000, name = 'ACWR')) +
+#   labs(title = 'Coupled vs. Uncoupled', x = 'Training Date', y = 'TL', colour = 'Method') +
+#   theme_bw() + theme(legend.position = 'bottom')
