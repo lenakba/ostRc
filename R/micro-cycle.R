@@ -1,9 +1,3 @@
-
-# This script has a simple function for calculating Acute: Chronic Workload Ratios (ACWR).
-# It is desgined based on the most common defintions of ACWR.
-# The function is not designed to calculate any and every possible method
-# for calculating ACWR.
-
 #' @importFrom magrittr %>%
 #' @importFrom rlang as_string quo_name enquo
 #' @importFrom slider slide_index
