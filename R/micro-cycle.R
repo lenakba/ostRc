@@ -41,9 +41,11 @@ add_micro_cycle = function(d, date, event){
   d_index = dates %>% left_join(index_distinct, by = date_name)
 
   # add event-index and dates to desired dataset
-  d_matches = d %>% full_join(d_index, by = date_name) %>% arrange(!!date)
+  d_events = d %>% full_join(d_index, by = date_name) %>% arrange(!!date)
 
   # fill missing day-indices
-  d_matches = d_matches %>% rename(match_cycle = rowname) %>% fill(match_cycle, .direction = "up")
-  d_matches
+  d_events = d_events %>%
+    rename(micro_cycle = rowname) %>%
+    fill(micro_cycle, .direction = "up")
+  d_events
 }
