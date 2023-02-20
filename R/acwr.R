@@ -47,18 +47,19 @@ ra = function(x, n_days, window = TRUE, ...){
 
 #' Exponential-Weighted Moving Averages
 #'
-#' Function for calculating exponentioally weighted moving averages (EWMA) on a choosable number of days
-#' Warning from the TTR package: "Some indicators (e.g. EMA, DEMA, EVWMA, etc.)
+#' Function for calculating exponentially weighted moving averages (EWMA)
+#' on a choosable number of days or weeks.
+#' Warning from the TTR package: "Some indicators (e.g. EMA)
 #' are calculated using the indicators' own previous values, and are therefore
 #' unstable in the short-term. As the indicator receives more data, its output becomes more stable."
 #'
-#' @param x a vector of training load values
-#' @param n_days number of days the rolling average will calculate on (e.g. 7 for acute window)
-#' @param window Number of periods to average over. Must be between 1 and nrow(x), inclusive.
-#'               If set to 7, it will wait until 7 values before making a calculation
+#' @param x a vector of values that you wish to calculate EWMA on. For instance, training load values.
+#' @param n numeric. The size of the window for calculating EWMA. I.e. 28 for 28 days, or 4 for 4 weeks, depending on the chosen time unit.
+#' @param wilder logical; wilder=FALSE (the default) uses an exponential smoothing ratio of 2/(n+1),
+#' same as in williams et al. 2016. wilder=TRUE uses Welles Wilder's exponential smoothing ratio of 1/n
 #' @export
-ewma = function(x, n_days, window){
-  TTR::EMA(x, n = window, ratio = 2/(1+n_days))
+ewma = function(x, n, wilder = FALSE){
+  TTR::EMA(x, n = n, wilder)
 }
 
 #' Acute: Chronic Workload Ratio
@@ -70,7 +71,7 @@ ewma = function(x, n_days, window){
 #' This script uses tidyverse, but for data.table equivalents, see Matt Sams guide.
 #' The user can choose between
 #' Rolling Averages vs. Exponentially weighted moving averages
-#' Coupled (default) vs. uncoupled calulation
+#' Coupled (default) vs. uncoupled calculation
 #' number of days in acute period (default 7) and number of days in chronic period (default 28)
 #' For EWMA, can decide whether the calculation should start from the first value, or
 #' not until reaching value n
