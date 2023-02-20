@@ -12,12 +12,13 @@ add_micro_cycle(d, date, event)
 \item{date}{Each date training load was collected. Requires to be of class Date. Does not need to
 be non-missing}
 
-\item{event}{An indicator-variable that states 1 for a event-day, 0 for non-event.}
+\item{event}{An indicator-variable that states 1 for a event-day, 0 for non-event.
+An event is typically a competition or match.}
 }
 \description{
-Function to add an index to an existing training-load dataset
-for each micro-cycle between matches. That is, all days up to first match in one cycle,
-all days from first match to second match in the next cycle and so on.
+Function to add an index describing an interval between two competition or match events,
+also known as a match/competition micro-cycle. That is, all days up to first match
+in one cycle,all days from first match to second match in the next cycle and so on.
 Can also be used to create intervals between injuries or other events.
-Requires a data-variable and an indicator for match
+Requires a date-variable and an indicator for the event (match/competition).
 }
