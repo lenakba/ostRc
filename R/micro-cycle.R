@@ -18,6 +18,7 @@ NULL
 #' @param date Each date training load was collected. Requires to be of class Date. Does not need to
 #'             be non-missing
 #' @param event An indicator-variable that states 1 for a event-day, 0 for non-event.
+#'              An event is typically a competition or match.
 #' @export
 add_micro_cycle = function(d, date, event){
   date = enquo(date)
