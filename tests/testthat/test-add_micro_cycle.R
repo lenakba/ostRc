@@ -1,7 +1,10 @@
-context("Add Match cycles function")
+context("Add micro cycles function")
 library(ostrc)
 library(lubridate)
+library(tidyr)
+library(dplyr)
 library(magrittr)
+library(testthat)
 
 test_that("Returns correct days.", {
   d_matches_sim = tribble(~date, ~match,
@@ -12,7 +15,7 @@ test_that("Returns correct days.", {
                           "2017-08-26", 1)
   d_matches_sim = d_matches_sim %>% mutate(date = lubridate::as_date(date))
   cycle_days = as.character(c(1,1,2,2,2))
-  expect_equal(add_match_cycle(d_matches_sim, date, match)$match_cycle, cycle_days)
+  expect_equal(add_micro_cycle(d_matches_sim, date, match)$micro_cycle, cycle_days)
 })
 
 test_that("Fills in missing dates and returns correct indices for those as well.", {
@@ -23,7 +26,7 @@ test_that("Fills in missing dates and returns correct indices for those as well.
                                   "2017-08-26", 1)
   d_matches_sim_missing = d_matches_sim_missing %>% mutate(date = lubridate::as_date(date))
   cycle_days = as.character(c(1,1,2,2,2))
-  expect_equal(add_match_cycle(d_matches_sim_missing, date, match)$match_cycle, cycle_days)
+  expect_equal(add_micro_cycle(d_matches_sim_missing, date, match)$micro_cycle, cycle_days)
 })
 
 test_that("Handles datasets with varying column names for date and match.", {
@@ -33,8 +36,18 @@ test_that("Handles datasets with varying column names for date and match.", {
                                "2017-08-24", 0,
                                "2017-08-25", 0,
                                "2017-08-26", 1)
-  d_matches_varnames = d_matches_varnames %>% mutate(training_date = lubridate::as_date(training_date))
-  expect_equal(add_match_cycle(d_matches_varnames, training_date, match_indicator)$match_cycle, add_match_cycle(d_matches_sim, date, match)$match_cycle)
+  d_matches_sim = tribble(~date, ~match,
+                          "2017-08-22", 0,
+                          "2017-08-23", 1,
+                          "2017-08-24", 0,
+                          "2017-08-25", 0,
+                          "2017-08-26", 1)
+  d_matches_varnames = d_matches_varnames %>%
+    mutate(training_date = lubridate::as_date(training_date))
+  d_matches_sim = d_matches_sim %>%
+    mutate(date = lubridate::as_date(date))
+  expect_equal(add_micro_cycle(d_matches_varnames, training_date, match_indicator)$micro_cycle,
+               add_micro_cycle(d_matches_sim, date, match)$micro_cycle)
 })
 
 test_that("Returns error at incorrect datatypes.", {
@@ -42,7 +55,7 @@ test_that("Returns error at incorrect datatypes.", {
                                      "2017-08-22", 0,
                                      "2017-08-23", 1,
                                      "2017-08-24", 0)
-  expect_error(add_match_cycle(d_matches_datesasstrings, date, match))
+  expect_error(add_micro_cycle(d_matches_datesasstrings, date, match))
 })
 
 
@@ -56,5 +69,5 @@ test_that("Will give correct indices for training days after last match and befo
                             "2017-08-26", 0)
   d_matches_noend = d_matches_noend %>% mutate(date = lubridate::as_date(date))
   cycle_days = as.character(c(1,1,1,2,2,2))
-  expect_equal(add_match_cycle(d_matches_noend, date, match)$match_cycle, cycle_days)
+  expect_equal(add_micro_cycle(d_matches_noend, date, match)$micro_cycle, cycle_days)
 })
