@@ -1,0 +1,11 @@
+---
+  title: "README"
+author: "Lena Kristin Bache-Mathiesen"
+output:
+  html_document:
+  theme: flatly
+toc: yes
+word_document: default
+editor_options:
+  chunk_output_type: console
+---
