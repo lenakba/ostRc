@@ -1,5 +1,5 @@
 ---
-title: "README"
+title: "OSTRC package"
 author: "Lena Kristin Bache-Mathiesen"
 output: github_document
 ---
