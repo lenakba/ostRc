@@ -1,11 +1,46 @@
 ---
-  title: "README"
+title: "README"
 author: "Lena Kristin Bache-Mathiesen"
-output:
-  html_document:
-  theme: flatly
-toc: yes
-word_document: default
-editor_options:
-  chunk_output_type: console
+output: github_document
 ---
+```{r packages, warning=FALSE, echo = FALSE, message=FALSE}
+library(tidyverse) # life: dplyr, tidyr, ggplot2, purrr and everything else you need to survive
+library(ostrc)
+```
+
+# Overview
+The OSTRC package is a collection of tools for working with sports injury data.
+
+# Installation
+
+```{r install_guide, echo = TRUE, warning = FALSE, eval = FALSE}
+# Requires the devtools package
+# If devtools is not installed, run code:
+# install.packages("devtools") before installing ostrc
+devtools::install_github("lenakba/ostrc")
+```
+
+# Functions
+Below is a brief overview of helpful functions.
+
+## add_micro_cycle
+Micro-cycles are the time from a previous competition or match
+to the next competition or match. Coaches often plan training according to such 
+micro-cycles.
+For longitudinal data, `add_micro_cycle` finds the micro-cycles given the date, 
+and the event (match or competition).
+This is handy for counting the number of micro-cycles
+or calculating the average of a variable per micro-cycle, 
+among other iterations.   
+This can also be used to find each injury interval in the data.
+
+```{r micro_cycle_example, echo = TRUE, warning = FALSE}
+d_matches_sim = tribble(~date, ~match,
+                          "2017-08-22", 0,
+                          "2017-08-23", 1,
+                          "2017-08-24", 0,
+                          "2017-08-25", 0,
+                          "2017-08-26", 1)
+  d_matches_sim = d_matches_sim %>% mutate(date = lubridate::as_date(date))
+  add_micro_cycle(d_matches_sim, date, match)
+```
