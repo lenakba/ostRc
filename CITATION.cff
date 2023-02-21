@@ -1,0 +1,13 @@
+cff-version: 1.0.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Bache-Mathiesen
+    given-names: Lena Kristin
+    orcid: https://orcid.org/0000-0002-9466-7003
+  - family-names: Clarsen
+    given-names: Benjamin Matthew
+    orcid: https://orcid.org/0000-0003-3713-8938
+title: "Oslo Sports Trauma Research Centre R tools"
+version: 0.0.1
+url: https://github.com/lenakba/ostrc
+date-released: 2023-02-22
