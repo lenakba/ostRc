@@ -2,6 +2,7 @@
 #' @importFrom rlang as_string quo_name enquo
 #' @importFrom slider slide_index
 #' @importFrom purrr map compact
+#' @importFrom lubridate as_date
 #' @import tibble
 #' @import dplyr
 NULL
