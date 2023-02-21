@@ -20,10 +20,10 @@ NULL
 #' all days from first match to second match in the next cycle and so on.
 #' Requires a date-variable and an indicator for the event (injury/match/competition).
 #'
-#' @param d A dataset with dates and an indicator for the event. Results will append to given dataset
-#' @param date Each date of data collection. I.e. date of OSTRC-response, or date of training load collected.
+#' @param d A dataset with dates and an indicator for the event, class dataframe or tibble. Results will append to this dataset
+#' @param date Each date of data collection. I.e. date of OSTRC-response.
 #'             Must be of class Date. If some dates are missing (e.g. no data collection that day),
-#'             these will be added in automatically.
+#'             these will be added in automatically, and the event status (e.g. injury) will be denoted as missing NA.
 #' @param event An indicator-variable that states 1 for a event-day, 0 for non-event.
 #'              An event is typically an injury or competition/match.
 #'              Can be any event that is of interest to the study.
