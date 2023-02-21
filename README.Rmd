@@ -23,18 +23,17 @@ devtools::install_github("lenakba/ostrc")
 # Functions
 Below is a brief overview of helpful functions.
 
-## add_micro_cycle
+## add_event_id
 Micro-cycles are the time from a previous competition or match
 to the next competition or match. Coaches often plan training according to such 
-micro-cycles.
-For longitudinal data, `add_micro_cycle` finds the micro-cycles given the date, 
-and the event (match or competition).
+micro-cycles.For longitudinal data, `add_event_id` 
+finds the micro-cycles given the date, and the event (match or competition).
 This is handy for counting the number of micro-cycles
 or calculating the average of a variable per micro-cycle, 
 among other iterations.   
 This can also be used to find each injury interval in the data.
 
-```{r micro_cycle_example, echo = TRUE, warning = FALSE}
+```{r event_id_example, echo = TRUE, warning = FALSE}
 d_matches_sim = tribble(~date, ~match,
                           "2017-08-22", 0,
                           "2017-08-23", 1,
@@ -42,5 +41,5 @@ d_matches_sim = tribble(~date, ~match,
                           "2017-08-25", 0,
                           "2017-08-26", 1)
   d_matches_sim = d_matches_sim %>% mutate(date = lubridate::as_date(date))
-  add_micro_cycle(d_matches_sim, date, match)
+  add_event_id(d_matches_sim, date, match)
 ```
