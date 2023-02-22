@@ -7,11 +7,14 @@ NULL
 #'
 #' Function to standardize codes in OSTRC-questionnaire variables
 #' to 0, 8, 17, and 25 for the corresponding replies of 1, 2, 3, 4 on each question.
-#' Will only work if numeric input vector has exactly 4 unique values.
+#' Will only work if numeric input vector has exactly 4 unique values and is therefore
+#' only compatible with OSTRC questionnaires version 2.0, and Q1 or Q4 from version 1.0.
 #' The function automatically arranges these from smallest to largest and assigns
 #' the smallest value to 0, the next smallest to 8, medium to 17, and highest value to 25.
 #'
-#' @param ostrc_q vector of class numeric with responses to any of the 4 OSTRC-questionnaire questions.
+#' @param ostrc_q vector of class numeric with responses
+#' to any of the 4 OSTRC-questionnaire questions in vesrion 2.0.
+#' Or, responses to Q1 or Q4 from version 1.0.
 #' @return a vector of class numeric with the standard codes of 0, 8, 17 or 25.
 #' @examples
 #' ostrc_q = c(0, 1, 2, 3, 2, 2, 3)
@@ -21,19 +24,21 @@ standardize_coding = function(ostrc_q){
   stopifnot(is.numeric(ostrc_q))
 
   non_zero_resps = ostrc_q[ostrc_q != 0]
-  if(all(non_zero_resps %in% c(8, 17, 25))){
-    stop("All the OSTRC values are already coded as 0, 8, 17 or 25.")
+  if(all(non_zero_resps %in% c(8, 17, 25, 13, 19))){
+    stop("All the OSTRC values are already coded as 0, 8, 17 or 25, or 0, 13, 17, 19, 25.")
   }
 
   unique_codes = unique(ostrc_q)
 
-  if(length(unique_codes) >4){
+  if(length(unique_codes) > 4){
     stop("There are more than 4 codes (corresponding to the 4 possible responses) in your vector.
-       Maybe your missing data is coded as a number? Please convert these to NA.")
+       Is the input vector from Q2 or Q3 from OSTRC questionnaire version 1.0?
+       This function is only compatible with version 2.0, and version 1.0 Q1 and Q4.
+       Otherwise, maybe your missing data is coded as a number? Please convert these to NA.")
   }
 
-  if(length(unique_codes) <4){
-    stop("There are fewer than 4 codes (corresponding to the 4 possible responses) in your vector.
+  if(length(unique_codes) < 4){
+    stop("There are fewer than 4 codes (corresponding to the 4 possible responses in version 2.0) in your vector.
        Perhaps no participant responded with a certain reply?
        Please convert vector to the standard 0, 8, 17, 25 responses manually.")
   }
@@ -46,63 +51,103 @@ standardize_coding = function(ostrc_q){
   ostr_q_converted
 }
 
-#'Find substantial health problems
+#' Find substantial health problems
 #'
 #' Function to find substantial health problems given the definition
 #' in the original OSTRC-O paper: doi.org/10.1136/bjsports-2012-091524.
-#' Returns a vector with 0 for non-substantial/no health problem, 1 for substantial.
 #' Substantial health problems are defined as injury or illness
-#' that reduced training volumes or performance to a moderate extent or worse,
+#' that required modified training volumes or performance to a moderate extent or worse,
 #' or to a complete absence from sports.
-#' The function follows the original recipe of extracting substantial health problems
+#' Returns a vector with 0 for non-substantial/no health problem, 1 for substantial.
+#' The function follows the OSTRC version 2.0 recipe of extracting substantial health problems
 #' from the OSTRC questionnaire:
-#' any reply of “To a moderate extent”, “To a major extent” or “Cannot participate at all”,
-#' on EITHER Question 2 “To what extent have you reduced your training volume due to injury,
-#' illness or other health problems during the past week?” OR Question 3,
+#' any reply of “To a moderate extent” or “To a major extent"
+#' on EITHER Question 2 OR Question 3:
+#' Q2 “To what extent have you modified your training or competition
+#' due to (location) problems during the past 7 days?”; Q3
 #' “To what extent has injury, illness or other health problems
 #' affected your performance the past week?”.
-#' This recipe has remained the same through all versions of the OSTRC-questionnaire,
-#' and the function is compatible with OSTRC-O and OSTRC-H, version 1.0 and 2.0.
-#'
-#' @param ostrc_2 vector of class numeric with responses to OSTRC-questionnaire question 2:
-#' “To what extent have you reduced your training volume due to injury, illness or
-#' other health problems during the past week?”. Standard response values are 0, 8, 17, 25.
-#' Note that the function assumes that input vectors with 4 unique values that are not 0, 8, 17, 25,
-#' (i.e. have the codes 1, 2, 3, 4 for each of the 4 possible responses),
-#' are coded with the lowest value corresponding to 0 and highest value corresponding to 25.
-#' @param ostrc_3 vector of class numeric with responses to OSTRC-questionnaire question 3:
+#' In addition, for OSTRC questionnaires version 1.0,
+#' a response of "Cannot participate at all" is also considered substantial.
+#' The function is compatible with OSTRC-O and OSTRC-H, version 1.0 and 2.0.
+#' @param ostrc_1 vector of class numeric with responses to
+#' OSTRC-questionnaire question 1: "Have you had any difficulties participating in
+#' training and competition due to (location) problems during the past 7 days?".
+#' @param ostrc_2 vector of class numeric with responses to
+#' OSTRC-questionnaire question 2:
+#' "To what extent have you modified your training or competition
+#' due to (location) problems during the past 7 days?"
+#' OR “To what extent have you reduced your training volume
+#' due to injury, illness or other health problems during the past week?”,
+#' depending on OSTRC version.
+#' Standard response values are 0, 8, 17, 25 (version 2.0),
+#' or 0, 13, 17, 19, 25 (version 1.0).
+#' Note that the function assumes that input vectors with values
+#' that are not the classic 0, 8, 17, 25
+#' (or 0, 13, 17, 19, 25 for version 1.0)
+#' are coded with the lowest value corresponding to 0 and highest
+#' value corresponding to 25.
+#' @param ostrc_3 vector of class numeric with responses to
+#' OSTRC-questionnaire question 3:
+#' "To what extent have (location) problems affected
+#' your performance during the past 7 days?" OR
 #' “To what extent has injury, illness or other health problems
-#' affected your performance the past week?”
-#' #' Note that the function assumes that input vectors with 4 unique values that are not 0, 8, 17, 25,
-#' (i.e. have the codes 1, 2, 3, 4 for each of the 4 possible responses instead),
-#' are coded with the lowest value corresponding to 0 and highest value corresponding to 25.
-#' @return a vector of class numeric with binary codes 1 for substantial health problem, 0 for
+#' affected your performance the past week?”, depending on version.
+#' ' Standard response values are 0, 8, 17, 25 (version 2.0),
+#' or 0, 13, 17, 19, 25 (version 1.0).
+#' Note that the function assumes that input vectors
+#' with values that are not the classic 0, 8, 17, 25
+#' (or 0, 13, 17, 19, 25 for version 1.0)
+#' are coded with the lowest value corresponding to 0
+#' and highest value corresponding to 25.
+#' @param version String. Either "2.0" (Default) or "1.0".
+#' @return a vector of class numeric with binary codes 1 for
+#' substantial health problem, 0 for
 #' no health problem or non-substantial health problem.
 #' @examples
 #'   ostrc_2 = c(0, 0, 0, 25)
 #'   ostrc_3 = c(0, 0, 17, 0)
-#'   find_substantial(ostrc_2, ostrc_3)
+#'   find_inj_substantial(ostrc_2, ostrc_3)
+#'
+#'   ostrc_2_v1 = c(0, 0, 0, 19)
+#'   ostrc_3_v1 = c(0, 0, 13, 0)
+#'   find_inj_substantial(ostrc_2_v1, ostrc_3_v1)
+#'
+#'   ostrc_2_othercodes = c(1, 2, 3, 4)
+#'   ostrc_3_othercodes = c(0, 1, 2, 3)
+#'   find_inj_substantial(ostrc_2_othercodes, ostrc_3_othercodes)
 #' @export
-find_inj_substantial = function(ostrc_2, ostrc_3){
+find_inj_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
+  stopifnot(is.numeric(ostrc_1))
   stopifnot(is.numeric(ostrc_2))
   stopifnot(is.numeric(ostrc_3))
-
+  non_zero_resps_1 = ostrc_1[ostrc_1 != 0]
   non_zero_resps_2 = ostrc_2[ostrc_2 != 0]
   non_zero_resps_3 = ostrc_3[ostrc_3 != 0]
 
-  if(!all(non_zero_resps_2 %in% c(8, 17, 25))){
+  value_vec = c(8, 17, 25, 13, 19)
+  warning_obj = paste0("One or more input vectors of OSTRC responses
+  had non-standard values (not in 0, 8, 17, 25 or 0, 13, 17, 19, 25).
+  Lowest value was assumed 0, highest value assumed 25,
+  before finding substantial injuries.")
+
+  if(!all(non_zero_resps_1 %in% value_vec)){
+    ostrc_1 = standardize_coding(ostrc_1)
+    warning(warning_obj)
+  }
+  if(!all(non_zero_resps_2 %in% value_vec)){
     ostrc_2 = standardize_coding(ostrc_2)
-    warning("The input vector of OSTRC question 2 responses had non-standard values.
-            These were standardized, from lowest to highest value, to 0, 8, 17, 25, respectively,
-            before finding substantial injuries.")
+    warning(warning_obj)
   }
-  if(!all(non_zero_resps_3 %in% c(8, 17, 25))){
+  if(!all(non_zero_resps_3 %in% value_vec)){
     ostrc_3 = standardize_coding(ostrc_3)
-    warning("The input vector of OSTRC question 3 responses had non-standard values.
-            These were standardized, from lowest to highest value, to 0, 8, 17, 25, respectively,
-            before finding substantial injuries.")
+    warning(warning_obj)
   }
-  ostrc_sub = ifelse(ostrc_2 >=17 | ostrc_3 >=17, 1, 0)
+  if(version == "2.0"){
+    ostrc_sub = ifelse(ostrc_1 == 25 | ostrc_2 >=17 | ostrc_3 >=17, 1, 0)
+  } else if(version == "1.0"){
+    ostrc_sub = ifelse(ostrc_2 >=13 | ostrc_3 >=13, 1, 0)
+  }
   ostrc_sub
 }
 
@@ -111,4 +156,4 @@ find_inj_substantial = function(ostrc_2, ostrc_3){
 #' normal training and competition due to injury,
 #' illness or other health problems during the past week?”)
 #' that were not “Full participation without health problems”
-#' were considered to be indicative of a health problem.
+#' can be considered a health problem.
