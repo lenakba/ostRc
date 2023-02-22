@@ -1,7 +1,10 @@
 #' @importFrom magrittr %>%
 #' @import tibble
 #' @import dplyr
+NULL
 
+#' Standardize coding
+#'
 #' Function to standardize codes in OSTRC-questionnaire variables
 #' to 0, 8, 17, and 25 for the corresponding replies of 1, 2, 3, 4 on each question.
 #' Will only work if numeric input vector has exactly 4 unique values.
@@ -42,6 +45,7 @@ standardize_coding = function(ostrc_q){
   ostr_q_converted = codes_wanted[pos_codes]
   ostr_q_converted
 }
+
 
 #' Only responses to the first OSTRC question
 #' (“Have you had any difficulties participating in
