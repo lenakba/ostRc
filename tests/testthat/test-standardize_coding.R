@@ -5,9 +5,6 @@ library(dplyr)
 library(magrittr)
 library(testthat)
 
-
-
-
 test_that("Converts lowest number to 0, medium number to 8, higher to 17, and highest to 25.", {
   ostrc_q = c(0, 1, 2, 3, 2, 2, 3)
   correct_result = c(0, 8, 17, 25, 17, 17, 25)
