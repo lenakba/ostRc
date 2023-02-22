@@ -5,7 +5,32 @@ Lena Kristin Bache-Mathiesen[^1]Benjamin Clarsen[^2]
 # Overview
 
 The OSTRC package is a collection of R functions for working with sports
-injury data.
+injury data. Among other functions, the package provides tools for
+handling data from the Oslo Sports Trauma Research Centre Questionnaire
+on health problems.
+
+## OSTRC questionnaire
+
+The OSTRC questionnaire collects self-reported injury data.  
+The functions for handling OSTRC-questionnaire data are generalized to
+work with any OSTRC-questionnaire version. We denote these OSTRC-O 1.0,
+OSTRC-H 1.0, and OSTRC-H 2.0, respectively. Based on the articles they
+were introduced, in chronological order from the first to last version:
+
+<ol>
+<li>
+Original overuse questionnaire: [OSTRC-O
+1.0](doi.org/10.1136/bjsports-2012-091524)
+</li>
+<li>
+The expanded version capturing all health problems: [OSTRC-H
+1.0](doi.org/10.1136/bjsports-2012-092087)
+</li>
+<li>
+The review panel meeting update: [OSTRC-H
+2.0](doi.org/10.1136/bjsports-2019-101337)
+</li>
+</ol>
 
 # Installation
 
