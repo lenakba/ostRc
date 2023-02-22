@@ -2,7 +2,7 @@
 
 export(add_event_id)
 export(ewma)
-export(find_inj_substantial)
+export(find_hp_substantial)
 export(moving_range)
 export(ra)
 export(standardize_coding)
