@@ -7,7 +7,9 @@
 standardize_coding(ostrc_q)
 }
 \arguments{
-\item{ostrc_q}{vector of class numeric with responses to any of the 4 OSTRC-questionnaire questions.}
+\item{ostrc_q}{vector of class numeric with responses
+to any of the 4 OSTRC-questionnaire questions in vesrion 2.0.
+Or, responses to Q1 or Q4 from version 1.0.}
 }
 \value{
 a vector of class numeric with the standard codes of 0, 8, 17 or 25.
@@ -15,7 +17,8 @@ a vector of class numeric with the standard codes of 0, 8, 17 or 25.
 \description{
 Function to standardize codes in OSTRC-questionnaire variables
 to 0, 8, 17, and 25 for the corresponding replies of 1, 2, 3, 4 on each question.
-Will only work if numeric input vector has exactly 4 unique values.
+Will only work if numeric input vector has exactly 4 unique values and is therefore
+only compatible with OSTRC questionnaires version 2.0, and Q1 or Q4 from version 1.0.
 The function automatically arranges these from smallest to largest and assigns
 the smallest value to 0, the next smallest to 8, medium to 17, and highest value to 25.
 }
