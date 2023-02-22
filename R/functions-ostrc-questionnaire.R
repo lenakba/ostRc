@@ -109,7 +109,6 @@ find_hp = function(ostrc_1){
 #' Substantial health problems are defined as injury or illness
 #' that required modified training volumes or performance to a moderate extent or worse,
 #' or to a complete absence from sports.
-#' Returns a vector with 0 for non-substantial/no health problem, 1 for substantial.
 #' The function follows the OSTRC version 2.0 recipe of extracting substantial health problems
 #' from the OSTRC questionnaire:
 #' Any reply of "Could not participate due to (location) problems"
@@ -133,45 +132,45 @@ find_hp = function(ostrc_1){
 #'                OSTRC-questionnaire question 1: "Have you had any difficulties participating in
 #'                training and competition due to (location) problems during the past 7 days?".
 #' @param ostrc_2 vector of class numeric with responses to
-#' OSTRC-questionnaire question 2:
-#' "To what extent have you modified your training or competition
-#' due to (location) problems during the past 7 days?" (version 2.0)
-#' OR “To what extent have you reduced your training volume
-#' due to injury, illness or other health problems during the past week?” (version 1.0).
-#' Standard response values are 0, 8, 17, 25 (version 2.0),
-#' or 0, 13, 17, 19, 25 (version 1.0).
-#' Note that the function assumes that input vectors
-#' with values that are not the standard 0, 8, 17, 25
-#' (or 0, 13, 17, 19, 25 for version 1.0)
-#' are coded with the lowest value corresponding to 0
-#' and highest value corresponding to 25.
-#' An example would be a vector with codes 1, 2, 3, 4
-#' for the 4 potential responses.
-#' The function will throw an error if version 1.0
-#' Q2 is coded with non-standard numeric codes.
-#' These must be coded to 0, 13, 17, 19, 25 manually.
+#'                OSTRC-questionnaire question 2:
+#'                "To what extent have you modified your training or competition
+#'                due to (location) problems during the past 7 days?" (version 2.0)
+#'                OR “To what extent have you reduced your training volume
+#'                due to injury, illness or other health problems during the past week?” (version 1.0).
+#'                Standard response values are 0, 8, 17, 25 (version 2.0),
+#'                or 0, 13, 17, 19, 25 (version 1.0).
+#'                Note that the function assumes that input vectors
+#'                with values that are not the standard 0, 8, 17, 25
+#'                (or 0, 13, 17, 19, 25 for version 1.0)
+#'                are coded with the lowest value corresponding to 0
+#'                and highest value corresponding to 25.
+#'                An example would be a vector with codes 1, 2, 3, 4
+#'                for the 4 potential responses.
+#'                The function will throw an error if version 1.0
+#'                Q2 is coded with non-standard numeric codes.
+#'                These must be coded to 0, 13, 17, 19, 25 manually.
 #' @param ostrc_3 vector of class numeric with responses to
-#' OSTRC-questionnaire question 3:
-#' "To what extent have (location) problems affected
-#' your performance during the past 7 days?" (version 2.0) OR
-#' “To what extent has injury, illness or other health problems
-#' affected your performance the past week?” (version 1.0).
-#' Standard response values are 0, 8, 17, 25 (version 2.0),
-#' or 0, 13, 17, 19, 25 (version 1.0).
-#' Note that the function assumes that input vectors
-#' with values that are not the standard 0, 8, 17, 25
-#' (or 0, 13, 17, 19, 25 for version 1.0)
-#' are coded with the lowest value corresponding to 0
-#' and highest value corresponding to 25.
-#' An example would be a vector with codes 1, 2, 3, 4
-#' for the 4 potential responses.
-#' The function will throw an error if version 1.0
-#' Q3 is coded with non-standard numeric codes.
-#' These must be coded to 0, 13, 17, 19, 25 manually.
+#'                OSTRC-questionnaire question 3:
+#'                "To what extent have (location) problems affected
+#'                your performance during the past 7 days?" (version 2.0) OR
+#'                “To what extent has injury, illness or other health problems
+#'                affected your performance the past week?” (version 1.0).
+#'                Standard response values are 0, 8, 17, 25 (version 2.0),
+#'                or 0, 13, 17, 19, 25 (version 1.0).
+#'                Note that the function assumes that input vectors
+#'                with values that are not the standard 0, 8, 17, 25
+#'                (or 0, 13, 17, 19, 25 for version 1.0)
+#'                are coded with the lowest value corresponding to 0
+#'                and highest value corresponding to 25.
+#'                An example would be a vector with codes 1, 2, 3, 4
+#'                for the 4 potential responses.
+#'                The function will throw an error if version 1.0
+#'                Q3 is coded with non-standard numeric codes.
+#'                These must be coded to 0, 13, 17, 19, 25 manually.
 #' @param version String. Either "2.0" (Default) or "1.0".
 #' @return a vector of class numeric with binary codes 1 for
-#' substantial health problem, 0 for
-#' no health problem or non-substantial health problem.
+#'         substantial health problem, 0 for
+#'         no health problem or non-substantial health problem.
 #' @examples
 #'   ostrc_1 = c(0, 0, 0, 0)
 #'   ostrc_2 = c(0, 0, 0, 25)
@@ -232,3 +231,5 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
   }
   ostrc_sub
 }
+
+
