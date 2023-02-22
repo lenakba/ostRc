@@ -83,15 +83,21 @@ regardless of the response on Question 1.
 The function is compatible with OSTRC-O and OSTRC-H, version 1.0 and 2.0.
 }
 \examples{
+  ostrc_1 = c(0, 0, 0, 0)
   ostrc_2 = c(0, 0, 0, 25)
   ostrc_3 = c(0, 0, 17, 0)
-  find_hp_substantial(ostrc_2, ostrc_3)
+  find_hp_substantial(ostrc_1, ostrc_2, ostrc_3)
 
   ostrc_2_v1 = c(0, 0, 0, 19)
   ostrc_3_v1 = c(0, 0, 13, 0)
-  find_hp_substantial(ostrc_2_v1, ostrc_3_v1)
+  find_hp_substantial(ostrc_1, ostrc_2_v1, ostrc_3_v1)
 
   ostrc_2_othercodes = c(1, 2, 3, 4)
   ostrc_3_othercodes = c(0, 1, 2, 3)
-  find_hp_substantial(ostrc_2_othercodes, ostrc_3_othercodes)
+  find_hp_substantial(ostrc_1, ostrc_2_othercodes, ostrc_3_othercodes)
+
+  ostrc_1_missing = c(25, NA, NA, NA)
+  ostrc_2_missing = c(NA, NA, NA, 17)
+  ostrc_3_missing = c(NA, 8, NA, NA)
+  find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 }

@@ -2,6 +2,7 @@
 
 export(add_event_id)
 export(ewma)
+export(find_hp)
 export(find_hp_substantial)
 export(moving_range)
 export(ra)
