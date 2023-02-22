@@ -61,10 +61,15 @@ standardize_coding = function(ostrc_q){
 #' Returns a vector with 0 for non-substantial/no health problem, 1 for substantial.
 #' The function follows the OSTRC version 2.0 recipe of extracting substantial health problems
 #' from the OSTRC questionnaire:
-#' any reply of “To a moderate extent” or “To a major extent"
+#' Any reply of "Could not participate due to (location) problems"
+#' on Question 1: "Have you had any difficulties
+#' participating in training and
+#' competition due to (location) problems
+#' during the past 7 days?" OR
+#' a reply of “To a moderate extent” or “To a major extent"
 #' on EITHER Question 2 OR Question 3:
-#' Q2 “To what extent have you modified your training or competition
-#' due to (location) problems during the past 7 days?”; Q3
+#' “To what extent have you modified your training or competition
+#' due to (location) problems during the past 7 days?”;
 #' “To what extent has injury, illness or other health problems
 #' affected your performance the past week?”.
 #' In addition, for OSTRC questionnaires version 1.0,
