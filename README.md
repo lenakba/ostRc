@@ -30,15 +30,15 @@ identifying injury cases. Or the opposite: the intervals where the
 participant is currently injured or in pain.
 
 It can also be used to find the so-called micro-cycle between matches
-and competition events. That is, all days up to first match/competition
-in one cycle, all days from first match to second match in the next
-cycle and so on. Micro-cycles are the time from a previous competition
-or match to the next competition or match. Coaches often plan training
+and competition events. Micro-cycles are the time from a previous
+competition or match to the next competition or match. That is, all days
+up to first match/competition in one cycle, all days from first match to
+second match in the next cycle and so on. Coaches often plan training
 according to such micro-cycles.
 
 This is handy for counting the number of injury cases or number of
 micro-cycles, calculating the average interval time, or calculating the
-average of another variable per injury or other event.
+average of anything else per injury or other event.
 
 ``` r
 d_matches_sim = tribble(~date, ~match,
@@ -63,8 +63,8 @@ d_matches_sim = tribble(~date, ~match,
 ## Acknowledgments
 
 Thank you to Prof. Roald Bahr for prioritizing this project. Thanks also
-to the Oslo Sports Trauma Research Centre for providing a inclusive and
-supportive working environment.
+to the Oslo Sports Trauma Research Centre for providing a supportive
+working environment.
 
 ## Author Contributions
 
