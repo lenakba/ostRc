@@ -44,8 +44,8 @@ test_that("Throws error if vector of OSTRC values is already coded with the stan
 })
 
 test_that("Will return missing values (NA) as missing values (NA).", {
-  ostrc_q = c(0, 1, 2, NA)
-  correct_result = c(0, 8, 17, NA)
+  ostrc_q = c(0, 1, 2, 3, NA)
+  correct_result = c(0, 8, 17, 25, NA)
   expect_equal(standardize_coding(ostrc_q), correct_result)
 })
 

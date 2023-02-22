@@ -15,6 +15,37 @@ test_that("Returns 1 for substantial if EITHER of the given
   expect_equal(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3), correct_result)
 })
 
+test_that("Returns error if all input values are NA.", {
+  ostrc_1 = is.numeric(c(NA, NA, NA, NA))
+  ostrc_2 = is.numeric(c(NA, NA, NA, NA))
+  ostrc_3 = is.numeric(c(NA, NA, NA, NA))
+  expect_error(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3))
+})
+
+test_that("Returns NA if all three vectors are NA simultaneously.", {
+  ostrc_1 = c(0, NA, NA, NA)
+  ostrc_2 = c(0, NA, NA, NA)
+  ostrc_3 = c(0, NA, NA, NA)
+  correct_results = c(0, NA, NA, NA)
+  expect_equal(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3), correct_results)
+})
+
+test_that("Returns 1 even if only one value is substantial and non-missing,
+          but returns NA if only one value is non-missing
+          and is not substantial.", {
+  ostrc_1 = c(0, NA, NA, NA)
+  ostrc_2 = c(NA, 8, NA, NA)
+  ostrc_3 = c(NA, NA, 25, NA)
+  correct_result = c(NA, NA, 1, NA)
+  expect_equal(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3), correct_result)
+
+  ostrc_4 = c(0, NA, NA, NA)
+  ostrc_5 = c(NA, 0, NA, NA)
+  ostrc_6 = c(NA, NA, 0, NA)
+  correct_result = as.numeric(c(NA, NA, NA, NA))
+  expect_equal(find_hp_substantial(ostrc_4, ostrc_5, ostrc_6), correct_result)
+})
+
 test_that("Returns error if one of the OSTRC variables are non-numeric.", {
   ostrc_1 = c(TRUE, FALSE, FALSE, TRUE)
   ostrc_2 = c(0, 8, 17, 25)
@@ -48,3 +79,4 @@ test_that("Will handle OSTRC variables not coded in the classic 0,8,17,25 respon
             expect_error(find_hp_substantial(ostrc_1, ostrc_4, ostrc_5))
             expect_warning(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3))
 })
+

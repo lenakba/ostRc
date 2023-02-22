@@ -23,12 +23,13 @@ NULL
 standardize_coding = function(ostrc_q){
   stopifnot(is.numeric(ostrc_q))
 
-  non_zero_resps = ostrc_q[ostrc_q != 0]
+  non_zero_resps = na.omit(ostrc_q[ostrc_q != 0])
   if(all(non_zero_resps %in% c(8, 17, 25, 13, 19))){
-    stop("All the OSTRC values are already coded as 0, 8, 17 or 25, or 0, 13, 17, 19, 25.")
+    stop("All the OSTRC values are already coded as 0, 8, 17 or 25,
+         or 0, 13, 17, 19, 25.")
   }
 
-  unique_codes = unique(ostrc_q)
+  unique_codes = na.omit(unique(ostrc_q))
 
   if(length(unique_codes) > 4){
     stop("There are more than 4 codes (corresponding to the 4 possible responses) in your vector.
@@ -49,6 +50,49 @@ standardize_coding = function(ostrc_q){
 
   ostr_q_converted = codes_wanted[pos_codes]
   ostr_q_converted
+}
+
+#' Find health problems
+#'
+#' Function for finding health problems.
+#' Returns a vector with binary values 1 health problem,
+#' 0 for not a health problem.
+#' Only responses to the first OSTRC question
+#' "Have you had any difficulties participating in
+#' training and competition due to (location) problems
+#' during the past 7 days?" (version 2.0) or
+#' “Have you had any difficulties participating in
+#' normal training and competition due to injury,
+#' illness or other health problems during the past week?" (version 1.0)
+#' that were not “Full participation without health problems”
+#' is considered a health problem.
+#'
+#' @param ostrc_1 vector of class numeric with values corresponding to
+#'                responses in OSTRC questionnaire, question 1.
+#' @return a vector of class numeric where 1 = health problem, 0 = not a health problem.
+find_hp = function(ostrc_1){
+  stopifnot(is.numeric(ostrc_1))
+
+  non_zero_resps = na.omit(ostrc_1[ostrc_1 != 0])
+
+  value_vec = c(8, 17, 25)
+  warning_codes = paste0("One or more input vectors of OSTRC responses
+                         had non-standard values (not in 0, 8, 17, 25).
+                         Lowest value was assumed 0, highest value assumed 25,
+                         before finding health problems.")
+  warning_zeros = paste0("All of the responses are 0 or missing (NA),
+                         meanining the function found no health problems.")
+
+  if(!all(non_zero_resps %in% value_vec)){
+    ostrc_1 = standardize_coding(ostrc_1)
+    warning(warning_codes)
+  }
+
+  if(all(ostrc_1 == 0 | is.na(ostrc_1))){
+    warning(warning_zeros)
+  }
+  ostrc_hp = ifelse(ostrc_1 > 0, 1, 0)
+  ostrc_hp
 }
 
 #' Find substantial health problems
@@ -74,7 +118,8 @@ standardize_coding = function(ostrc_q){
 #' affected your performance the past week?”.
 #' In addition, for OSTRC questionnaires version 1.0,
 #' a response of "Cannot participate at all"
-#' on Question 2 and Question 3 is also considered substantial.
+#' on Question 2 and Question 3 is also considered substantial,
+#' regardless of the response on Question 1.
 #' The function is compatible with OSTRC-O and OSTRC-H, version 1.0 and 2.0.
 #'
 #' @param ostrc_1 vector of class numeric with responses to
@@ -137,15 +182,19 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
   stopifnot(is.numeric(ostrc_1))
   stopifnot(is.numeric(ostrc_2))
   stopifnot(is.numeric(ostrc_3))
-  non_zero_resps_1 = ostrc_1[ostrc_1 != 0]
-  non_zero_resps_2 = ostrc_2[ostrc_2 != 0]
-  non_zero_resps_3 = ostrc_3[ostrc_3 != 0]
+
+  if(all(is.na(c(ostrc_1, ostrc_2, ostrc_3))))
+     stop("All input vectors consist of only missing values")
+
+  non_zero_resps_1 = na.omit(ostrc_1[ostrc_1 != 0])
+  non_zero_resps_2 = na.omit(ostrc_2[ostrc_2 != 0])
+  non_zero_resps_3 = na.omit(ostrc_3[ostrc_3 != 0])
 
   value_vec = c(8, 17, 25, 13, 19)
   warning_obj = paste0("One or more input vectors of OSTRC responses
   had non-standard values (not in 0, 8, 17, 25 or 0, 13, 17, 19, 25).
   Lowest value was assumed 0, highest value assumed 25,
-  before finding substantial injuries.")
+  before finding substantial health problems.")
 
   if(!all(non_zero_resps_1 %in% value_vec)){
     ostrc_1 = standardize_coding(ostrc_1)
@@ -160,16 +209,13 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
     warning(warning_obj)
   }
   if(version == "2.0"){
-    ostrc_sub = ifelse(ostrc_1 == 25 | ostrc_2 >=17 | ostrc_3 >=17, 1, 0)
+    ostrc_sub = case_when(ostrc_1 == 25 | ostrc_2 >=17 | ostrc_3 >=17 ~ 1,
+                          ostrc_1 < 25 & ostrc_2 <17 & ostrc_3 <17 ~ 0,
+                          is.na(ostrc_1) & is.na(ostrc_2) & is.na(ostrc_3) ~ NA_real_)
   } else if(version == "1.0"){
-    ostrc_sub = ifelse(ostrc_2 >=13 | ostrc_3 >=13, 1, 0)
+    ostrc_sub = case_when(ostrc_2 >=13 | ostrc_3 >=13 ~ 1,
+                          ostrc_2 <13 & ostrc_3 <13 ~ 0,
+                          is.na(ostrc_2) & is.na(ostrc_3) ~ NA_real_)
   }
   ostrc_sub
 }
-
-#' Only responses to the first OSTRC question
-#' (“Have you had any difficulties participating in
-#' normal training and competition due to injury,
-#' illness or other health problems during the past week?”)
-#' that were not “Full participation without health problems”
-#' can be considered a health problem.
