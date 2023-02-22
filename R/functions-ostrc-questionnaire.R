@@ -123,17 +123,17 @@ standardize_coding = function(ostrc_q){
 #' @examples
 #'   ostrc_2 = c(0, 0, 0, 25)
 #'   ostrc_3 = c(0, 0, 17, 0)
-#'   find_inj_substantial(ostrc_2, ostrc_3)
+#'   find_hp_substantial(ostrc_2, ostrc_3)
 #'
 #'   ostrc_2_v1 = c(0, 0, 0, 19)
 #'   ostrc_3_v1 = c(0, 0, 13, 0)
-#'   find_inj_substantial(ostrc_2_v1, ostrc_3_v1)
+#'   find_hp_substantial(ostrc_2_v1, ostrc_3_v1)
 #'
 #'   ostrc_2_othercodes = c(1, 2, 3, 4)
 #'   ostrc_3_othercodes = c(0, 1, 2, 3)
-#'   find_inj_substantial(ostrc_2_othercodes, ostrc_3_othercodes)
+#'   find_hp_substantial(ostrc_2_othercodes, ostrc_3_othercodes)
 #' @export
-find_inj_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
+find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
   stopifnot(is.numeric(ostrc_1))
   stopifnot(is.numeric(ostrc_2))
   stopifnot(is.numeric(ostrc_3))
