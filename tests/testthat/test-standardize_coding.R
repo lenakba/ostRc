@@ -24,6 +24,11 @@ test_that("Throws error if vector of OSTRC values is non-numeric.", {
   expect_error(standardize_coding(ostrc_q2))
 })
 
+test_that("Throws error if vector of OSTRC values is Q2 or Q3 from OSTRC 1.0.", {
+  ostrc_q = c(0, 13, 17, 19, 25)
+  expect_error(standardize_coding(ostrc_q))
+})
+
 test_that("Throws error if vector of OSTRC values has more than 4 types of values.", {
   ostrc_q = c(0, 1, 2, 3, 4, 5, 6, 7)
   ostrc_q2 = c(0, 1, 2, 3, 4, 99)
