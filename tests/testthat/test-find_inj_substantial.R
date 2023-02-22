@@ -31,9 +31,8 @@ test_that("Will handle OSTRC variables not coded in the classic 0,8,17,25 respon
 
             ostrc_4 = c(0, 0, 3, 3)
             ostrc_5 = c(3, 3, 0, 0)
-            correct_result2 = c(1, 1, 1, 1)
 
-            expect_equal(find_inj_substantial(ostrc_2, ostrc_3), correct_result1)
-            expect_equal(find_inj_substantial(ostrc_4, ostrc_5), correct_result2)
+            expect_equal(suppressWarnings(find_inj_substantial(ostrc_2, ostrc_3)), correct_result1)
+            expect_error(find_inj_substantial(ostrc_4, ostrc_5))
             expect_warning(find_inj_substantial(ostrc_2, ostrc_3))
 })
