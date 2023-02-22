@@ -1,0 +1,6 @@
+context("Fidn substantial injuries function")
+library(ostrc)
+library(tidyr)
+library(dplyr)
+library(magrittr)
+library(testthat)
