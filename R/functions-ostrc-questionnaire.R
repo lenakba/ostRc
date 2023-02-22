@@ -70,6 +70,13 @@ standardize_coding = function(ostrc_q){
 #' @param ostrc_1 vector of class numeric with values corresponding to
 #'                responses in OSTRC questionnaire, question 1.
 #' @return a vector of class numeric where 1 = health problem, 0 = not a health problem.
+#' @examples
+#'   ostrc_1 = c(0, 8, 17, 25)
+#'   find_hp(ostrc_1)
+#'
+#'   ostrc_1_other_values = c(0, 1, 2, 3)
+#'   find_hp(ostrc_1_other_values)
+#' @export
 find_hp = function(ostrc_1){
   stopifnot(is.numeric(ostrc_1))
 
@@ -123,8 +130,8 @@ find_hp = function(ostrc_1){
 #' The function is compatible with OSTRC-O and OSTRC-H, version 1.0 and 2.0.
 #'
 #' @param ostrc_1 vector of class numeric with responses to
-#' OSTRC-questionnaire question 1: "Have you had any difficulties participating in
-#' training and competition due to (location) problems during the past 7 days?".
+#'                OSTRC-questionnaire question 1: "Have you had any difficulties participating in
+#'                training and competition due to (location) problems during the past 7 days?".
 #' @param ostrc_2 vector of class numeric with responses to
 #' OSTRC-questionnaire question 2:
 #' "To what extent have you modified your training or competition
@@ -166,17 +173,23 @@ find_hp = function(ostrc_1){
 #' substantial health problem, 0 for
 #' no health problem or non-substantial health problem.
 #' @examples
+#'   ostrc_1 = c(0, 0, 0, 0)
 #'   ostrc_2 = c(0, 0, 0, 25)
 #'   ostrc_3 = c(0, 0, 17, 0)
-#'   find_hp_substantial(ostrc_2, ostrc_3)
+#'   find_hp_substantial(ostrc_1, ostrc_2, ostrc_3)
 #'
 #'   ostrc_2_v1 = c(0, 0, 0, 19)
 #'   ostrc_3_v1 = c(0, 0, 13, 0)
-#'   find_hp_substantial(ostrc_2_v1, ostrc_3_v1)
+#'   find_hp_substantial(ostrc_1, ostrc_2_v1, ostrc_3_v1)
 #'
 #'   ostrc_2_othercodes = c(1, 2, 3, 4)
 #'   ostrc_3_othercodes = c(0, 1, 2, 3)
-#'   find_hp_substantial(ostrc_2_othercodes, ostrc_3_othercodes)
+#'   find_hp_substantial(ostrc_1, ostrc_2_othercodes, ostrc_3_othercodes)
+#'
+#'   ostrc_1_missing = c(25, NA, NA, NA)
+#'   ostrc_2_missing = c(NA, NA, NA, 17)
+#'   ostrc_3_missing = c(NA, 8, NA, NA)
+#'   find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 #' @export
 find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
   stopifnot(is.numeric(ostrc_1))
