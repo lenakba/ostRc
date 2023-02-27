@@ -1,5 +1,5 @@
 #' @importFrom magrittr %>%
-#' @importFrom rlang as_string quo_name enquo
+#' @importFrom rlang enquo
 #' @importFrom nplyr nest_mutate
 #' @import tibble
 #' @import dplyr
