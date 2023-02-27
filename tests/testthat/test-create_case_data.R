@@ -94,3 +94,13 @@ test_that("Adds extra variables if there
 
             expect_true("comment" %in% names(d_created))
           })
+
+test_that("Throws error if a health problem does not have a case id.",
+          {
+            d_missing_caseid = d_ostrc
+            d_missing_caseid[2,2] = NA
+
+            expect_error(create_case_data(d_missing_caseid, id_participant,
+                                         id_case, date_ostrc,
+                                         q1, q2, q3, q4))
+          })
