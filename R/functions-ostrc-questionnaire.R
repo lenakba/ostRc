@@ -16,7 +16,7 @@ NULL
 #' the smallest value to 0, the next smallest to 8, medium to 17, and highest value to 25.
 #'
 #' @param ostrc_q vector of class numeric with responses
-#' to any of the 4 OSTRC-questionnaire questions in vesrion 2.0.
+#' to any of the 4 OSTRC-questionnaire questions in version 2.0.
 #' Or, responses to Q1 or Q4 from version 1.0.
 #' @return a vector of class numeric with the standard codes of 0, 8, 17 or 25.
 #' @examples
@@ -91,7 +91,7 @@ find_hp = function(ostrc_1){
                          Lowest value was assumed 0, highest value assumed 25,
                          before finding health problems.")
   warning_zeros = paste0("All of the responses are 0 or missing (NA),
-                         meanining the function found no health problems.")
+                         meaning the function found no health problems.")
 
   if(!all(non_zero_resps %in% value_vec)){
     ostrc_1 = standardize_coding(ostrc_1)
@@ -276,7 +276,8 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
 #' create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
 #' @export
 create_case_data = function(d_ostrc, id_participant, id_case,
-                          date_ostrc, ostrc_1, ostrc_2, ostrc_3, ostrc_4){
+                          date_ostrc, ostrc_1, ostrc_2, ostrc_3, ostrc_4,
+                          version = "2.0"){
   ostrc_1 = enquo(ostrc_1)
   ostrc_2 = enquo(ostrc_2)
   ostrc_3 = enquo(ostrc_3)
@@ -285,9 +286,13 @@ create_case_data = function(d_ostrc, id_participant, id_case,
   id_participant = enquo(id_participant)
   date_ostrc = enquo(date_ostrc)
 
+  if(!is.numeric(d_ostrc %>% pull(!!ostrc_1))){
+    stop("`ostrc_1` is not numeric. To find health problems,
+         `ostrc_1` must be numeric.")
+  }
+
   d_ostrc = d_ostrc %>%
-    mutate(hp = find_hp(!!ostrc_1),
-           hp_sub = find_hp_substantial(!!ostrc_1, !!ostrc_2, !!ostrc_3))
+    mutate(hp = find_hp(!!ostrc_1))
 
   # check that all health problem cases have an ID
  if(nrow(d_ostrc %>% filter(is.na(!!id_case) & hp == 1) != 0)){
@@ -295,7 +300,8 @@ create_case_data = function(d_ostrc, id_participant, id_case,
        Ensure all health problems have an ID.")
  }
 
-  d_cases = d_ostrc %>%
+  # calculate duration per health problem
+  d_cases_unselected = d_ostrc %>%
     filter(!is.na(!!id_case), hp == 1) %>%
     group_by(!!id_participant, !!id_case) %>%
     nest() %>%
@@ -307,10 +313,37 @@ create_case_data = function(d_ostrc, id_participant, id_case,
                                              units = "days"))+1) %>%
     unnest(cols = c(data)) %>%
     ungroup() %>%
-    distinct(!!id_participant, !!id_case, .keep_all = TRUE)  %>%
-    select(!!id_case, !!id_participant,
-           date_start, date_end, duration, hp_sub,
-           !!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4,
-           everything(), -hp)
+    distinct(!!id_participant, !!id_case, .keep_all = TRUE)
+
+  # if find_hp_substantial throws an error,
+  # the dataframe will be returned without it
+  an_error_occured = FALSE
+  tryCatch( {
+    result <-
+      d_cases_unselected %>%
+      mutate(hp_sub = find_hp_substantial(!!ostrc_1, !!ostrc_2,
+                                          !!ostrc_3, version = version));
+    print(result) },
+    error = function(e) {an_error_occured <<- TRUE}
+  )
+  if(an_error_occured){
+    d_cases = d_cases_unselected %>%
+      select(!!id_case, !!id_participant,
+             date_start, date_end, duration,
+             !!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4,
+             everything(), -hp)
+    warning("Substantial health problems could not be found.")
+  } else {
+    d_cases_unselected = d_cases_unselected %>%
+      mutate(hp_sub = find_hp_substantial(!!ostrc_1,
+                                          !!ostrc_2, !!ostrc_3,
+                                          version = version))
+
+    d_cases = d_cases_unselected %>%
+      select(!!id_case, !!id_participant,
+             date_start, date_end, duration, hp_sub,
+             !!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4,
+             everything(), -hp)
+  }
 d_cases
 }
