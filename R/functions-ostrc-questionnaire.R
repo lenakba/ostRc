@@ -323,7 +323,7 @@ create_case_data = function(d_ostrc, id_participant, id_case,
       d_cases_unselected %>%
       mutate(hp_sub = find_hp_substantial(!!ostrc_1, !!ostrc_2,
                                           !!ostrc_3, version = version));
-    print(result) },
+    },
     error = function(e) {an_error_occured <<- TRUE}
   )
   if(an_error_occured){
