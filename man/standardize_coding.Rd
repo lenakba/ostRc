@@ -8,7 +8,7 @@ standardize_coding(ostrc_q)
 }
 \arguments{
 \item{ostrc_q}{vector of class numeric with responses
-to any of the 4 OSTRC-questionnaire questions in vesrion 2.0.
+to any of the 4 OSTRC-questionnaire questions in version 2.0.
 Or, responses to Q1 or Q4 from version 1.0.}
 }
 \value{

@@ -53,8 +53,8 @@ These must be coded to 0, 13, 17, 19, 25 manually.}
 }
 \value{
 a vector of class numeric with binary codes 1 for
-substantial health problem, 0 for
-no health problem or non-substantial health problem.
+        substantial health problem, 0 for
+        non-substantial health problem. Non-health problems are returned as NA.
 }
 \description{
 Function to find substantial health problems given the definition
@@ -62,7 +62,6 @@ in the original OSTRC-O paper: doi.org/10.1136/bjsports-2012-091524.
 Substantial health problems are defined as injury or illness
 that required modified training volumes or performance to a moderate extent or worse,
 or to a complete absence from sports.
-Returns a vector with 0 for non-substantial/no health problem, 1 for substantial.
 The function follows the OSTRC version 2.0 recipe of extracting substantial health problems
 from the OSTRC questionnaire:
 Any reply of "Could not participate due to (location) problems"
