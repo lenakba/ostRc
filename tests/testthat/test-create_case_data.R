@@ -104,3 +104,56 @@ test_that("Throws error if a health problem does not have a case id.",
                                          id_case, date_ostrc,
                                          q1, q2, q3, q4))
           })
+
+test_that("Gives correct substantial health problems
+          if older version of OSTRC is used.",
+          {
+            d_1_0 = d_ostrc %>% mutate(q3 = c(0,
+                                              0,
+                                              0,
+                                              0, 13, 0),
+                                       q3 = c(17,
+                                           17,
+                                           17,
+                                           0, NA, 0))
+            correct_hp_sub = c(1, 0, NA)
+
+            d_created_oldversion = create_case_data(d_1_0, id_participant,
+                                          id_case, date_ostrc,
+                                          q1, q2, q3, q4, version = "1.0")
+            expect_equal(d_created_oldversion$hp_sub, correct_hp_sub)
+          })
+
+
+test_that("Returns error if OSTRC 1 is non-numeric.",
+          {
+            d_test = d_ostrc %>% mutate(q1 = as.character(q1))
+            expect_error(create_case_data(d_test, id_participant,
+                                         id_case, date_ostrc,
+                                         q1, q2, q3, q4))
+          })
+
+test_that("will return dataframe without
+           substantial health problem column
+           if find_substantial throws error.",
+          {
+            d_test = d_ostrc %>% mutate(q3 = c(NA,
+                                              NA,
+                                              NA,
+                                              NA, NA, NA),
+                                       q3 = c(NA,
+                                              NA,
+                                              NA,
+                                              NA, NA, NA))
+
+            expect_warning(create_case_data(d_test, id_participant,
+                                            id_case, date_ostrc,
+                                            q1, q2, q3, q4))
+
+            d_created = suppressWarnings(
+              create_case_data(d_test, id_participant,
+                             id_case, date_ostrc,
+                             q1, q2, q3, q4))
+
+            expect_true(all(names(d_created) != "hp_sub"))
+          })
