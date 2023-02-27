@@ -53,15 +53,15 @@ Below is a brief overview of helpful functions.
 
 The function `create_case_data` finds 
 health problems in a dataset with OSTRC-questionnaire responses
-and returns a dataframe where each entry corresponds to each health problem.
+and returns a dataframe where one row describes one unique health problem.
 The function also finds and adds the startdate, enddate, 
-and the duration (in days) of each health problem to the returned dataframe.
-It also identifies substantial health problems and adds a column for these.
+and the duration (in days) of each health problem.
+It also identifies substantial health problems, with the help of 
+`find_hp_substantial`, and adds a column for these.
 
 ```{r create_case_data_example, echo = TRUE, warning = FALSE}
-library(tidyr)
-library(dplyr)
-library(nplyr)
+library(tidyverse)
+library(ostrc)
 d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                    1, 1, "2023-01-01", 0, 0, 17, 25,
                    1, 1, "2023-01-07", 8, 0, 17, 25,
@@ -100,6 +100,8 @@ calculating the average interval time,
 or calculating the average of anything else per injury or other event.   
 
 ```{r event_id_example, echo = TRUE, warning = FALSE}
+library(tidyverse)
+library(ostrc)
 d_matches_sim = tribble(~date, ~match,
                           "2017-08-22", 0,
                           "2017-08-23", 1,
