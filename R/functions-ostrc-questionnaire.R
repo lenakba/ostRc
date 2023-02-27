@@ -1,6 +1,9 @@
 #' @importFrom magrittr %>%
+#' @importFrom rlang as_string quo_name enquo
+#' @importFrom nplyr nest_mutate
 #' @import tibble
 #' @import dplyr
+
 NULL
 
 #' Standardize coding
@@ -231,5 +234,48 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
   }
   ostrc_sub
 }
+
+
+
+create_case_data = function(d_ostrc, id_participant, id_case,
+                          date_ostrc, ostrc_1, ostrc_2, ostrc_3, ostrc_4){
+  ostrc_1 = enquo(ostrc_1)
+  ostrc_2 = enquo(ostrc_2)
+  ostrc_3 = enquo(ostrc_3)
+  ostrc_4 = enquo(ostrc_4)
+  id_case = enquo(id_case)
+  id_participant = enquo(id_participant)
+  date_ostrc = enquo(date_ostrc)
+
+  d_ostrc = d_ostrc %>%
+    mutate(hp = find_hp(!!ostrc_1),
+           hp_sub = find_hp_substantial(!!ostrc_1, !!ostrc_2, !!ostrc_3))
+
+  d_cases = d_ostrc %>%
+    filter(!is.na(!!id_case), hp == 1) %>%
+    group_by(!!id_participant, !!id_case) %>%
+    nest() %>%
+    nest_mutate(data,
+                date_start = min(!!date_ostrc, na.rm = TRUE),
+                date_end = max(!!date_ostrc, na.rm = TRUE),
+                # Add 1 to ensure that dates with no diff counts as 1 day:
+                duration = as.numeric(difftime(date_end, date_start,
+                                             units = "days"))+1) %>%
+    unnest(cols = c(data)) %>%
+    ungroup() %>%
+    distinct(!!id_participant, !!id_case, .keep_all = TRUE)  %>%
+    select(!!id_case, !!id_participant,
+           date_start, date_end, duration, hp_sub,
+           !!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4,
+           everything(), -hp)
+d_cases
+}
+
+
+create_case_data(d_ostrc, id_participant, id_case,
+                 date_ostrc, q1, q2, q3, q4)
+
+
+
 
 
