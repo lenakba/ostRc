@@ -49,7 +49,7 @@ devtools::install_github("lenakba/ostrc")
 
 Below is a brief overview of helpful functions.
 
-### create_case_data
+### Create case data
 
 The function `create_case_data` finds health problems in a dataset with
 OSTRC-questionnaire responses and returns a dataframe where one row
@@ -60,7 +60,6 @@ of `find_hp_substantial`, and adds a column for these.
 
 ``` r
 library(tidyverse)
-library(ostrc)
 d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                    1, 1, "2023-01-01", 0, 0, 17, 25,
                    1, 1, "2023-01-07", 8, 0, 17, 25,
@@ -87,7 +86,73 @@ create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
     ## #   ¹​id_participant, ²​duration
     ## # ℹ Use `colnames()` to see all variable names
 
-### add_event_id
+### Find health problems and substantial health problems
+
+Given a vector of OSTRC responses to question 1, The function `find_hp`
+identifies whether or not an observation is a health problem as per the
+definition of a health problem in the OSTRC questionnaire.
+
+``` r
+ostrc_1 = c(0, 8, 17, 25)
+
+find_hp(ostrc_1)
+```
+
+    ## [1] 0 1 1 1
+
+If the vector of responses to question 1 is not coded with the standard
+0, 8, 17, 25 responses, but with 1 to 4, or 0 to 3, these can also work.
+In these cases, `find_hp` uses the `standardize_codes` function
+automatically.
+
+``` r
+ostrc_1_other_values = c(0, 1, 2, 3)
+
+find_hp(ostrc_1_other_values)
+```
+
+    ## [1] 0 1 1 1
+
+Substantial health problems are more complicated to identify, and
+depends on the OSTRC version (1.0 or 2.0). The function
+`find_hp_substantial` identifies substantial injuries given question 1,
+2, and 3 of the OSTRC questionnaire.
+
+``` r
+ostrc_1 = c(0, 0, 0, 0)
+ostrc_2 = c(0, 0, 0, 25)
+ostrc_3 = c(0, 0, 17, 0)
+   
+find_hp_substantial(ostrc_1, ostrc_2, ostrc_3)
+```
+
+    ## [1] 0 0 1 1
+
+Make note of how `find_hp_substantial` treats missing in one or more of
+the OSTRC-questionnaire items. If one of the three questions indicate a
+substantial health problem, `find_hp_substantial` will consider it
+substantial, regardless of missing values in other items. No matter
+whether the missing values are, in reality, substantial or
+non-substantial, we still have enough information to conclude that the
+observation is substantial.
+
+However, if the only non-missing responses are values that do not
+indicate a substantial health problem, then it will return as missing.
+In these cases, there is no way of knowing whether one of the missing
+observations was, in reality, a response pertaining to a substantial
+health problem.
+
+``` r
+ostrc_1_missing = c(25, NA, NA, NA)
+ostrc_2_missing = c(NA, NA, NA, 17)
+ostrc_3_missing = c(NA, 8, NA, NA)
+
+find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
+```
+
+    ## [1]  1 NA NA  1
+
+### Find and add event IDs
 
 Function `add_event_id` finds intervals for each event in a longitudinal
 dataset, and adds a column indexing them. The intervals may be of
