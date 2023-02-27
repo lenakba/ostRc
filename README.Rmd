@@ -10,12 +10,14 @@ library(tidyverse) # life: dplyr, tidyr, ggplot2, purrr and everything else you 
 library(ostrc)
 ```
 
-# Overview
-The OSTRC package is a collection of R functions for working with sports injury data. 
-Among other functions, the package provides tools for handling data from the 
-Oslo Sports Trauma Research Centre Questionnaire on overuse injuries or health problems. 
+## Overview
+The OSTRC package is a collection of R functions 
+for working with sports injury data. Among other 
+functions, the package provides tools for handling data from the 
+Oslo Sports Trauma Research Centre 
+Questionnaire on overuse injuries or health problems. 
 
-## OSTRC questionnaire
+### OSTRC questionnaire
 The OSTRC questionnaire collects self-reported injury and illness data.   
 The functions for handling OSTRC-questionnaire data are 
 generalized to work with any OSTRC-questionnaire type and version.
@@ -35,7 +37,7 @@ in chronological order from the earliest to latest version:
 [OSTRC-O 2.0 and OSTRC-H 2.0](doi.org/10.1136/bjsports-2019-101337)</li>
 </ol>
 
-# Installation
+## Installation
 
 ```{r install_guide, echo = TRUE, warning = FALSE, eval = FALSE}
 # Requires the devtools package
@@ -44,10 +46,39 @@ in chronological order from the earliest to latest version:
 devtools::install_github("lenakba/ostrc")
 ```
 
-# Functions
+## Functions
 Below is a brief overview of helpful functions.
 
-## add_event_id
+### create_case_data
+
+The function `create_case_data` finds 
+health problems in a dataset with OSTRC-questionnaire responses
+and returns a dataframe where each entry corresponds to each health problem.
+The function also finds and adds the startdate, enddate, 
+and the duration (in days) of each health problem to the returned dataframe.
+It also identifies substantial health problems and adds a column for these.
+
+```{r create_case_data_example, echo = TRUE, warning = FALSE}
+library(tidyr)
+library(dplyr)
+library(nplyr)
+d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
+                   1, 1, "2023-01-01", 0, 0, 17, 25,
+                   1, 1, "2023-01-07", 8, 0, 17, 25,
+                   1, 1, "2023-01-19", 8, 0, 17, 0,
+                   1, 18, "2022-12-07", 25, 0, 0, 0,
+                   2, 2, "2023-01-12", 8, 8, NA, NA,
+                   3, 3, "2022-06-05", 0, 0, 0, 0)
+# note that the date column must be of class date
+d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
+
+# functions returns one row per health problem
+# if a response is not a health problem (like participant ID 3, case ID 3)
+# it will not be included in the returned data frame
+create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
+```
+
+### add_event_id
 
 Function `add_event_id` finds intervals for each event in a longitudinal dataset, and
 adds a column indexing them. The intervals may be of unequal lengths. 
