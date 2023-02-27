@@ -251,6 +251,12 @@ create_case_data = function(d_ostrc, id_participant, id_case,
     mutate(hp = find_hp(!!ostrc_1),
            hp_sub = find_hp_substantial(!!ostrc_1, !!ostrc_2, !!ostrc_3))
 
+  # check that all health problem cases have an ID
+ if(nrow(d_ostrc %>% filter(is.na(!!id_case) & hp == 1) != 0)){
+  stop("Health problems were detected that did not have a case ID.
+       Ensure all health problems have an ID.")
+ }
+
   d_cases = d_ostrc %>%
     filter(!is.na(!!id_case), hp == 1) %>%
     group_by(!!id_participant, !!id_case) %>%
@@ -270,12 +276,3 @@ create_case_data = function(d_ostrc, id_participant, id_case,
            everything(), -hp)
 d_cases
 }
-
-
-create_case_data(d_ostrc, id_participant, id_case,
-                 date_ostrc, q1, q2, q3, q4)
-
-
-
-
-
