@@ -173,7 +173,7 @@ find_hp = function(ostrc_1){
 #' @param version String. Either "2.0" (Default) or "1.0".
 #' @return a vector of class numeric with binary codes 1 for
 #'         substantial health problem, 0 for
-#'         no health problem or non-substantial health problem.
+#'         non-substantial health problem. Non-health problems are returned as NA.
 #' @examples
 #'   ostrc_1 = c(0, 0, 0, 0)
 #'   ostrc_2 = c(0, 0, 0, 25)
@@ -235,8 +235,46 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
   ostrc_sub
 }
 
-
-
+#' Create health problem case data
+#'
+#' Function that identifies health problems in a longitudinal dataset with
+#' OSTRC questionnaire responses, and returns a dataframe with one row of data
+#' per health problem.
+#' The function also finds and adds
+#' the start date, end date, and duration (in days) of each health problem.
+#' It also adds whether or not the health problem is substantial.
+#'
+#' @param d_ostrc a dateframe with OSTRC questionnaire responses
+#' @param id_participant vector within `d_ostrc` that identifies
+#'                       a person, athlete, participant, etc.
+#' @param id_case vector within `d_ostrc` that identifies a health problem case.
+#'                Duplicates of the same id_case on multiple rows are assumed to be the
+#'                same health problem sustained over a period of time.
+#'                If a health problem on one individual, sustained on the same day,
+#'                has a unique case id for different locations (e.g. left and right knee),
+#'                these will be treated as different health problems in the returned dataframe.
+#'                Health problems, as identified by OSTRC questionnaire question 1,
+#'                that do not have a unique case ID will throw an error.
+#' @param date_ostrc vector of class date within `d_ostrc` that denotes
+#'                   the day of reply to the OSTRC questionnaire.
+#' @param ostrc_1 vector within `d_ostrc` with responses to OSTRC questionnaire question 1.
+#' @param ostrc_2 vector within `d_ostrc` with responses to OSTRC questionnaire question 2.
+#' @param ostrc_3 vector within `d_ostrc` with responses to OSTRC questionnaire question 3.
+#' @param ostrc_4 vector within `d_ostrc` with responses to OSTRC questionnaire question 4.
+#' @return a dataframe with one entry per health problem.
+#'         Includes the original columns of the input data,
+#'         and also extra columns.
+#' @examples
+#' d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
+#'                   1, 1, "2023-01-01", 0, 0, 17, 25,
+#'                   1, 1, "2023-01-07", 8, 0, 17, 25,
+#'                   1, 1, "2023-01-19", 8, 0, 17, 0,
+#'                   1, 18, "2022-12-07", 25, 0, 0, 0,
+#'                   2, 2, "2023-01-12", 8, 8, NA, NA,
+#'                   3, 3, "2022-06-05", 0, 0, 0, 0)
+#' d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
+#' create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
+#' @export
 create_case_data = function(d_ostrc, id_participant, id_case,
                           date_ostrc, ostrc_1, ostrc_2, ostrc_3, ostrc_4){
   ostrc_1 = enquo(ostrc_1)
