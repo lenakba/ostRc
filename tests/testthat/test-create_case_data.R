@@ -65,11 +65,19 @@ test_that("Returns correct dates.",
 test_that("Returns duration of 1 day if health problem
           started and ended on same day.",
           {
-            correct_duration(9, 1, 1, 1) # note that the current day is counted as 1
+            correct_duration = c(13, 1, 1) # note that the current day is counted as 1
             d_created = create_case_data(d_ostrc, id_participant,
                                          id_case, date_ostrc,
                                          q1, q2, q3, q4)
             expect_equal(d_created$duration, correct_duration)
+          })
+
+test_that("There are no duplicates.",
+          {
+            d_created = create_case_data(d_ostrc, id_participant,
+                                         id_case, date_ostrc,
+                                         q1, q2, q3, q4)
+            expect_false(all(duplicated(d_created)))
           })
 
 test_that("Adds extra variables if there
