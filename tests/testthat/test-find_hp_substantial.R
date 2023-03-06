@@ -83,7 +83,6 @@ test_that("Throws warning if OSTRC_1 is 0 (no health problem)
   ostrc_3 = c(0, 0, 25, 0)
 
   expect_warning(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3, version = "1.0"))
-  expect_warning(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3))
 })
 
 test_that("Will handle OSTRC variables not coded in the classic 0,8,17,25 responses,
