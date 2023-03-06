@@ -15,6 +15,16 @@ test_that("Returns 1 for substantial if EITHER of the given
   expect_equal(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3), correct_result)
 })
 
+test_that("Returns 0 for non-substantial if there is a health problem,
+          but not a substantial one.", {
+            ostrc_1 = c(0, 8, 8, 17)
+            ostrc_2 = c(0, 0, 17, 25)
+            ostrc_3 = c(0, 0, 17, 0)
+            correct_result = c(NA, 0, 1, 1)
+
+            expect_equal(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3), correct_result)
+          })
+
 test_that("Returns NA if OSTRC_1 == 0, meaning no health problem at all.", {
             ostrc_1 = c(0, 8, 0, 17)
             ostrc_2 = c(0, 0, 0, 25)
