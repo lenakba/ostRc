@@ -227,8 +227,10 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
 
   # perform the task
   if(version == "2.0"){
-    ostrc_sub = case_when(ostrc_1 == 25 | ostrc_2 >=17 | ostrc_3 >=17 ~ 1,
-                          ostrc_1 < 25 & ostrc_2 <17 & ostrc_3 <17 ~ 0,
+    ostrc_sub = case_when(ostrc_1 == 0 ~ NA_real_,
+                          ostrc_1 == 25 | ostrc_2 >= 17 | ostrc_3 >= 17 ~ 1,
+                          ostrc_1 > 0 & ostrc_1 < 25 &
+                          ostrc_2 < 17 & ostrc_3 < 17 ~ 0,
                           is.na(ostrc_1) & is.na(ostrc_2) & is.na(ostrc_3) ~ NA_real_)
   } else if(version == "1.0"){
 
@@ -236,11 +238,7 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
       (ostrc_1 <= 8) &
       (ostrc_2 >= 8 | ostrc_3 == 25))
     ){
-      warning("Breach in item logic.
-    At least one response to OSTRC question 1
-    indicates no reduced participation,
-    simultaneously as a reponse to
-    question 2 or 3 indicates the opposite.")
+      warning("Breach in item logic. At least one response to OSTRC question 1 indicates no reduced participation, simultaneously as a reponse to question 2 or 3 indicates the opposite.")
     }
 
     ostrc_sub = case_when(ostrc_2 >=13 | ostrc_3 >=13 ~ 1,
