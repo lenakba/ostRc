@@ -7,13 +7,22 @@ library(testthat)
 
 test_that("Returns 1 for substantial if EITHER of the given
           variables has a score of 17 or more.", {
-  ostrc_1 = c(0, 0, 0, 0)
+  ostrc_1 = c(0, 0, 8, 8)
   ostrc_2 = c(0, 0, 0, 25)
   ostrc_3 = c(0, 0, 17, 0)
   correct_result = c(0, 0, 1, 1)
 
   expect_equal(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3), correct_result)
 })
+
+test_that("Returns NA if OSTRC_1 == 0, meaning no health problem at all.", {
+            ostrc_1 = c(0, 0, 0, 8)
+            ostrc_2 = c(0, 0, 0, 25)
+            ostrc_3 = c(0, 0, 17, 0)
+            correct_result = c(0, 0, NA, 1)
+
+            expect_equal(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3), correct_result)
+          })
 
 test_that("Returns error if all input values are NA.", {
   ostrc_1 = is.numeric(c(NA, NA, NA, NA))
@@ -57,12 +66,24 @@ test_that("Returns error if one of the OSTRC variables are non-numeric.", {
 })
 
 test_that("Finds substantial health problems for the 1.0 version of the questionnaire.", {
-  ostrc_1 = c(0, 0, 0, 0)
+  ostrc_1 = c(0, 0, 8, 8)
   ostrc_2 = c(0, 0, 0, 19)
   ostrc_3 = c(0, 0, 13, 0)
   correct_result = c(0, 0, 1, 1)
 
   expect_equal(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3, version = "1.0"), correct_result)
+})
+
+test_that("Throws warning if OSTRC_1 is 0 (no health problem)
+          or 8 (no reduced performance or participation)
+          while OSTRC 2 or 3 is substantial,
+          which can happen in 1.0 version of the questionnaire.", {
+  ostrc_1 = c(0, 0, 8, 0)
+  ostrc_2 = c(0, 0, 0, 19)
+  ostrc_3 = c(0, 0, 25, 0)
+
+  expect_warning(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3, version = "1.0"))
+  expect_warning(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3))
 })
 
 test_that("Will handle OSTRC variables not coded in the classic 0,8,17,25 responses,
