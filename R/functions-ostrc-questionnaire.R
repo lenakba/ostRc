@@ -175,12 +175,12 @@ find_hp = function(ostrc_1){
 #'         substantial health problem, 0 for
 #'         non-substantial health problem. Non-health problems are returned as NA.
 #' @examples
-#'   ostrc_1 = c(0, 0, 0, 0)
+#'   ostrc_1 = c(8, 8, 0, 0)
 #'   ostrc_2 = c(0, 0, 0, 25)
 #'   ostrc_3 = c(0, 0, 17, 0)
 #'   find_hp_substantial(ostrc_1, ostrc_2, ostrc_3)
 #'
-#'   ostrc_2_v1 = c(0, 0, 0, 19)
+#'   ostrc_2_v1 = c(0, 8, 0, 19)
 #'   ostrc_3_v1 = c(0, 0, 13, 0)
 #'   find_hp_substantial(ostrc_1, ostrc_2_v1, ostrc_3_v1)
 #'
