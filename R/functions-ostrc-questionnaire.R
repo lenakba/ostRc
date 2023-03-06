@@ -205,6 +205,7 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
   non_zero_resps_2 = na.omit(ostrc_2[ostrc_2 != 0])
   non_zero_resps_3 = na.omit(ostrc_3[ostrc_3 != 0])
 
+  # standardize codes automatically
   value_vec = c(8, 17, 25, 13, 19)
   warning_obj = paste0("One or more input vectors of OSTRC responses
   had non-standard values (not in 0, 8, 17, 25 or 0, 13, 17, 19, 25).
@@ -223,11 +224,25 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
     ostrc_3 = standardize_coding(ostrc_3)
     warning(warning_obj)
   }
+
+  # perform the task
   if(version == "2.0"){
     ostrc_sub = case_when(ostrc_1 == 25 | ostrc_2 >=17 | ostrc_3 >=17 ~ 1,
                           ostrc_1 < 25 & ostrc_2 <17 & ostrc_3 <17 ~ 0,
                           is.na(ostrc_1) & is.na(ostrc_2) & is.na(ostrc_3) ~ NA_real_)
   } else if(version == "1.0"){
+
+    if(any(
+      (ostrc_1 <= 8) &
+      (ostrc_2 >= 8 | ostrc_3 == 25))
+    ){
+      warning("Breach in item logic.
+    At least one response to OSTRC question 1
+    indicates no reduced participation,
+    simultaneously as a reponse to
+    question 2 or 3 indicates the opposite.")
+    }
+
     ostrc_sub = case_when(ostrc_2 >=13 | ostrc_3 >=13 ~ 1,
                           ostrc_2 <13 & ostrc_3 <13 ~ 0,
                           is.na(ostrc_2) & is.na(ostrc_3) ~ NA_real_)
