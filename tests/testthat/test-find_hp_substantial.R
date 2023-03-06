@@ -7,7 +7,7 @@ library(testthat)
 
 test_that("Returns 1 for substantial if EITHER of the given
           variables has a score of 17 or more.", {
-  ostrc_1 = c(0, 0, 8, 8)
+  ostrc_1 = c(0, 0, 17, 17)
   ostrc_2 = c(0, 0, 0, 25)
   ostrc_3 = c(0, 0, 17, 0)
   correct_result = c(0, 0, 1, 1)
@@ -16,7 +16,7 @@ test_that("Returns 1 for substantial if EITHER of the given
 })
 
 test_that("Returns NA if OSTRC_1 == 0, meaning no health problem at all.", {
-            ostrc_1 = c(0, 0, 0, 8)
+            ostrc_1 = c(0, 0, 0, 17)
             ostrc_2 = c(0, 0, 0, 25)
             ostrc_3 = c(0, 0, 17, 0)
             correct_result = c(0, 0, NA, 1)
@@ -66,7 +66,7 @@ test_that("Returns error if one of the OSTRC variables are non-numeric.", {
 })
 
 test_that("Finds substantial health problems for the 1.0 version of the questionnaire.", {
-  ostrc_1 = c(0, 0, 8, 8)
+  ostrc_1 = c(0, 0, 17, 17)
   ostrc_2 = c(0, 0, 0, 19)
   ostrc_3 = c(0, 0, 13, 0)
   correct_result = c(0, 0, 1, 1)
