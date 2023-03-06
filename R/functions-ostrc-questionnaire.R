@@ -175,7 +175,7 @@ find_hp = function(ostrc_1){
 #'         substantial health problem, 0 for
 #'         non-substantial health problem. Non-health problems are returned as NA.
 #' @examples
-#'   ostrc_1 = c(8, 8, 0, 0)
+#'   ostrc_1 = c(8, 8, 8, 8)
 #'   ostrc_2 = c(0, 0, 0, 25)
 #'   ostrc_3 = c(0, 0, 17, 0)
 #'   find_hp_substantial(ostrc_1, ostrc_2, ostrc_3)
@@ -228,9 +228,11 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
   # perform the task
   if(version == "2.0"){
     ostrc_sub = case_when(ostrc_1 == 0 ~ NA_real_,
-                          ostrc_1 == 25 | ostrc_2 >= 17 | ostrc_3 >= 17 ~ 1,
-                          ostrc_1 > 0 & ostrc_1 < 25 &
-                          ostrc_2 < 17 & ostrc_3 < 17 ~ 0,
+                          ostrc_1 == 25 ~ 1,
+                         (ostrc_1 == 8 | ostrc_1 == 17 | is.na(ostrc_1)) &
+                         (ostrc_2 >= 17 | ostrc_3 >= 17) ~ 1,
+                         (ostrc_1 == 8 | ostrc_1 == 17) &
+                         (ostrc_2 < 17 | ostrc_3 < 17) ~ 0,
                           is.na(ostrc_1) & is.na(ostrc_2) & is.na(ostrc_3) ~ NA_real_)
   } else if(version == "1.0"){
 
