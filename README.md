@@ -81,7 +81,7 @@ create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
     ##     <dbl>     <dbl> <date>     <date>       <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
     ## 1       1         1 2023-01-07 2023-01-19      13      1     8     0    17    25
     ## 2      18         1 2022-12-07 2022-12-07       1      1    25     0     0     0
-    ## 3       2         2 2023-01-12 2023-01-12       1     NA     8     8    NA    NA
+    ## 3       2         2 2023-01-12 2023-01-12       1      0     8     8    NA    NA
     ## # … with 1 more variable: date_ostrc <date>, and abbreviated variable names
     ## #   ¹​id_participant, ²​duration
     ## # ℹ Use `colnames()` to see all variable names
@@ -119,14 +119,14 @@ depends on the OSTRC version (1.0 or 2.0). The function
 2, and 3 of the OSTRC questionnaire.
 
 ``` r
-ostrc_1 = c(0, 0, 0, 0)
+ostrc_1 = c(0, 8, 8, 8)
 ostrc_2 = c(0, 0, 0, 25)
 ostrc_3 = c(0, 0, 17, 0)
    
 find_hp_substantial(ostrc_1, ostrc_2, ostrc_3)
 ```
 
-    ## [1] 0 0 1 1
+    ## [1] NA  0  1  1
 
 Make note of how `find_hp_substantial` treats missing in one or more of
 the OSTRC-questionnaire items. If one of the three questions indicate a
