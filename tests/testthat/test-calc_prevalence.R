@@ -23,20 +23,20 @@ test_that("Returns a tibble with number of responses, number of cases, and preva
 
 test_that("Returns correct number of responses.", {
   n_responses = c(3, 2)
-  d_test = calc_prevalence(d_ostrc, id_particpant, day_nr, hp)
+  d_test = calc_prevalence(d_ostrc, id_participant, day_nr, hp)
   expect_equal(d_test$n_responses, n_responses)
 })
 
 test_that("Returns correct number of cases (a response of 1 on an health problem variable is a case).",
           {
             n_cases = c(1, 1)
-            d_test = calc_prevalence(d_ostrc, id_particpant, day_nr, hp)
+            d_test = calc_prevalence(d_ostrc, id_participant, day_nr, hp)
             expect_equal(d_test$n_cases, n_cases)
           })
 
 test_that("Returns correct prevalence (proportion).", {
   prevalence = c(0.5, 1 / 3)
-  d_test = calc_prevalence(d_ostrc, id_particpant, day_nr, hp)
+  d_test = calc_prevalence(d_ostrc, id_participant, day_nr, hp)
   expect_equal(d_test$prev_cases, prevalence)
 })
 
@@ -45,18 +45,18 @@ test_that("Considers multiple cases on the same individual per time period only 
             d_multiple_hp = d_ostrc %>% mutate(hp = rep(1, length(hp)))
             n_cases = c(1, 1)
 
-            d_test = calc_prevalence(d_multiple_hp, id_particpant, day_nr, hp)
+            d_test = calc_prevalence(d_multiple_hp, id_participant, day_nr, hp)
             expect_equal(d_test$n_cases, n_cases)
           })
 
 test_that("Throws error if hp_type is not a binary integer.", {
   d_wrong_hp = d_ostrc %>% mutate(hp = 1:length(hp))
-  expect_error(calc_prevalence(d_wrong_hp, id_particpant, day_nr, hp))
+  expect_error(calc_prevalence(d_wrong_hp, id_participant, day_nr, hp))
 })
 
 test_that("Throws error if time period only has 1 value.", {
   d_wrong_time = d_ostrc %>% mutate(day_nr = rep(1, length(day_nr)))
-  expect_error(calc_prevalence(d_wrong_time, id_particpant, day_nr, hp))
+  expect_error(calc_prevalence(d_wrong_time, id_participant, day_nr, hp))
 })
 
 test_that("Ignores time periods with missing values.", {
