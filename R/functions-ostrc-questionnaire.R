@@ -370,6 +370,7 @@ d_cases
 calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
   id_participant = enquo(id_participant)
   time = enquo(time)
+  time_name = rlang::as_string(quo_name(time))
   hp_type = enquo(hp_type)
   hp_type_name = rlang::as_string(quo_name(hp_type))
 
@@ -394,6 +395,16 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
         " has more than two possible values. Make sure ",
         hp_type_name,
         " is a binary variable coded only with 0 and 1."
+      )
+    )
+  }
+
+  if ((d_ostrc %>% distinct(!!time) %>% nrow()) == 1) {
+    stop(
+      paste0(
+        "Variable ",
+        time_name,
+        " has only one value. Are you sure this is the time period of interest?"
       )
     )
   }
