@@ -76,10 +76,10 @@ test_that("Returns error if one of the OSTRC variables are non-numeric.", {
 })
 
 test_that("Finds substantial health problems for the 1.0 version of the questionnaire.", {
-  ostrc_1 = c(8, 8, 17, 17)
+  ostrc_1 = c(0, 8, 17, 17)
   ostrc_2 = c(0, 0, 0, 19)
   ostrc_3 = c(0, 0, 13, 0)
-  correct_result = c(0, 0, 1, 1)
+  correct_result = c(NA, 0, 1, 1)
 
   expect_equal(find_hp_substantial(ostrc_1, ostrc_2, ostrc_3, version = "1.0"), correct_result)
 })
