@@ -1,5 +1,5 @@
 #' @importFrom magrittr %>%
-#' @importFrom rlang enquo
+#' @importFrom rlang enquo as_string quo_name
 #' @importFrom nplyr nest_mutate
 #' @import tibble
 #' @import dplyr
@@ -371,6 +371,32 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
   id_participant = enquo(id_participant)
   time = enquo(time)
   hp_type = enquo(hp_type)
+  hp_type_name = rlang::as_string(quo_name(hp_type))
+
+
+  if (!is.numeric(d_ostrc %>% pull(!!hp_type))) {
+    stop(
+      paste0(
+        "Variable ",
+        hp_type_name,
+        " is not numeric or integer. Make sure ",
+        hp_type_name,
+        " is a binary variable of class numeric or integer."
+      )
+    )
+  }
+
+  if ((d_ostrc %>% distinct(!!hp_type) %>% nrow()) > 2) {
+    stop(
+      paste0(
+        "Variable ",
+        hp_type_name,
+        " has more than two possible values. Make sure ",
+        hp_type_name,
+        " is a binary variable coded only with 0 and 1."
+      )
+    )
+  }
 
   # consider multiple health problems as just 1
   d_hp_type_per_id_per_time = d_ostrc %>%
@@ -387,13 +413,3 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
               prev_cases = n_cases/n_responses)
   d_prevalence
 }
-
-calc_prevalence(d_ostrc, id_participant, day_nr, hp)
-
-d_ostrc = tribble(~id_participant, ~day_nr, ~hp,
-                  1, 1, 1,
-                  1, 1, 1,
-                  1, 2, 0,
-                  1, 2, 1,
-                  2, 1, 1,
-                  2, 2, 0)
