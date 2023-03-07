@@ -17,7 +17,7 @@ test_that("Returns a tibble with number of responses, number of cases, and preva
           {
             correct_columns = c("n_responses", "n_cases", "prev_cases")
             expect_true(all(correct_columns %in% names(
-              calc_prevalence(d_ostrc, id_particpant, day_nr, hp)
+              calc_prevalence(d_ostrc, id_participant, day_nr, hp)
             )))
           })
 
