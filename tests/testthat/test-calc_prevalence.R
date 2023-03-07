@@ -40,6 +40,15 @@ test_that("Returns correct prevalence (proportion).", {
   expect_equal(d_test$prev_cases, prevalence)
 })
 
+test_that("Considers multiple cases on the same individual per time period only once.",
+          {
+            d_multiple_hp = d_ostrc %>% mutate(hp = rep(1, length(hp)))
+            n_cases = c(1, 1)
+
+            d_test = calc_prevalence(d_multiple_hp, id_particpant, day_nr, hp)
+            expect_equal(d_test$n_cases, n_cases)
+          })
+
 test_that("Throws error if hp_type is not a binary integer.", {
   d_wrong_hp = d_ostrc %>% mutate(hp = 1:length(hp))
   expect_error(calc_prevalence(d_wrong_hp, id_particpant, day_nr, hp))
