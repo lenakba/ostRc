@@ -373,15 +373,19 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
   hp_type = enquo(hp_type)
   hp_type_name = rlang::as_string(quo_name(hp_type))
 
-  if(all(is.na(d_ostrc %>% pull(!!hp_type))) |
-     all(is.na(d_ostrc %>% pull(!!time))) |
-     all(is.na(d_ostrc %>% pull(!!id_participant)))
+  id_participant_values = d_ostrc %>% pull(!!id_participant)
+  time_values = d_ostrc %>% pull(!!time)
+  hp_type_values = d_ostrc %>% pull(!!hp_type)
+
+  if(all(is.na(id_participant_values)) |
+     all(is.na(time_values)) |
+     all(is.na(hp_type_values))
   ) {
     stop("One of the input variables has only missing NA observations.")
   }
 
 
-  if (!is.numeric(d_ostrc %>% pull(!!hp_type))) {
+  if (!is.numeric(hp_type_values)) {
     stop(
       paste0(
         "Variable ",
@@ -393,7 +397,7 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
     )
   }
 
-  if ((d_ostrc %>% distinct(!!hp_type) %>% nrow()) > 2) {
+  if (length(unique(hp_type_values)) > 2) {
     stop(
       paste0(
         "Variable ",
@@ -405,7 +409,7 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
     )
   }
 
-  if ((d_ostrc %>% distinct(!!time) %>% nrow()) == 1) {
+  if (length(unique(time_values)) == 1) {
     stop(
       paste0(
         "Variable ",
@@ -433,3 +437,4 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
               prev_cases = n_cases/n_responses)
   d_prevalence
 }
+
