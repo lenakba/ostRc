@@ -363,3 +363,37 @@ create_case_data = function(d_ostrc, id_participant, id_case,
   }
 d_cases
 }
+
+#' Calculate prevlance per time period
+#'
+
+calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
+  id_participant = enquo(id_participant)
+  time = enquo(time)
+  hp_type = enquo(hp_type)
+
+  # consider multiple health problems as just 1
+  d_hp_type_per_id_per_time = d_ostrc %>%
+    group_by(!!id_participant, !!time) %>%
+    summarise(hp_type_n = sum(!!hp_type, na.rm = TRUE)) %>%
+    mutate(hp_type_atleast1 = ifelse(hp_type_n > 0, 1, 0)) %>%
+    ungroup()
+
+  # calculate prevalence
+  d_prevalence = d_hp_type_per_id_per_time %>%
+    group_by(!!time) %>%
+    summarise(n_responses = n(),
+              n_cases = sum(hp_type_atleast1, na.rm = TRUE),
+              prev_cases = n_cases/n_responses)
+  d_prevalence
+}
+
+calc_prevalence(d_ostrc, id_participant, day_nr, hp)
+
+d_ostrc = tribble(~id_participant, ~day_nr, ~hp,
+                  1, 1, 1,
+                  1, 1, 1,
+                  1, 2, 0,
+                  1, 2, 1,
+                  2, 1, 1,
+                  2, 2, 0)
