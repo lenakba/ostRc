@@ -50,4 +50,28 @@ test_that("Throws error if time period only has 1 value.", {
   expect_error(calc_prevalence(d_wrong_hp$id_particpant, d_wrong_hp$day_nr, d_wrong_hp$hp))
 })
 
+test_that("Ignores time periods with missing values.", {
+  id = rep(1, 5)
+  time = c(NA, NA, 1, 2, 2)
+  hp = c(1, 0, 0, 0, 1)
 
+  n_responses = c(1, 2)
+  n_cases = c(0, 1)
+
+  d_test = calc_prevalence(id, time, hp)
+  expect_equal(d_test$n_cases, n_cases)
+  expect_equal(d_test$n_responses, n_responses)
+})
+
+test_that("Any input variable with only NAs will throw error.", {
+  id = rep(1, 5)
+  id_2 = rep(NA, 5)
+  time = rep(NA, 5)
+  time_2 = c(1, 1, 1, 2, 2)
+  hp = c(1, 0, 0, 0, 1)
+  hp_2 = rep(NA, 5)
+
+  expect_error(calc_prevalence(id, time, hp))
+  expect_error(calc_prevalence(id, time_2, hp_2))
+  expect_error(calc_prevalence(id_2, time_2, hp))
+})
