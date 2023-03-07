@@ -116,7 +116,8 @@ find_hp(ostrc_1_other_values)
 Substantial health problems are more complicated to identify, and
 depends on the OSTRC version (1.0 or 2.0). The function
 `find_hp_substantial` identifies substantial injuries given question 1,
-2, and 3 of the OSTRC questionnaire.
+2, and 3 of the OSTRC questionnaire. If there is no health problem, it
+will return as missing.
 
 ``` r
 ostrc_1 = c(0, 8, 8, 8)
