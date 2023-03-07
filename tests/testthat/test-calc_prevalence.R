@@ -65,13 +65,13 @@ test_that("Ignores time periods with missing values.", {
 
 test_that("Any input variable with only NAs will throw error.", {
   id = rep(1, 5)
-  id_2 = rep(NA, 5)
-  time = rep(NA, 5)
-  time_2 = c(1, 1, 1, 2, 2)
+  id_miss = rep(NA, 5)
+  time = c(1, 1, 1, 2, 2)
+  time_miss = rep(NA, 5)
   hp = c(1, 0, 0, 0, 1)
-  hp_2 = rep(NA, 5)
+  hp_miss = rep(NA, 5)
 
-  expect_error(calc_prevalence(id, time, hp))
-  expect_error(calc_prevalence(id, time_2, hp_2))
-  expect_error(calc_prevalence(id_2, time_2, hp))
+  expect_error(calc_prevalence(id, time_miss, hp))
+  expect_error(calc_prevalence(id, time, hp_miss))
+  expect_error(calc_prevalence(id_miss, time_2, hp))
 })
