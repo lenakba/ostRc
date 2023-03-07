@@ -43,7 +43,7 @@ test_that("Returns correct prevalence (proportion).", {
 test_that("Considers multiple cases on the same individual per time period only once.",
           {
             d_multiple_hp = d_ostrc %>% mutate(hp = rep(1, length(hp)))
-            n_cases = c(1, 1)
+            n_cases = c(2, 2)
 
             d_test = calc_prevalence(d_multiple_hp, id_participant, day_nr, hp)
             expect_equal(d_test$n_cases, n_cases)
