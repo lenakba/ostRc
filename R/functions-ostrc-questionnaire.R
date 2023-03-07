@@ -364,15 +364,21 @@ create_case_data = function(d_ostrc, id_participant, id_case,
 d_cases
 }
 
-#' Calculate prevlance per time period
+#' Calculate prevalance per time period
 #'
-
 calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
   id_participant = enquo(id_participant)
   time = enquo(time)
   time_name = rlang::as_string(quo_name(time))
   hp_type = enquo(hp_type)
   hp_type_name = rlang::as_string(quo_name(hp_type))
+
+  if(all(is.na(d_ostrc %>% pull(!!hp_type))) |
+     all(is.na(d_ostrc %>% pull(!!time))) |
+     all(is.na(d_ostrc %>% pull(!!id_participant)))
+  ) {
+    stop("One of the input variables has only missing NA observations.")
+  }
 
 
   if (!is.numeric(d_ostrc %>% pull(!!hp_type))) {
