@@ -1,6 +1,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom rlang enquo as_string quo_name
 #' @importFrom nplyr nest_mutate
+#' @importFrom confintr ci_proportion
 #' @import tibble
 #' @import dplyr
 
@@ -437,4 +438,3 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
               prev_cases = n_cases/n_responses)
   d_prevalence
 }
-
