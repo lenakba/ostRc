@@ -8,10 +8,10 @@ library(testthat)
 # example data used in more than one test
 d_ostrc = tribble(~id_participant, ~day_nr, ~hp,
                  1, 1, 1,
-                 1, 1, 0,
-                 1, 1, 0,
+                 1, 1, 1,
                  1, 2, 0,
-                 1, 2, 1)
+                 2, 1, 1,
+                 2, 2, 1)
 
 test_that("Returns a tibble with number of responses, number of cases, and prevalence.",
           {
@@ -22,20 +22,20 @@ test_that("Returns a tibble with number of responses, number of cases, and preva
           })
 
 test_that("Returns correct number of responses.", {
-  n_responses = c(3, 2)
+  n_responses = c(2, 2)
   d_test = calc_prevalence(d_ostrc, id_participant, day_nr, hp)
   expect_equal(d_test$n_responses, n_responses)
 })
 
 test_that("Returns correct number of cases (a response of 1 on an health problem variable is a case).",
           {
-            n_cases = c(1, 1)
+            n_cases = c(2, 1)
             d_test = calc_prevalence(d_ostrc, id_participant, day_nr, hp)
             expect_equal(d_test$n_cases, n_cases)
           })
 
 test_that("Returns correct prevalence (proportion).", {
-  prevalence = c(0.5, 1 / 3)
+  prevalence = c(1, 0.5)
   d_test = calc_prevalence(d_ostrc, id_participant, day_nr, hp)
   expect_equal(d_test$prev_cases, prevalence)
 })
@@ -68,7 +68,7 @@ test_that("Ignores time periods with missing values.", {
                     1, 2, 0,
                     1, 2, 1)
 
-  n_responses = c(1, 2)
+  n_responses = c(1, 1)
   n_cases = c(0, 1)
 
   d_test = calc_prevalence(d_ostrc_miss, id_participant, day_nr, hp)
