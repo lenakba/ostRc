@@ -6,7 +6,7 @@ library(magrittr)
 library(testthat)
 
 # example data used in more than one test
-d_ostrc = tibble(id_particpant, ~day_nr, ~hp,
+d_ostrc = tibble(~id_participant, ~day_nr, ~hp,
                  1, 1, 1,
                  1, 1, 0,
                  1, 1, 0,
@@ -41,9 +41,11 @@ test_that("Returns correct prevalence (proportion).", {
           })
 
 test_that("Throws error if hp_type is not a binary integer.", {
-  d_wrong_hp = d_ostrc$hp[2,] = 3
   expect_error(calc_prevalence(d_wrong_hp$id_particpant, d_wrong_hp$day_nr, d_wrong_hp$hp))
 })
 
+test_that("Throws error if time period only has 1 value.", {
+  expect_error(calc_prevalence(d_wrong_hp$id_particpant, d_wrong_hp$day_nr, d_wrong_hp$hp))
+})
 
 
