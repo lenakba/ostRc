@@ -49,9 +49,17 @@ test_that("Considers multiple cases on the same individual per time period only 
             expect_equal(d_test$n_cases, n_cases)
           })
 
-test_that("Throws error if hp_type is not a binary integer.", {
+test_that("Throws error if hp_type has more than 2 values.", {
   d_wrong_hp = d_ostrc %>% mutate(hp = 1:length(hp))
   expect_error(calc_prevalence(d_wrong_hp, id_participant, day_nr, hp))
+})
+
+test_that("Throws error if hp_type is not numeric or ingeteger.", {
+  d_wrong_hp2 = tribble(~id_participant, ~day_nr, ~hp,
+                    1, 1, "1",
+                    1, 1, "ting",
+                    1, 2, "0")
+  expect_error(calc_prevalence(d_wrong_hp2, id_participant, day_nr, hp))
 })
 
 test_that("Throws error if time period only has 1 value.", {
