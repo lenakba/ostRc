@@ -345,8 +345,8 @@ create_case_data = function(d_ostrc, id_participant, id_case,
                 date_start = as.Date(min(!!date_ostrc, na.rm = TRUE)),
                 date_end = as.Date(max(!!date_ostrc, na.rm = TRUE)),
                 # Add 1 to ensure that dates with no diff counts as 1 day:
-                duration = as.numeric(difftime(date_end, date_start,
-                                             units = "weeks"))+1) %>%
+                duration = round(as.numeric(difftime(date_end, date_start,
+                                             units = "weeks"))+1)) %>%
     unnest(cols = c(data)) %>%
     ungroup() %>%
     distinct(!!id_participant, !!id_case, .keep_all = TRUE)
