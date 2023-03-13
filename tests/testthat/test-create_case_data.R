@@ -209,8 +209,12 @@ test_that("Returns warning if any of the Qs have missing data.",
 test_that("Adds a column for severity scores.",
           {
             d_test = create_case_data(d_ostrc, id_participant,
-                                         id_case, date_ostrc,
-                                         q1, q2, q3, q4)
+                                      id_case, date_ostrc,
+                                      q1, q2, q3, q4)
 
             expect_true(any(names(d_test) %in% "severity_score"))
+            for(i in nrow(d_test)) {
+              expect_gte(d_test$severity_score[i], 0)
+              expect_lte(d_test$severity_score[i], 100)
+            }
           })
