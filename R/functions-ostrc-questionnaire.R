@@ -321,6 +321,7 @@ create_case_data = function(d_ostrc, id_participant, id_case,
        Ensure all health problems have an ID.")
  }
 
+  # throw warning for duplicates
   d_ids = d_ostrc %>% select(!!id_participant,!!date_ostrc,!!id_case)
   if (any(duplicated(d_ids))) {
     n_duplicates = length(which(duplicated(d_ostrc)))
@@ -335,6 +336,20 @@ create_case_data = function(d_ostrc, id_participant, id_case,
     )
   }
   remove(d_ids)
+
+  # throw warning for missing data
+  ostrc_1_values = d_ostrc %>% pull(!!ostrc_1)
+  ostrc_2_values = d_ostrc %>% pull(!!ostrc_2)
+  ostrc_3_values = d_ostrc %>% pull(!!ostrc_3)
+  ostrc_4_values = d_ostrc %>% pull(!!ostrc_4)
+  if (any(is.na((ostrc_1_values))) |
+      any(is.na((ostrc_2_values))) |
+      any(is.na((ostrc_3_values))) |
+      any(is.na((ostrc_4_values)))) {
+    warning(
+        "At least one of the responses to ostrc_1, ostrc_2, ostrc_3 or ostrc_4 is missing data."
+    )
+  }
 
   # calculate duration per health problem
   d_cases_unselected = d_ostrc %>%
