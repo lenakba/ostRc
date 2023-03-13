@@ -129,7 +129,6 @@ test_that("Gives correct substantial health problems
             expect_equal(d_created_oldversion$hp_sub, correct_hp_sub)
           })
 
-
 test_that("Returns error if OSTRC 1 is non-numeric.",
           {
             d_test = d_ostrc %>% mutate(q1 = as.character(q1))
@@ -205,4 +204,13 @@ test_that("Returns warning if any of the Qs have missing data.",
             expect_warning(create_case_data(d_missing_q4, id_participant,
                                             id_case, date_ostrc,
                                             q1, q2, q3, q4))
+          })
+
+test_that("Adds a column for severity scores.",
+          {
+            d_test = create_case_data(d_ostrc, id_participant,
+                                         id_case, date_ostrc,
+                                         q1, q2, q3, q4)
+
+            expect_true(any(names(d_test) %in% "severity_score"))
           })
