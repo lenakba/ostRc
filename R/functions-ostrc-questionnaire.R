@@ -400,6 +400,12 @@ create_case_data = function(d_ostrc, id_participant, id_case,
     ungroup() %>%
     distinct(!!id_participant, !!id_case, .keep_all = TRUE)
 
+  # calculate severity score
+  d_cases_unselected =
+    d_cases_unselected %>%
+    mutate(severity_score =
+             calc_severity_score(!!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4))
+
   # if find_hp_substantial throws an error,
   # the dataframe will be returned without it
   an_error_occured = FALSE
@@ -416,7 +422,7 @@ create_case_data = function(d_ostrc, id_participant, id_case,
       select(!!id_case, !!id_participant,
              date_start, date_end, duration,
              !!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4,
-             everything(), -hp)
+             severity_score, everything(), -hp)
     warning("Substantial health problems could not be found.")
   } else {
     d_cases_unselected = d_cases_unselected %>%
@@ -428,7 +434,7 @@ create_case_data = function(d_ostrc, id_participant, id_case,
       select(!!id_case, !!id_participant,
              date_start, date_end, duration, hp_sub,
              !!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4,
-             everything(), -hp)
+             severity_score, everything(), -hp)
   }
 d_cases
 }
