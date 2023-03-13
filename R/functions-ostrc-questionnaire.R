@@ -258,7 +258,9 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
 #' OSTRC questionnaire responses, and returns a dataframe with one row of data
 #' per health problem.
 #' The function also finds and adds
-#' the start date, end date, and duration (in days) of each health problem.
+#' the start date, end date, and duration (in weeks) of each health problem.
+#' This duration assumes the questionnaire was responded to on the same day
+#' it was sent. In other words, that it pertains to the week before the date.
 #' It also adds whether or not the health problem is substantial.
 #'
 #' @param d_ostrc a dateframe with OSTRC questionnaire responses
@@ -273,7 +275,8 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
 #'                Health problems, as identified by OSTRC questionnaire question 1,
 #'                that do not have a unique case ID will throw an error.
 #' @param date_ostrc vector of class date within `d_ostrc` that denotes
-#'                   the day of reply to the OSTRC questionnaire.
+#'                   the day the OSTRC questionnaire was sent,
+#'                   or should have been sent if there was a delay in sending.
 #' @param ostrc_1 vector within `d_ostrc` with responses to OSTRC questionnaire question 1.
 #' @param ostrc_2 vector within `d_ostrc` with responses to OSTRC questionnaire question 2.
 #' @param ostrc_3 vector within `d_ostrc` with responses to OSTRC questionnaire question 3.
@@ -323,11 +326,11 @@ create_case_data = function(d_ostrc, id_participant, id_case,
     group_by(!!id_participant, !!id_case) %>%
     nest() %>%
     nest_mutate(data,
-                date_start = min(!!date_ostrc, na.rm = TRUE),
-                date_end = max(!!date_ostrc, na.rm = TRUE),
+                date_start = as.Date(min(!!date_ostrc, na.rm = TRUE)),
+                date_end = as.Date(max(!!date_ostrc, na.rm = TRUE)),
                 # Add 1 to ensure that dates with no diff counts as 1 day:
                 duration = as.numeric(difftime(date_end, date_start,
-                                             units = "days"))+1) %>%
+                                             units = "weeks"))+1) %>%
     unnest(cols = c(data)) %>%
     ungroup() %>%
     distinct(!!id_participant, !!id_case, .keep_all = TRUE)
