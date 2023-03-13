@@ -321,6 +321,21 @@ create_case_data = function(d_ostrc, id_participant, id_case,
        Ensure all health problems have an ID.")
  }
 
+  d_ids = d_ostrc %>% select(!!id_participant,!!date_ostrc,!!id_case)
+  if (any(duplicated(d_ids))) {
+    n_duplicates = length(which(duplicated(d_ostrc)))
+    warning(
+      paste0(
+        "The data has ",
+        n_duplicates,
+        " duplicates,
+        meaning they have the exact same participant id, date, and case id.
+        The first row was chosen for each of these cases."
+      )
+    )
+  }
+  remove(d_ids)
+
   # calculate duration per health problem
   d_cases_unselected = d_ostrc %>%
     filter(!is.na(!!id_case), hp == 1) %>%
