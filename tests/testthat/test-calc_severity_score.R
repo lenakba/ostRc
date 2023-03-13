@@ -43,3 +43,10 @@ test_that("Will throw error if answers are not in the classic 0, 8, 17, 25 or 0,
   expect_error(calc_severity_score(q1, q2_wrongcodes, q3_v2, q4))
   expect_error(calc_severity_score(q1, q2_v2, q3_wrongcodes, q4))
 })
+
+test_that("Throws error if any of the scores are non-numeric.", {
+  q2_wrongcodes = c("one", "two", "2", "3")
+  q3_wrongcodes = c(TRUE, FALSE, TRUE, FALSE)
+  expect_error(calc_severity_score(q1, q2_wrongcodes, q3_v2, q4))
+  expect_error(calc_severity_score(q1, q2_v2, q3_wrongcodes, q4))
+})
