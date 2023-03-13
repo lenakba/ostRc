@@ -2,10 +2,26 @@
 % Please edit documentation in R/functions-ostrc-questionnaire.R
 \name{calc_prevalence}
 \alias{calc_prevalence}
-\title{Calculate prevalance per time period}
+\title{Calculate prevalance}
 \usage{
 calc_prevalence(d_ostrc, id_participant, time, hp_type)
 }
+\arguments{
+\item{d_ostrc}{a dateframe with OSTRC questionnaire responses}
+
+\item{id_participant}{vector within `d_ostrc` that identifies
+a person, athlete, participant, etc.}
+
+\item{time}{vector within `d_ostrc` that identifies a time period,
+such as a vector of dates or week-numbers. The prevalences will be calculated per
+value of this vector, such as per week.}
+
+\item{hp_type}{a binary vector within `d_ostrc` which classifies a type of health problem as 1,
+and anything that is not the type of health problem as 0.
+This can be health problem (1/0), injury (1/0),
+illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
+to calculate the prevalance on.}
+}
 \description{
-Calculate prevalance per time period
+A function to calculate the prevalence per given time period, such as per week.
 }
