@@ -257,9 +257,21 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
 #'
 calc_severity_score = function(q1, q2, q3, q4){
 
+  possible_scores = c(0, 6, 8, 17, 25, 13, 19)
+  if(!all(q1 %in% possible_scores) |
+     !all(q2 %in% possible_scores) |
+     !all(q3 %in% possible_scores) |
+     !all(q4 %in% possible_scores)
+  ){
+    stop("One or more values are not coded as an OSTRC score value.
+         Accepted values are 0, 6, 8, 13, 17, 19, 25. If responses are coded with other values,
+         consider using the function `standardize_coding`.")
+  }
   severity_scores = q1 + q2 + q3 + q4
   severity_scores
 }
+
+calc_severity_score(q1, q2_v2, q3_v2, q4)
 
 #' Create health problem case data
 #'
