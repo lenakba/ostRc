@@ -285,13 +285,14 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
 #'         Includes the original columns of the input data,
 #'         and also extra columns.
 #' @examples
-#' d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
-#'                   1, 1, "2023-01-01", 0, 0, 17, 25,
-#'                   1, 1, "2023-01-07", 8, 0, 17, 25,
-#'                   1, 1, "2023-01-14", 8, 0, 17, 0,
-#'                   1, 18, "2022-12-07", 25, 0, 0, 0,
-#'                   2, 2, "2023-01-12", 8, 8, NA, NA,
-#'                   3, 3, "2022-06-05", 0, 0, 0, 0)
+#' d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4, ~hb_type, ~inj_type,
+#'                   1, 1, "2023-01-01", 8, 0, 17, 25, "Injury", "Overuse",
+#'                   1, 1, "2023-01-07", 8, 0, 17, 25, "Injury", "Overuse",
+#'                   1, 1, "2023-01-14", 8, 0, 17, 0, "Injury", "Overuse",
+#'                   1, 18, "2022-12-07", 25, 0, 0, 0, "Illness", NA,
+#'                   2, 2, "2023-01-12", 8, 8, NA, NA, NA, NA,
+#'                   3, 3, "2022-06-05", 0, 0, 0, 0, NA, NA,
+#'                   4, 4, "2023-01-01", 8, 8, 8, 0, "Injury", "Acute")
 #' d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
 #' create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
 #' @export
