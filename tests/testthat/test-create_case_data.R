@@ -4,6 +4,7 @@ library(tidyr)
 library(dplyr)
 library(magrittr)
 library(testthat)
+library(nplyr)
 
 d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                   1, 1, "2023-01-01", 8, 0, 17, 25,
@@ -49,7 +50,7 @@ test_that("Returns a dataset with output columns
 
 test_that("Returns correct dates.",
           {
-            correct_startdate = as.Date(c("2023-01-07", "2022-12-07",
+            correct_startdate = as.Date(c("2023-01-01", "2022-12-07",
                                           "2023-01-12"))
 
             correct_enddate = as.Date(c("2023-01-14", "2022-12-07",
