@@ -291,7 +291,7 @@ calc_severity_score = function(ostrc_1, ostrc_2, ostrc_3, ostrc_4){
 #' Function that identifies health problems in a longitudinal dataset with
 #' OSTRC questionnaire responses, and returns a dataframe with one row of data
 #' per health problem.
-#' The function also finds and adds
+#' The function also calculates and adds the severity score,
 #' the start date, end date, and duration (in weeks) of each health problem.
 #' This duration assumes the questionnaire was responded to on the same day
 #' it was sent. In other words, that it pertains to the week before the date.
