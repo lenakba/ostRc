@@ -328,8 +328,8 @@ create_case_data = function(d_ostrc, id_participant, id_case,
       paste0(
         "The data has ",
         n_duplicates,
-        " duplicates,
-        meaning they have the exact same participant id, date, and case id.
+        " duplicate(s),
+        meaning they have the exact same id_participant, date_ostrc, and id_case.
         The first row was chosen for each of these cases."
       )
     )
