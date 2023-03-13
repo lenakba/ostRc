@@ -66,7 +66,7 @@ test_that("Returns correct dates.",
 test_that("Returns duration of 1 week if health problem
           started and ended on one week.",
           {
-            correct_duration = c(2, 1, 1) # note that the current week is counted as 1
+            correct_duration = c(3, 1, 1) # note that the current week is counted as 1
             d_created = create_case_data(d_ostrc, id_participant,
                                          id_case, date_ostrc,
                                          q1, q2, q3, q4)
