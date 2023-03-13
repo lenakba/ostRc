@@ -8,7 +8,7 @@ library(testthat)
 d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                   1, 1, "2023-01-01", 0, 0, 17, 25,
                   1, 1, "2023-01-07", 8, 0, 17, 25,
-                  1, 1, "2023-01-19", 8, 0, 17, 0,
+                  1, 1, "2023-01-14", 8, 0, 17, 0,
                   1, 18, "2022-12-07", 25, 0, 0, 0,
                   2, 2, "2023-01-12", 8, 8, NA, NA,
                   3, 3, "2022-06-05", 0, 0, 0, 0)
@@ -52,7 +52,7 @@ test_that("Returns correct dates.",
             correct_startdate = as.Date(c("2023-01-07", "2022-12-07",
                                           "2023-01-12"))
 
-            correct_enddate = as.Date(c("2023-01-19", "2022-12-07",
+            correct_enddate = as.Date(c("2023-01-14", "2022-12-07",
                                           "2023-01-12"))
 
             d_created = create_case_data(d_ostrc, id_participant,
@@ -65,7 +65,7 @@ test_that("Returns correct dates.",
 test_that("Returns duration of 1 day if health problem
           started and ended on same day.",
           {
-            correct_duration = c(13, 1, 1) # note that the current day is counted as 1
+            correct_duration = c(8, 1, 1) # note that the current day is counted as 1
             d_created = create_case_data(d_ostrc, id_participant,
                                          id_case, date_ostrc,
                                          q1, q2, q3, q4)
@@ -108,15 +108,19 @@ test_that("Throws error if a health problem does not have a case id.",
 test_that("Gives correct substantial health problems
           if older version of OSTRC is used.",
           {
-            d_1_0 = d_ostrc %>% mutate(q3 = c(0,
-                                              0,
-                                              0,
-                                              0, 13, 0),
+            d_1_0 = d_ostrc %>% mutate(q1 = c(17,
+                                              17,
+                                              17,
+                                              0, 8, 0),
+                                       q2 = c(13,
+                                              13,
+                                              13,
+                                              0, 0, 0),
                                        q3 = c(17,
                                            17,
                                            17,
-                                           0, NA, 0))
-            correct_hp_sub = c(1, 0, NA)
+                                           0, 0, 0))
+            correct_hp_sub = c(1, 0)
 
             d_created_oldversion = create_case_data(d_1_0, id_participant,
                                           id_case, date_ostrc,
