@@ -62,10 +62,10 @@ test_that("Returns correct dates.",
             expect_equal(d_created$date_end, correct_enddate)
           })
 
-test_that("Returns duration of 1 day if health problem
-          started and ended on same day.",
+test_that("Returns duration of 1 week if health problem
+          started and ended on one week.",
           {
-            correct_duration = c(8, 1, 1) # note that the current day is counted as 1
+            correct_duration = c(2, 1, 1) # note that the current week is counted as 1
             d_created = create_case_data(d_ostrc, id_participant,
                                          id_case, date_ostrc,
                                          q1, q2, q3, q4)
