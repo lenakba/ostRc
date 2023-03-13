@@ -41,7 +41,6 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
     stop("One of the input variables has only missing NA observations.")
   }
 
-
   if (!is.numeric(hp_type_values)) {
     stop(
       paste0(
