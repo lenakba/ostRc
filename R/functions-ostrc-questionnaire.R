@@ -271,8 +271,6 @@ calc_severity_score = function(q1, q2, q3, q4){
   severity_scores
 }
 
-calc_severity_score(q1, q2_v2, q3_v2, q4)
-
 #' Create health problem case data
 #'
 #' Function that identifies health problems in a longitudinal dataset with
