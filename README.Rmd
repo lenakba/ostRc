@@ -54,7 +54,7 @@ Below is a brief overview of helpful functions.
 The function `create_case_data` finds 
 health problems in a dataset with OSTRC-questionnaire responses
 and returns a dataframe where one row describes one unique health problem.
-The function also finds and adds the startdate, enddate, 
+The function also calculates and adds the severity score, startdate, enddate, 
 and the duration (in weeks) of each health problem, 
 given the date the OSTRC questionnaire was sent.
 It also identifies substantial health problems, with the help of 
