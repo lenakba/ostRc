@@ -1,4 +1,4 @@
-Oslo Sports Trauma Research Centre R Tools (OSTRC package)
+Oslo Sports Trauma Research Centre R package
 ================
 Lena Kristin Bache-Mathiesen[^1]Benjamin Clarsen[^2]
 
@@ -63,7 +63,7 @@ library(tidyverse)
 d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                    1, 1, "2023-01-01", 0, 0, 17, 25,
                    1, 1, "2023-01-07", 8, 0, 17, 25,
-                   1, 1, "2023-01-19", 8, 0, 17, 0,
+                   1, 1, "2023-01-14", 8, 0, 17, 0,
                    1, 18, "2022-12-07", 25, 0, 0, 0,
                    2, 2, "2023-01-12", 8, 8, NA, NA,
                    3, 3, "2022-06-05", 0, 0, 0, 0)
@@ -79,7 +79,7 @@ create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
     ## # A tibble: 3 × 11
     ##   id_case id_part…¹ date_start date_end   durat…² hp_sub    q1    q2    q3    q4
     ##     <dbl>     <dbl> <date>     <date>       <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1       1         1 2023-01-07 2023-01-19      13      1     8     0    17    25
+    ## 1       1         1 2023-01-07 2023-01-14       8      1     8     0    17    25
     ## 2      18         1 2022-12-07 2022-12-07       1      1    25     0     0     0
     ## 3       2         2 2023-01-12 2023-01-12       1      0     8     8    NA    NA
     ## # … with 1 more variable: date_ostrc <date>, and abbreviated variable names
