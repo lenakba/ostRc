@@ -11,7 +11,7 @@ d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                   1, 1, "2023-01-07", 8, 0, 17, 25,
                   1, 1, "2023-01-14", 8, 0, 17, 0,
                   1, 18, "2022-12-07", 25, 0, 0, 0,
-                  2, 2, "2023-01-12", 8, 8, NA, NA,
+                  2, 2, "2023-01-12", 8, 8, 0, 0,
                   3, 3, "2022-06-05", 0, 0, 0, 0)
 
 d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
