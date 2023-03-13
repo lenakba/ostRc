@@ -13,7 +13,7 @@ q4 = c(25, 8, 0, 0)
 
 test_that("Returns a vector with correct number of sumscores.", {
   length_q1 = length(q1)
-  sumscores_test = calc_ostrc_sum(q1, q2_v2, q3_v2, q4)
+  sumscores_test = calc_severity_score(q1, q2_v2, q3_v2, q4)
   expect_length(sumscores_test, length_q1)
 })
 
@@ -31,10 +31,15 @@ test_that("Returns a value of NA if one ore more responses are missing.", {
 })
 
 test_that("Sum is smaller or equal to 100.", {
-  sumscores_test = calc_ostrc_sum(q1, q2_v2, q3_v2, q4)
+  sumscores_test = calc_severity_score(q1, q2_v2, q3_v2, q4)
   for(i in length(sumscores_test)){
     expect_lte(sumscores_test[i], 100)
   }
 })
 
-
+test_that("Will throw error if answers are not in the classic 0, 8, 17, 25 or 0, 6, 13, 19, 25 values.", {
+  q2_wrongcodes = c(0, 1, 2, 3)
+  q3_wrongcodes = c(1, 2, 3, 99)
+  expect_error(calc_severity_score(q1, q2_wrongcodes, q3_v2, q4))
+  expect_error(calc_severity_score(q1, q2_v2, q3_wrongcodes, q4))
+})
