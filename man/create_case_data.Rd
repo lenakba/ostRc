@@ -32,7 +32,8 @@ Health problems, as identified by OSTRC questionnaire question 1,
 that do not have a unique case ID will throw an error.}
 
 \item{date_ostrc}{vector of class date within `d_ostrc` that denotes
-the day of reply to the OSTRC questionnaire.}
+the day the OSTRC questionnaire was sent,
+or should have been sent if there was a delay in sending.}
 
 \item{ostrc_1}{vector within `d_ostrc` with responses to OSTRC questionnaire question 1.}
 
@@ -52,14 +53,16 @@ Function that identifies health problems in a longitudinal dataset with
 OSTRC questionnaire responses, and returns a dataframe with one row of data
 per health problem.
 The function also finds and adds
-the start date, end date, and duration (in days) of each health problem.
+the start date, end date, and duration (in weeks) of each health problem.
+This duration assumes the questionnaire was responded to on the same day
+it was sent. In other words, that it pertains to the week before the date.
 It also adds whether or not the health problem is substantial.
 }
 \examples{
 d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                   1, 1, "2023-01-01", 0, 0, 17, 25,
                   1, 1, "2023-01-07", 8, 0, 17, 25,
-                  1, 1, "2023-01-19", 8, 0, 17, 0,
+                  1, 1, "2023-01-14", 8, 0, 17, 0,
                   1, 18, "2022-12-07", 25, 0, 0, 0,
                   2, 2, "2023-01-12", 8, 8, NA, NA,
                   3, 3, "2022-06-05", 0, 0, 0, 0)
