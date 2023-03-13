@@ -252,6 +252,15 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
   ostrc_sub
 }
 
+#' Calculate severity scores
+#'
+#'
+calc_severity_score = function(q1, q2, q3, q4){
+
+  severity_scores = q1 + q2 + q3 + q4
+  severity_scores
+}
+
 #' Create health problem case data
 #'
 #' Function that identifies health problems in a longitudinal dataset with
