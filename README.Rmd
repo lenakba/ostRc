@@ -81,6 +81,15 @@ d_cases = create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2,
 d_cases
 ```
 
+Any extra columns in the dataset will be included at the end, 
+like columns `hb_type` and `inj_typ` in the example above. Below,
+we show what these columns look like after being handled by
+the `create_case_data` function.
+
+```{r show_all_cols, echo = TRUE, warning = FALSE}
+d_cases %>% select(id_participant, id_case, date_ostrc, hb_type, inj_type)
+```
+
 ### Find health problems and substantial health problems
 
 Given a vector of OSTRC responses to question 1, 

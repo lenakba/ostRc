@@ -91,6 +91,23 @@ d_cases
     ## #   and abbreviated variable names ¹​id_participant, ²​duration
     ## # ℹ Use `colnames()` to see all variable names
 
+Any extra columns in the dataset will be included at the end, like
+columns `hb_type` and `inj_typ` in the example above. Below, we show
+what these columns look like after being handled by the
+`create_case_data` function.
+
+``` r
+d_cases %>% select(id_participant, id_case, date_ostrc, hb_type, inj_type)
+```
+
+    ## # A tibble: 4 × 5
+    ##   id_participant id_case date_ostrc hb_type inj_type
+    ##            <dbl>   <dbl> <date>     <chr>   <chr>   
+    ## 1              1       1 2023-01-01 Injury  Overuse 
+    ## 2              1      18 2022-12-07 Illness <NA>    
+    ## 3              2       2 2023-01-12 <NA>    <NA>    
+    ## 4              4       4 2023-01-01 Injury  Acute
+
 ### Find health problems and substantial health problems
 
 Given a vector of OSTRC responses to question 1, The function `find_hp`
