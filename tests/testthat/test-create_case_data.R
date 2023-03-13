@@ -6,7 +6,7 @@ library(magrittr)
 library(testthat)
 
 d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
-                  1, 1, "2023-01-01", 0, 0, 17, 25,
+                  1, 1, "2023-01-01", 8, 0, 17, 25,
                   1, 1, "2023-01-07", 8, 0, 17, 25,
                   1, 1, "2023-01-14", 8, 0, 17, 0,
                   1, 18, "2022-12-07", 25, 0, 0, 0,
@@ -160,4 +160,17 @@ test_that("will return dataframe without
                              q1, q2, q3, q4))
 
             expect_true(all(names(d_created) != "hp_sub"))
+          })
+
+test_that("Returns warning if there are any duplicates in the original data.",
+          {
+            d_duplicated = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
+                              1, 1, "2023-01-01", 8, 0, 17, 25,
+                              1, 1, "2023-01-07", 8, 0, 17, 25,
+                              1, 1, "2023-01-07", 8, 0, 17, 25)
+            d_duplicated = d_duplicated %>% mutate(date_ostrc = as.Date(date_ostrc))
+
+            expect_warning(create_case_data(d_duplicated, id_participant,
+                                          id_case, date_ostrc,
+                                          q1, q2, q3, q4))
           })
