@@ -75,8 +75,9 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
     )
   }
 
-  # Missing time points won't be included
-  d_nonmissing = d_ostrc %>% filter(!is.na(!!time))
+  # Missing time points won't be included,
+  # and missing hp_types won't be included
+  d_nonmissing = d_ostrc %>% filter(!is.na(!!time), !is.na(!!hp_type))
 
   # consider multiple health problems as just 1
   d_hp_type_per_id_per_time = d_nonmissing %>%
