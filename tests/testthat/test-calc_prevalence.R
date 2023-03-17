@@ -111,3 +111,17 @@ test_that("Any input variable with only NAs will throw error.", {
   expect_error(calc_prevalence(d_time_miss, id_participant, day_nr, hp))
   expect_error(calc_prevalence(d_hp_miss, id_participant, day_nr, hp))
 })
+
+test_that("Will remove observation from numerator and denominator if hp_type is missing.", {
+  d_missing_hp = tribble(~id_participant, ~day_nr, ~hp,
+                        1, 1, 1,
+                        1, 1, NA,
+                        1, 2, NA)
+
+  d_test_res = tribble(~day_nr, ~n_respnses, ~n_cases, ~prev_cases,
+                         1, 1, 1, 1)
+
+  d_res = calc_prevalence(d_missing_hp, id_participant, day_nr, hp)
+
+  expect_equal(d_res, d_test_res)
+})
