@@ -11,7 +11,9 @@ d_ostrc = tribble(~id_participant, ~day_nr, ~hp,
                   1, 1, 1,
                   1, 2, 0,
                   2, 1, 1,
-                  2, 2, 1)
+                  2, 2, 1,
+                  3, 1, 0,
+                  3, 2, 0)
 
 test_that("Returns a tibble with the mean, sd and lower and upper ci.",
           {
