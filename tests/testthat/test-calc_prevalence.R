@@ -118,7 +118,7 @@ test_that("Will remove observation from numerator and denominator if hp_type is 
                         1, 1, NA,
                         1, 2, NA)
 
-  d_test_res = tribble(~day_nr, ~n_respnses, ~n_cases, ~prev_cases,
+  d_test_res = tribble(~day_nr, ~n_responses, ~n_cases, ~prev_cases,
                          1, 1, 1, 1)
 
   d_res = calc_prevalence(d_missing_hp, id_participant, day_nr, hp)
