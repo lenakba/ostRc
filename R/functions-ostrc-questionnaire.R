@@ -272,14 +272,14 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
 #' @export
 calc_severity_score = function(ostrc_1, ostrc_2, ostrc_3, ostrc_4){
 
-  possible_scores = c(0, 6, 8, 17, 25, 13, 19)
+  possible_scores = c(0, 6, 8, 17, 25, 13, 19, NA)
   if(!all(ostrc_1 %in% possible_scores) |
      !all(ostrc_2 %in% possible_scores) |
      !all(ostrc_3 %in% possible_scores) |
      !all(ostrc_4 %in% possible_scores)
   ){
     stop("One or more values are not coded as an OSTRC score value.
-         Accepted values are 0, 6, 8, 13, 17, 19, 25.
+         Accepted values are 0, 6, 8, 13, 17, 19, 25, NA.
          If responses are coded with other values, consider using the function `standardize_coding`.")
   }
   severity_scores = ostrc_1 + ostrc_2 + ostrc_3 + ostrc_4
