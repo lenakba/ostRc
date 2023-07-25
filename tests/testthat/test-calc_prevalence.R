@@ -125,3 +125,15 @@ test_that("Will remove observation from numerator and denominator if hp_type is 
 
   expect_equal(d_res, d_test_res)
 })
+
+test_that("Throws warning if prevalence is constant.", {
+  d_fewrows = tribble(~id_participant, ~day_nr, ~hp,
+                      1, 1, 1,
+                      1, 2, 1,
+                      1, 3, 1,
+                      2, 1, 1,
+                      2, 2, 1,
+                      3, 1, 1,
+                      3, 2, 1)
+  expect_warning(calc_prevalence(d_fewrows, id_participant, day_nr, hp))
+})

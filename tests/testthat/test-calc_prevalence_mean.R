@@ -82,3 +82,14 @@ test_that("Calculates and returns correct CIs.", {
   expect_equal(d_prevmean$prev_ci_upper, test_ci_upper)
 })
 
+test_that("Throws warning if prevalence is constant.", {
+  d_fewrows = tribble(~id_participant, ~day_nr, ~hp,
+                      1, 1, 1,
+                      1, 2, 1,
+                      1, 3, 1,
+                      2, 1, 1,
+                      2, 2, 1,
+                      3, 1, 1,
+                      3, 2, 1)
+  expect_warning(calc_prevalence_mean(d_fewrows, id_participant, day_nr, hp))
+})
