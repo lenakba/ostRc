@@ -91,7 +91,8 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
     group_by(!!time) %>%
     summarise(n_responses = n(),
               n_cases = sum(hp_type_atleast1, na.rm = TRUE),
-              prev_cases = n_cases/n_responses)
+              prev_cases = n_cases/n_responses) %>%
+    ungroup()
   d_prevalence
 }
 
@@ -113,4 +114,19 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
 #'                to calculate the prevalance on.
 #' @export
 calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type){
+  id_participant = enquo(id_participant)
+  time = enquo(time)
+  hp_type = enquo(hp_type)
+
+  d_prevalence = calc_prevalence(d_ostrc, !!id_participant, !!time, !!hp_type)
+
+  # calc prevalences
+  d_prevmean = d_prevalence %>%
+    summarise(prev_mean = mean(prev_cases, na.rm = TRUE),
+              prev_sd = sd(prev_cases, na.rm = TRUE))
+
+  # calc CIs
+  confints = t.test(d_prevalence$prev_cases)$"conf.int"
+  d_prevmean = d_prevmean %>%  mutate(prev_ci_lower = confints[1], prev_ci_upper = confints[2])
+  d_prevmean
 }
