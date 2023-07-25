@@ -94,3 +94,23 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
               prev_cases = n_cases/n_responses)
   d_prevalence
 }
+
+#' Calculate prevalance mean
+#'
+#' A function to calculate the mean prevalence per given time period, such as per week.
+#'
+#' @param d_ostrc a dateframe with OSTRC questionnaire responses
+#' @param id_participant vector within `d_ostrc` that identifies
+#'                       a person, athlete, participant, etc.
+#' @param time vector within `d_ostrc` that identifies a time period,
+#'             such as a vector of dates or week-numbers. The prevalences will be calculated per
+#'             value of this vector, such as per week.
+#'             Then, the mean of these prevalences will be calculated, resulting in a single number.
+#' @param hp_type a binary vector within `d_ostrc` which classifies a type of health problem as 1,
+#'                and anything that is not the type of health problem as 0.
+#'                This can be health problem (1/0), injury (1/0),
+#'                illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
+#'                to calculate the prevalance on.
+#' @export
+calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type){
+}
