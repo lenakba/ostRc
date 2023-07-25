@@ -53,14 +53,14 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
     )
   }
 
-  if (length(unique(hp_type_values)) > 2) {
+  if (!all(unique(hp_type_values) %in% c(0, 1, NA))) {
     stop(
       paste0(
         "Variable ",
         hp_type_name,
         " has more than two possible values. Make sure ",
         hp_type_name,
-        " is a binary variable coded only with 0 and 1."
+        " is a binary variable coded only with 0 and 1, or with NA for missing."
       )
     )
   }
