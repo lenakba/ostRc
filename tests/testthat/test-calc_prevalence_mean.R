@@ -57,3 +57,10 @@ test_that("Ignores missing data when calculating mean.", {
   expect_equal(d_prevmean$prev_mean, test_mean)
   expect_equal(d_prevmean$prev_sd, test_sd)
 })
+
+test_that("CI lower is either lower or equal to mean,
+          CI upper is greater than or equal to mean.", {
+  d_prevmean = calc_prevalence_mean(d_ostrc, id_participant, day_nr, hp)
+  expect_lte(d_prevmean$prev_mean, d_prevmean$prev_ci_lower)
+  expect_gte(d_prevmean$prev_mean, d_prevmean$prev_ci_upper)
+})
