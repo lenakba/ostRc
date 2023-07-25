@@ -2,6 +2,7 @@
 
 export(add_event_id)
 export(calc_prevalence)
+export(calc_prevalence_mean)
 export(calc_severity_score)
 export(create_case_data)
 export(ewma)
