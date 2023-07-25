@@ -75,6 +75,10 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
     )
   }
 
+  if(length(unique(na.omit(hp_type_values)))==1){
+    warning("The prevalence of ",hp_type_name," is constant.")
+  }
+
   # Missing time points won't be included,
   # and missing hp_types won't be included
   d_nonmissing = d_ostrc %>% filter(!is.na(!!time), !is.na(!!hp_type))
@@ -126,7 +130,11 @@ calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type){
               prev_sd = sd(prev_cases, na.rm = TRUE))
 
   # calc CIs
-  confints = t.test(d_prevalence$prev_cases)$"conf.int"
-  d_prevmean = d_prevmean %>%  mutate(prev_ci_lower = confints[1], prev_ci_upper = confints[2])
+  count = nrow(d_prevalence)
+  se = sd(d_prevalence$prev_cases) / sqrt(count)
+  ci_lower = mean(d_prevalence$prev_cases) - (qt(1 - ((1 - 0.95) / 2), count - 1) * se)
+  ci_upper = mean(d_prevalence$prev_cases) + (qt(1 - ((1 - 0.95) / 2), count - 1) * se)
+
+  d_prevmean = d_prevmean %>%  mutate(prev_ci_lower = ci_lower, prev_ci_upper = ci_upper)
   d_prevmean
 }
