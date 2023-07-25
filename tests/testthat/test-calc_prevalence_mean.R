@@ -42,18 +42,22 @@ test_that("Calculates and returns correct mean and sd.", {
 
 test_that("Ignores missing data when calculating mean.", {
 
-  d_ostrc = tribble(~id_participant, ~day_nr, ~hp,
+  d_ostrc_missing = tribble(~id_participant, ~day_nr, ~hp,
                     1, 1, 1,
                     1, 1, 1,
                     1, 2, NA,
                     2, 1, 1,
-                    2, 2, NA)
+                    2, 2, NA,
+                    3, 1, 1,
+                    3, 2, 1,
+                    3, 3, 0
+                    )
 
-  d_test = calc_prevalence(d_ostrc, id_participant, day_nr, hp)
+  d_test = calc_prevalence(d_ostrc_missing, id_participant, day_nr, hp)
   test_mean = mean(d_test$prev_cases, na.rm = TRUE)
   test_sd = sd(d_test$prev_cases, na.rm = TRUE)
 
-  d_prevmean = calc_prevalence_mean(d_ostrc, id_participant, day_nr, hp)
+  d_prevmean = calc_prevalence_mean(d_ostrc_missing, id_participant, day_nr, hp)
   expect_equal(d_prevmean$prev_mean, test_mean)
   expect_equal(d_prevmean$prev_sd, test_sd)
 })
