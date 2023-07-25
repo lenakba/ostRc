@@ -64,3 +64,17 @@ test_that("CI lower is either lower or equal to mean,
   expect_lte(d_prevmean$prev_mean, d_prevmean$prev_ci_lower)
   expect_gte(d_prevmean$prev_mean, d_prevmean$prev_ci_upper)
 })
+
+test_that("Calculates and returns correct CIs.", {
+
+  d_test = calc_prevalence(d_ostrc, id_participant, day_nr, hp)
+  count = nrow(d_test)
+  se = sd(d_test$prev_cases) / sqrt(count)
+  test_ci_lower = mean(d_test$prev_cases) - (qt(1 - ((1 - 0.95) / 2), n - 1) * se)
+  test_ci_upper = mean(d_test$prev_cases) + (qt(1 - ((1 - 0.95) / 2), n - 1) * se)
+
+  d_prevmean = calc_prevalence_mean(d_ostrc, id_participant, day_nr, hp)
+  expect_equal(d_prevmean$prev_ci_lower, test_ci_lower)
+  expect_equal(d_prevmean$prev_ci_upper, test_ci_upper)
+})
+
