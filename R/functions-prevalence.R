@@ -117,7 +117,7 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
 #'                illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
 #'                to calculate the prevalance on.
 #' @export
-calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type){
+calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level = 0.95){
   id_participant = enquo(id_participant)
   time = enquo(time)
   hp_type = enquo(hp_type)
@@ -132,8 +132,8 @@ calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type){
   # calc CIs
   count = nrow(d_prevalence)
   se = sd(d_prevalence$prev_cases) / sqrt(count)
-  ci_lower = mean(d_prevalence$prev_cases) - (qt(1 - ((1 - 0.95) / 2), count - 1) * se)
-  ci_upper = mean(d_prevalence$prev_cases) + (qt(1 - ((1 - 0.95) / 2), count - 1) * se)
+  ci_lower = mean(d_prevalence$prev_cases) - (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
+  ci_upper = mean(d_prevalence$prev_cases) + (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
 
   d_prevmean = d_prevmean %>%  mutate(prev_ci_lower = ci_lower, prev_ci_upper = ci_upper)
   d_prevmean
