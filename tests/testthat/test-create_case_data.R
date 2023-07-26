@@ -175,33 +175,12 @@ test_that("Returns warning if there are any duplicates in the original data.",
                                           q1, q2, q3, q4))
           })
 
-test_that("Returns warning if any of the Qs have missing data.",
+test_that("Returns warning if the first OSTRC Q has missing data.",
           {
             d_missing_q1 = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                                    1, 1, "2023-01-01", NA, 0, 17, 25,
                                    1, 1, "2023-01-07", 8, 0, 17, 25)
-            d_missing_q2 = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
-                                   1, 1, "2023-01-01", 8, 0, 17, 25,
-                                   1, 1, "2023-01-07", 8, NA, 17, 25)
-            d_missing_q3 = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
-                                   1, 1, "2023-01-01", 8, 0, 17, 25,
-                                   1, 1, "2023-01-07", 8, 8, 17, 25,
-                                   1, 1, "2023-01-14", 8, 0, NA, 25)
-            d_missing_q4 = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
-                                   1, 1, "2023-01-01", 8, 0, 17, 25,
-                                   1, 1, "2023-01-07", 8, 0, 17, 25,
-                                   1, 1, "2023-01-14", 8, 0, 17, 25,
-                                   1, 1, "2023-01-21", 8, 0, 17, NA)
             expect_warning(create_case_data(d_missing_q1, id_participant,
-                                            id_case, date_ostrc,
-                                            q1, q2, q3, q4))
-            expect_warning(create_case_data(d_missing_q2, id_participant,
-                                            id_case, date_ostrc,
-                                            q1, q2, q3, q4))
-            expect_warning(create_case_data(d_missing_q3, id_participant,
-                                            id_case, date_ostrc,
-                                            q1, q2, q3, q4))
-            expect_warning(create_case_data(d_missing_q4, id_participant,
                                             id_case, date_ostrc,
                                             q1, q2, q3, q4))
           })

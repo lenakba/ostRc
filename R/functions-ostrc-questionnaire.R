@@ -373,15 +373,9 @@ create_case_data = function(d_ostrc, id_participant, id_case,
 
   # throw warning for missing data
   ostrc_1_values = d_ostrc %>% pull(!!ostrc_1)
-  ostrc_2_values = d_ostrc %>% pull(!!ostrc_2)
-  ostrc_3_values = d_ostrc %>% pull(!!ostrc_3)
-  ostrc_4_values = d_ostrc %>% pull(!!ostrc_4)
-  if (any(is.na((ostrc_1_values))) |
-      any(is.na((ostrc_2_values))) |
-      any(is.na((ostrc_3_values))) |
-      any(is.na((ostrc_4_values)))) {
+  if (any(is.na(ostrc_1_values))) {
     warning(
-        "At least one of the responses to ostrc_1, ostrc_2, ostrc_3 or ostrc_4 is missing data."
+        "At least one of the responses to ostrc_1 is missing data."
     )
   }
 
