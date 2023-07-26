@@ -33,7 +33,7 @@ test_that("Returns a tibble with the hp_type, mean, sd and lower and upper ci.",
 
 test_that("Returns 1 row of data per hp_type.", {
   hp_type_vector = c("hp", "hp_sub")
-  n_types = length(vector)
+  n_types = length(hp_type_vector)
   d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector)
   expect_equal(nrow(d_test), n_types)
 })
