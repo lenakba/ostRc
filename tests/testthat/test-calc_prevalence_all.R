@@ -37,3 +37,18 @@ test_that("Returns 1 row of data per hp_type.", {
   d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector)
   expect_equal(nrow(d_test), n_types)
 })
+
+test_that("Returns 1 row of data per hp_type, per category in the given group.", {
+  hp_type_vector = c("hp", "hp_sub")
+  n_types = length(hp_type_vector)
+  d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, groups = season)
+  expect_equal(nrow(d_test), n_types)
+})
+
+regn_gj_og_sd_rem = function(d, verktoy, ...){
+  verktoy = enquo(verktoy)
+  gruppering = enquos(...)
+  d = d %>% group_by(!!!gruppering)
+  d_gj_sd = d %>% summarise(gj_snitt = mean(!!verktoy), sd = sd(!!verktoy)) %>% ungroup()
+  d_gj_sd
+}
