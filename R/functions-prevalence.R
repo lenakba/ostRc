@@ -116,6 +116,7 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
 #'                This can be health problem (1/0), injury (1/0),
 #'                illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
 #'                to calculate the prevalance on.
+#' @param ci_level The level of the confidence intervals. Default is 0.95 for 95% confidence intervals.
 #' @export
 calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level = 0.95){
   id_participant = enquo(id_participant)
