@@ -140,6 +140,28 @@ calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level
   d_prevmean
 }
 
+#' Calculate prevalence all
+#'
+#' A function to calculate the mean prevalence for each health problem type
+#' given in a vector of health problems types.
+#' Uses `calc_prevalence_mean` to calculate for each type.
+#'
+#' @param d_ostrc a dateframe with OSTRC questionnaire responses
+#' @param id_participant vector within `d_ostrc` that identifies
+#'                       a person, athlete, participant, etc.
+#' @param time vector within `d_ostrc` that identifies a time period,
+#'             such as a vector of dates or week-numbers. The prevalences will be calculated per
+#'             value of this vector, such as per week.
+#'             Then, the mean of these prevalences will be calculated, resulting in a single number.
+#' @param hp_types a vector of strings representing variable names of
+#'                health problem variables within `d_ostrc`. These variables must classify a
+#'                type of health problem as 1,
+#'                and anything that is not the type of health problem as 0.
+#'                This can be health problem (1/0), injury (1/0),
+#'                illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
+#'                to calculate the prevalence of.
+#' @param ci_level The level of the confidence intervals. Default is 0.95 for 95% confidence intervals.
+#' @export
 calc_prevalence_all = function(d_ostrc, id_participant, time, hp_types, ci_level = 0.95){
 
   id_participant = enquo(id_participant)
@@ -155,4 +177,3 @@ calc_prevalence_all = function(d_ostrc, id_participant, time, hp_types, ci_level
   d_prevalences %<>% select(hp_type, starts_with("prev"))
   d_prevalences
 }
-calc_prevalence_all(d_ostrc, id_participant, day_nr, c("hp", "hp_sub"))
