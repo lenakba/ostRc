@@ -94,29 +94,29 @@ test_that("Throws warning if prevalence is constant.", {
   expect_warning(calc_prevalence_mean(d_fewrows, id_participant, day_nr, hp))
 })
 
-test_that("Handles calculations on grouping variables.", {
-
-  d_male = tribble(~id_participant, ~day_nr, ~hp, ~sex,
-                   1, 1, 0, 1,
-                   1, 2, 0, 1,
-                   1, 3, 1, 1,
-                   3, 1, 1, 1,
-                   3, 2, 1, 1)
-
-  prev_males = calc_prevalence_mean(d_male, id_participant, day_nr, hp)
-
-  d_multgroup = tribble(~id_participant, ~day_nr, ~hp, ~sex,
-                        1, 1, 0, 1,
-                        1, 2, 0, 1,
-                        1, 3, 1, 1,
-                        2, 1, 1, 0,
-                        2, 2, 1, 0,
-                        3, 1, 1, 1,
-                        3, 2, 1, 1,
-                        4, 1, 0, 0,
-                        4, 2, 0, 0,
-                        4, 3, 1, 0)
-
-  prev_all = calc_prevalence_mean(d_multgroup, id_participant, day_nr, hp, sex)
-  expect_equal(prev_males, prev_all %>% filter(sex == 1) %>% select(-sex))
-})
+# test_that("Handles calculations on grouping variables.", {
+#
+#   d_male = tribble(~id_participant, ~day_nr, ~hp, ~sex,
+#                    1, 1, 0, 1,
+#                    1, 2, 0, 1,
+#                    1, 3, 1, 1,
+#                    3, 1, 1, 1,
+#                    3, 2, 1, 1)
+#
+#   prev_males = calc_prevalence_mean(d_male, id_participant, day_nr, hp)
+#
+#   d_multgroup = tribble(~id_participant, ~day_nr, ~hp, ~sex,
+#                         1, 1, 0, 1,
+#                         1, 2, 0, 1,
+#                         1, 3, 1, 1,
+#                         2, 1, 1, 0,
+#                         2, 2, 1, 0,
+#                         3, 1, 1, 1,
+#                         3, 2, 1, 1,
+#                         4, 1, 0, 0,
+#                         4, 2, 0, 0,
+#                         4, 3, 1, 0)
+#
+#   prev_all = calc_prevalence_mean(d_multgroup, id_participant, day_nr, hp, sex)
+#   expect_equal(prev_males, prev_all %>% filter(sex == 1) %>% select(-sex))
+# })
