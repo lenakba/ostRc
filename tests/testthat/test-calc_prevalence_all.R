@@ -6,12 +6,34 @@ library(magrittr)
 library(testthat)
 
 # example data used in more than one test
-d_ostrc = tribble(~id_participant, ~day_nr, ~hp,
-                  1, 1, 1,
-                  1, 1, 1,
-                  1, 2, 0,
-                  2, 1, 1,
-                  2, 2, 1,
-                  3, 1, 0,
-                  3, 2, 0
+d_ostrc = tribble(~id_participant, ~day_nr, ~hp, ~hp_sub, ~season,
+                  1, 1, 1, 0, 1,
+                  1, 2, 1, 1, 1,
+                  1, 3, 0, 0, 1,
+                  2, 1, 1, 1, 1,
+                  2, 2, 1, 1, 1,
+                  3, 1, 0, 0, 1,
+                  3, 2, 0, 0, 1,
+                  1, 1, 1, 0, 2,
+                  1, 2, 1, 0, 2,
+                  1, 3, 0, 0, 2,
+                  2, 1, 1, 0, 2,
+                  2, 2, 1, 0, 2,
+                  3, 1, 1, 1, 2,
+                  3, 2, 1, 1, 2
                   )
+
+test_that("Returns a tibble with the hp_type, mean, sd and lower and upper ci.",
+          {
+            correct_columns = c("hp_type", "prev_mean", "prev_sd", "prev_ci_upper", "prev_ci_lower")
+            expect_true(all(correct_columns %in% names(
+              calc_prevalence_all(d_ostrc, id_participant, day_nr, c("hp", "hp_sub"))
+            )))
+          })
+
+test_that("Returns 1 row of data per hp_type.", {
+  hp_type_vector = c("hp", "hp_sub")
+  n_types = length(vector)
+  d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector)
+  expect_equal(nrow(d_test), n_types)
+})
