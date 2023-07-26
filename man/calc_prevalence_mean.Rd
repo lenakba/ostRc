@@ -28,3 +28,15 @@ to calculate the prevalance on.}
 \description{
 A function to calculate the mean prevalence per given time period, such as per week.
 }
+\examples{
+library(tidyr)
+d_ostrc = tribble(~id_participant, ~week_nr, ~hp,
+                 1, 1, 1,
+                 1, 1, 1,
+                 1, 2, 0,
+                 2, 1, 1,
+                 2, 2, 1,
+                 3, 1, 0,
+                 3, 2, 0)
+calc_prevalence_mean(d_ostrc, id_participant, week_nr, hp)
+}

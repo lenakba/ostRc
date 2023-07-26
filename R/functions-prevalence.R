@@ -22,6 +22,15 @@ NULL
 #'                This can be health problem (1/0), injury (1/0),
 #'                illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
 #'                to calculate the prevalance on.
+#' @examples
+#' library(tidyr)
+#' d_ostrc = tribble(~id_participant, ~week_nr, ~hp,
+#'                   1, 1, 1,
+#'                   1, 1, 1,
+#'                   1, 2, 0,
+#'                   2, 1, 1,
+#'                   2, 2, 1)
+#' calc_prevalence(d_ostrc, id_participant, week_nr, hp)
 #' @export
 calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
   id_participant = enquo(id_participant)
@@ -117,6 +126,17 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
 #'                illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
 #'                to calculate the prevalance on.
 #' @param ci_level The level of the confidence intervals. Default is 0.95 for 95% confidence intervals.
+#' @examples
+#' library(tidyr)
+#' d_ostrc = tribble(~id_participant, ~week_nr, ~hp,
+#'                  1, 1, 1,
+#'                  1, 1, 1,
+#'                  1, 2, 0,
+#'                  2, 1, 1,
+#'                  2, 2, 1,
+#'                  3, 1, 0,
+#'                  3, 2, 0)
+#' calc_prevalence_mean(d_ostrc, id_participant, week_nr, hp)
 #' @export
 calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level = 0.95){
   id_participant = enquo(id_participant)
@@ -143,7 +163,9 @@ calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level
 #' Calculate prevalence all
 #'
 #' A function to calculate the mean prevalence for each health problem type
-#' given in a vector of health problems types.
+#' given in a vector of health problems types. For instance, to provide the
+#' prevalence of health problems, substantial health problems, injuries, substantial injuries,
+#' contact vs. noncontact injuries and so on.
 #' Uses `calc_prevalence_mean` to calculate for each type.
 #'
 #' @param d_ostrc a dateframe with OSTRC questionnaire responses
@@ -161,6 +183,26 @@ calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level
 #'                illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
 #'                to calculate the prevalence of.
 #' @param ci_level The level of the confidence intervals. Default is 0.95 for 95% confidence intervals.
+#' @examples
+#' library(tidyr)
+#' d_ostrc = tribble(~id_participant, ~week_nr, ~hp, ~hp_sub, ~season,
+#'                  1, 1, 1, 0, 1,
+#'                  1, 2, 1, 1, 1,
+#'                  1, 3, 0, 0, 1,
+#'                  2, 1, 1, 1, 1,
+#'                  2, 2, 1, 1, 1,
+#'                  3, 1, 0, 0, 1,
+#'                  3, 2, 0, 0, 1,
+#'                  1, 1, 1, 0, 2,
+#'                  1, 2, 1, 0, 2,
+#'                  1, 3, 0, 0, 2,
+#'                  2, 1, 1, 0, 2,
+#'                  2, 2, 1, 0, 2,
+#'                  3, 1, 1, 1, 2,
+#'                  3, 2, 1, 1, 2
+#'                  )
+#' hp_types_vector = c("hp", "hp_sub")
+#' calc_prevalence_all(d_ostrc, id_participant, week_nr, hp_types_vector)
 #' @export
 calc_prevalence_all = function(d_ostrc, id_participant, time, hp_types, ci_level = 0.95){
 

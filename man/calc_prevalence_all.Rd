@@ -29,6 +29,29 @@ to calculate the prevalence of.}
 }
 \description{
 A function to calculate the mean prevalence for each health problem type
-given in a vector of health problems types.
+given in a vector of health problems types. For instance, to provide the
+prevalence of health problems, substantial health problems, injuries, substantial injuries,
+contact vs. noncontact injuries and so on.
 Uses `calc_prevalence_mean` to calculate for each type.
+}
+\examples{
+library(tidyr)
+d_ostrc = tribble(~id_participant, ~week_nr, ~hp, ~hp_sub, ~season,
+                 1, 1, 1, 0, 1,
+                 1, 2, 1, 1, 1,
+                 1, 3, 0, 0, 1,
+                 2, 1, 1, 1, 1,
+                 2, 2, 1, 1, 1,
+                 3, 1, 0, 0, 1,
+                 3, 2, 0, 0, 1,
+                 1, 1, 1, 0, 2,
+                 1, 2, 1, 0, 2,
+                 1, 3, 0, 0, 2,
+                 2, 1, 1, 0, 2,
+                 2, 2, 1, 0, 2,
+                 3, 1, 1, 1, 2,
+                 3, 2, 1, 1, 2
+                 )
+hp_types_vector = c("hp", "hp_sub")
+calc_prevalence_mean(d_ostrc, id_participant, week_nr, hp_types_vector)
 }
