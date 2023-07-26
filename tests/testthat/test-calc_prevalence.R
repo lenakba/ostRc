@@ -44,8 +44,7 @@ test_that("Considers multiple cases on the same individual per time period only 
           {
             d_multiple_hp = d_ostrc %>% mutate(hp = rep(1, length(hp)))
             n_cases = c(2, 2)
-
-            d_test = calc_prevalence(d_multiple_hp, id_participant, day_nr, hp)
+            d_test = suppressWarnings(calc_prevalence(d_multiple_hp, id_participant, day_nr, hp))
             expect_equal(d_test$n_cases, n_cases)
           })
 
@@ -121,7 +120,7 @@ test_that("Will remove observation from numerator and denominator if hp_type is 
   d_test_res = tribble(~day_nr, ~n_responses, ~n_cases, ~prev_cases,
                          1, 1, 1, 1)
 
-  d_res = calc_prevalence(d_missing_hp, id_participant, day_nr, hp)
+  d_res = suppressWarnings(calc_prevalence(d_missing_hp, id_participant, day_nr, hp))
 
   expect_equal(d_res, d_test_res)
 })
@@ -136,4 +135,40 @@ test_that("Throws warning if prevalence is constant.", {
                       3, 1, 1,
                       3, 2, 1)
   expect_warning(calc_prevalence(d_fewrows, id_participant, day_nr, hp))
+})
+
+test_that("Handles prompts grouped on other variables, such as male vs. female.", {
+
+  d_male = tribble(~id_participant, ~day_nr, ~hp, ~sex,
+                        1, 1, 0, 1,
+                        1, 2, 0, 1,
+                        1, 3, 1, 1,
+                        3, 1, 1, 1,
+                        3, 2, 1, 1)
+
+  prev_males = calc_prevalence(d_male, id_participant, day_nr, hp)
+
+  d_female = tribble(~id_participant, ~day_nr, ~hp, ~sex,
+                        2, 1, 1, 0,
+                        2, 2, 1, 0,
+                        4, 1, 0, 0,
+                        4, 2, 0, 0,
+                        4, 3, 1, 0)
+
+  prev_females = calc_prevalence(d_female, id_participant, day_nr, hp)
+
+  d_multgroup = tribble(~id_participant, ~day_nr, ~hp, ~sex,
+                      1, 1, 0, 1,
+                      1, 2, 0, 1,
+                      1, 3, 1, 1,
+                      2, 1, 1, 0,
+                      2, 2, 1, 0,
+                      3, 1, 1, 1,
+                      3, 2, 1, 1,
+                      4, 1, 0, 0,
+                      4, 2, 0, 0,
+                      4, 3, 1, 0)
+
+  prev_all = calc_prevalence(d_multgroup, id_participant, day_nr, hp, sex)
+  expect_equal(prev_males, prev_all %>% filter(sex == 1) %>% select(-sex))
 })
