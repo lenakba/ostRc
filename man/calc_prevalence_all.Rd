@@ -4,7 +4,14 @@
 \alias{calc_prevalence_all}
 \title{Calculate prevalence all}
 \usage{
-calc_prevalence_all(d_ostrc, id_participant, time, hp_types, ci_level = 0.95)
+calc_prevalence_all(
+  d_ostrc,
+  id_participant,
+  time,
+  hp_types,
+  group = NULL,
+  ci_level = 0.95
+)
 }
 \arguments{
 \item{d_ostrc}{a dateframe with OSTRC questionnaire responses}
@@ -24,6 +31,9 @@ and anything that is not the type of health problem as 0.
 This can be health problem (1/0), injury (1/0),
 illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
 to calculate the prevalence of.}
+
+\item{group}{Optional. A subgroup variable provided as a string, such as "season", "gender" etc.
+Output will be calculated per subgroup.}
 
 \item{ci_level}{The level of the confidence intervals. Default is 0.95 for 95% confidence intervals.}
 }
