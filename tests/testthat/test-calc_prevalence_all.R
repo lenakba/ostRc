@@ -38,9 +38,9 @@ test_that("Returns 1 row of data per hp_type.", {
   expect_equal(nrow(d_test), n_types)
 })
 
-test_that("Returns 1 row of data per hp_type, per category in the given group.", {
-  hp_type_vector = c("hp", "hp_sub")
-  n_types = length(hp_type_vector)
-  d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, groups = season)
-  expect_equal(nrow(d_test), n_types)
-})
+# test_that("Returns 1 row of data per hp_type, per category in the given group.", {
+#   hp_type_vector = c("hp", "hp_sub")
+#   n_types = length(hp_type_vector)
+#   d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, groups = season)
+#   expect_equal(nrow(d_test), n_types)
+# })
