@@ -49,47 +49,6 @@ devtools::install_github("lenakba/ostrc")
 ## Functions
 Below is a brief overview of helpful functions.
 
-### Create case data
-
-The function `create_case_data` finds 
-health problems in a dataset with OSTRC-questionnaire responses
-and returns a dataframe where one row describes one unique health problem.
-The function also calculates and adds the severity score, startdate, enddate, 
-and the duration (in weeks) of each health problem, 
-given the date the OSTRC questionnaire was sent.
-It also identifies substantial health problems, with the help of 
-`find_hp_substantial`.
-
-```{r create_case_data_example, echo = TRUE, warning = FALSE}
-library(tidyverse) # for tribble() and pipe %>% 
-d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4, ~hb_type, ~inj_type,
-                  1, 1, "2023-01-01", 8, 0, 17, 25, "Injury", "Overuse",
-                  1, 1, "2023-01-07", 8, 0, 17, 25, "Injury", "Overuse",
-                  1, 1, "2023-01-14", 8, 0, 17, 0, "Injury", "Overuse",
-                  1, 18, "2022-12-07", 25, 0, 0, 0, "Illness", NA,
-                  2, 2, "2023-01-12", 8, 8, 0, 0, NA, NA,
-                  3, 3, "2022-06-05", 0, 0, 0, 0, NA, NA,
-                  4, 4, "2023-01-01", 8, 8, 8, 0, "Injury", "Acute")
-
-# note that the date column must be of class date
-d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
-
-# functions returns one row per health problem
-# if a response is not a health problem (like participant ID 3, case ID 3)
-# it will not be included in the returned data frame.
-d_cases = create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
-d_cases
-```
-
-Any extra columns in the dataset will be included at the end, 
-like columns `hb_type` and `inj_typ` in the example above. Below,
-we show how these columns appear after being handled by
-the `create_case_data` function.
-
-```{r show_all_cols, echo = TRUE, warning = FALSE}
-d_cases %>% select(id_participant, id_case, date_ostrc, hb_type, inj_type)
-```
-
 ### Find health problems and substantial health problems
 
 Given a vector of OSTRC responses to question 1, 
@@ -154,6 +113,47 @@ ostrc_3_missing = c(NA, 8, NA, NA)
 find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 ```
 
+### Create case data
+
+The function `create_case_data` finds 
+health problems in a dataset with OSTRC-questionnaire responses
+and returns a dataframe where one row describes one unique health problem.
+The function also calculates and adds the severity score, startdate, enddate, 
+and the duration (in weeks) of each health problem, 
+given the date the OSTRC questionnaire was sent.
+It also identifies substantial health problems, with the help of 
+`find_hp_substantial`.
+
+```{r create_case_data_example, echo = TRUE, warning = FALSE}
+library(tidyverse) # for tribble() and pipe %>% 
+d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4, ~hb_type, ~inj_type,
+                  1, 1, "2023-01-01", 8, 0, 17, 25, "Injury", "Overuse",
+                  1, 1, "2023-01-07", 8, 0, 17, 25, "Injury", "Overuse",
+                  1, 1, "2023-01-14", 8, 0, 17, 0, "Injury", "Overuse",
+                  1, 18, "2022-12-07", 25, 0, 0, 0, "Illness", NA,
+                  2, 2, "2023-01-12", 8, 8, 0, 0, NA, NA,
+                  3, 3, "2022-06-05", 0, 0, 0, 0, NA, NA,
+                  4, 4, "2023-01-01", 8, 8, 8, 0, "Injury", "Acute")
+
+# note that the date column must be of class date
+d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
+
+# functions returns one row per health problem
+# if a response is not a health problem (like participant ID 3, case ID 3)
+# it will not be included in the returned data frame.
+d_cases = create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
+d_cases
+```
+
+Any extra columns in the dataset will be included at the end, 
+like columns `hb_type` and `inj_typ` in the example above. Below,
+we show how these columns appear after being handled by
+the `create_case_data` function.
+
+```{r show_all_cols, echo = TRUE, warning = FALSE}
+d_cases %>% select(id_participant, id_case, date_ostrc, hb_type, inj_type)
+```
+
 ### Calculate prevalence
 
 The OSTRC package has three functions for calculating the prevalence. 
@@ -215,8 +215,8 @@ like in the example below.
 calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"))
 ```
 
-In some cases, you may wish to calculate prevalences for subgroups. This can be per season,
-per sport, or for males and females separately. Below is an example.
+In some cases, you may wish to calculate prevalences for each category in a group. 
+For instance, for males and females separately. Below is an example.
 
 ```{r calc_prevalence_all_group_example, echo = TRUE, warning = FALSE}
 calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"), "gender")
