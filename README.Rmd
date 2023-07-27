@@ -58,7 +58,7 @@ The function also calculates and adds the severity score, startdate, enddate,
 and the duration (in weeks) of each health problem, 
 given the date the OSTRC questionnaire was sent.
 It also identifies substantial health problems, with the help of 
-`find_hp_substantial`, and adds a column for these.
+`find_hp_substantial`.
 
 ```{r create_case_data_example, echo = TRUE, warning = FALSE}
 library(tidyverse) # for tribble() and pipe %>% 
@@ -83,7 +83,7 @@ d_cases
 
 Any extra columns in the dataset will be included at the end, 
 like columns `hb_type` and `inj_typ` in the example above. Below,
-we show what these columns look like after being handled by
+we show how these columns appear after being handled by
 the `create_case_data` function.
 
 ```{r show_all_cols, echo = TRUE, warning = FALSE}
