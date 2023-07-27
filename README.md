@@ -1,4 +1,4 @@
-Oslo Sports Trauma Research Centre R Tools (OSTRC package)
+Oslo Sports Trauma Research Centre R package
 ================
 Lena Kristin Bache-Mathiesen[^1]Benjamin Clarsen[^2]
 
@@ -48,43 +48,6 @@ devtools::install_github("lenakba/ostrc")
 ## Functions
 
 Below is a brief overview of helpful functions.
-
-### Create case data
-
-The function `create_case_data` finds health problems in a dataset with
-OSTRC-questionnaire responses and returns a dataframe where one row
-describes one unique health problem. The function also finds and adds
-the startdate, enddate, and the duration (in days) of each health
-problem. It also identifies substantial health problems, with the help
-of `find_hp_substantial`, and adds a column for these.
-
-``` r
-library(tidyverse)
-d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
-                   1, 1, "2023-01-01", 0, 0, 17, 25,
-                   1, 1, "2023-01-07", 8, 0, 17, 25,
-                   1, 1, "2023-01-19", 8, 0, 17, 0,
-                   1, 18, "2022-12-07", 25, 0, 0, 0,
-                   2, 2, "2023-01-12", 8, 8, NA, NA,
-                   3, 3, "2022-06-05", 0, 0, 0, 0)
-# note that the date column must be of class date
-d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
-
-# functions returns one row per health problem
-# if a response is not a health problem (like participant ID 3, case ID 3)
-# it will not be included in the returned data frame
-create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
-```
-
-    ## # A tibble: 3 × 11
-    ##   id_case id_part…¹ date_start date_end   durat…² hp_sub    q1    q2    q3    q4
-    ##     <dbl>     <dbl> <date>     <date>       <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1       1         1 2023-01-07 2023-01-19      13      1     8     0    17    25
-    ## 2      18         1 2022-12-07 2022-12-07       1      1    25     0     0     0
-    ## 3       2         2 2023-01-12 2023-01-12       1      0     8     8    NA    NA
-    ## # … with 1 more variable: date_ostrc <date>, and abbreviated variable names
-    ## #   ¹​id_participant, ²​duration
-    ## # ℹ Use `colnames()` to see all variable names
 
 ### Find health problems and substantial health problems
 
@@ -152,6 +115,162 @@ find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 ```
 
     ## [1]  1 NA NA  1
+
+### Create case data
+
+The function `create_case_data` finds health problems in a dataset with
+OSTRC-questionnaire responses and returns a dataframe where one row
+describes one unique health problem. The function also calculates and
+adds the severity score, startdate, enddate, and the duration (in weeks)
+of each health problem, given the date the OSTRC questionnaire was sent.
+It also identifies substantial health problems, with the help of
+`find_hp_substantial`.
+
+``` r
+library(tidyverse) # for tribble() and pipe %>% 
+d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4, ~hb_type, ~inj_type,
+                  1, 1, "2023-01-01", 8, 0, 17, 25, "Injury", "Overuse",
+                  1, 1, "2023-01-07", 8, 0, 17, 25, "Injury", "Overuse",
+                  1, 1, "2023-01-14", 8, 0, 17, 0, "Injury", "Overuse",
+                  1, 18, "2022-12-07", 25, 0, 0, 0, "Illness", NA,
+                  2, 2, "2023-01-12", 8, 8, 0, 0, NA, NA,
+                  3, 3, "2022-06-05", 0, 0, 0, 0, NA, NA,
+                  4, 4, "2023-01-01", 8, 8, 8, 0, "Injury", "Acute")
+
+# note that the date column must be of class date
+d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
+
+# functions returns one row per health problem
+# if a response is not a health problem (like participant ID 3, case ID 3)
+# it will not be included in the returned data frame.
+d_cases = create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
+d_cases
+```
+
+    ## # A tibble: 4 × 14
+    ##   id_case id_part…¹ date_start date_end   durat…² hp_sub    q1    q2    q3    q4
+    ##     <dbl>     <dbl> <date>     <date>       <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1       1         1 2023-01-01 2023-01-14       3      1     8     0    17    25
+    ## 2      18         1 2022-12-07 2022-12-07       1      1    25     0     0     0
+    ## 3       2         2 2023-01-12 2023-01-12       1      0     8     8     0     0
+    ## 4       4         4 2023-01-01 2023-01-01       1      0     8     8     8     0
+    ## # … with 4 more variables: severity_score <dbl>, date_ostrc <date>,
+    ## #   hb_type <chr>, inj_type <chr>, and abbreviated variable names
+    ## #   ¹​id_participant, ²​duration
+    ## # ℹ Use `colnames()` to see all variable names
+
+Any extra columns in the dataset will be included at the end, like
+columns `hb_type` and `inj_typ` in the example above. Below, we show how
+these columns appear after being handled by the `create_case_data`
+function.
+
+``` r
+d_cases %>% select(id_participant, id_case, date_ostrc, hb_type, inj_type)
+```
+
+    ## # A tibble: 4 × 5
+    ##   id_participant id_case date_ostrc hb_type inj_type
+    ##            <dbl>   <dbl> <date>     <chr>   <chr>   
+    ## 1              1       1 2023-01-01 Injury  Overuse 
+    ## 2              1      18 2022-12-07 Illness <NA>    
+    ## 3              2       2 2023-01-12 <NA>    <NA>    
+    ## 4              4       4 2023-01-01 Injury  Acute
+
+### Calculate prevalence
+
+The OSTRC package has three functions for calculating the prevalence.
+`calc_prevalence` calculates the weekly prevalence.
+`calc_prevalence_mean` calculates the mean prevalence, after calculating
+the weekly prevalence with `calc_prevalence`. Finally,
+`calc_prevalence_all` calculates the prevalence of each given health
+problem type. This is practical in cases where you have multiple types
+of health problems, such as illnesses, injuries, contact injuries, acute
+injuries etc. and you wish to calculate the prevalence for each type.
+
+``` r
+# Here we have some example data
+# note that we assume the date the questionnaire was sent
+# was the day that respondents replied
+d_ostrc = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial, ~gender,
+                  1, "2023-01-07", 1, 0, "Male",
+                  1, "2023-01-14", 1, 1, "Male",
+                  1, "2023-01-21", 0, 0, "Male",
+                  2, "2023-01-07", 1, 1, "Female",
+                  2, "2023-01-14", 1, 1, "Female",
+                  3, "2023-01-07", 0, 0, "Male",
+                  3, "2023-01-14", 0, 0, "Male",
+                  4, "2023-01-07", 1, 0, "Male",
+                  4, "2023-01-14", 1, 0, "Male",
+                  4, "2023-01-21", 0, 0, "Male",
+                  5, "2023-01-07", 1, 0, "Female",
+                  5, "2023-01-14", 1, 0, "Female",
+                  6, "2023-01-07", 1, 1, "Female",
+                  6, "2023-01-14", 1, 1, "Female"
+                  )
+```
+
+Below, we calculate the weekly injury prevalence on the example data,
+with the help of `calc_prevalence`. We need to provide the dataframe,
+the column with participant or player ID, the date or time the OSTRC
+questionnaire was sent, and the health problem column.
+
+``` r
+calc_prevalence(d_ostrc, id_participant, date_sent, injury)
+```
+
+    ## # A tibble: 3 × 4
+    ##   date_sent  n_responses n_cases prev_cases
+    ##   <chr>            <int>   <dbl>      <dbl>
+    ## 1 2023-01-07           6       5      0.833
+    ## 2 2023-01-14           6       5      0.833
+    ## 3 2023-01-21           2       0      0
+
+However, sometimes we are only interested in the mean weekly prevalence.
+`calc_prevalence_mean` provides the mean, standard deviation, and
+confidence intervals. You can choose confidence interval level, and the
+default is at 95%. Note that the function arguments are the same as for
+`calc_prevalence`.
+
+``` r
+calc_prevalence_mean(d_ostrc, id_participant, date_sent, injury)
+```
+
+    ## # A tibble: 1 × 4
+    ##   prev_mean prev_sd prev_ci_lower prev_ci_upper
+    ##       <dbl>   <dbl>         <dbl>         <dbl>
+    ## 1     0.556   0.481        -0.640          1.75
+
+When you have multiple health problem classifications, it can be tedious
+to calculate the prevalence manually for each one. With
+`calc_prevalence_all` you can do them all in one go, with one line of
+code. The name of each health problem column needs to be provided as a
+vector of strings, like in the example below.
+
+``` r
+calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"))
+```
+
+    ## # A tibble: 2 × 5
+    ##   hp_type            prev_mean prev_sd prev_ci_lower prev_ci_upper
+    ##   <chr>                  <dbl>   <dbl>         <dbl>         <dbl>
+    ## 1 injury                 0.556   0.481        -0.640         1.75 
+    ## 2 injury_substantial     0.278   0.255        -0.355         0.910
+
+In some cases, you may wish to calculate prevalences for each category
+in a group. For instance, for males and females separately. Below is an
+example.
+
+``` r
+calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"), "gender")
+```
+
+    ## # A tibble: 4 × 6
+    ##   gender hp_type            prev_mean prev_sd prev_ci_lower prev_ci_upper
+    ##   <chr>  <chr>                  <dbl>   <dbl>         <dbl>         <dbl>
+    ## 1 Male   injury                 0.444   0.385        -0.512         1.40 
+    ## 2 Female injury                 1       0             1             1    
+    ## 3 Male   injury_substantial     0.111   0.192        -0.367         0.589
+    ## 4 Female injury_substantial     0.667   0             0.667         0.667
 
 ### Find and add event IDs
 

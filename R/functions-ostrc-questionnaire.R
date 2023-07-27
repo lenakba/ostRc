@@ -1,6 +1,7 @@
 #' @importFrom magrittr %>%
-#' @importFrom rlang enquo
+#' @importFrom rlang enquo as_string quo_name
 #' @importFrom nplyr nest_mutate
+#' @importFrom confintr ci_proportion
 #' @import tibble
 #' @import dplyr
 
@@ -251,13 +252,49 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
   ostrc_sub
 }
 
+#' Calculate severity scores
+#'
+#' Calculates severity scores based on
+#' calculation in the original OSTRC questionnaire paper: doi.org/10.1136/bjsports-2012-091524.
+#'
+#' @param ostrc_1 vector with responses to OSTRC questionnaire question 1.
+#' @param ostrc_2 vector with responses to OSTRC questionnaire question 2.
+#' @param ostrc_3 vector with responses to OSTRC questionnaire question 3.
+#' @param ostrc_4 vector with responses to OSTRC questionnaire question 4.
+#' @return a vector of severity scores
+#' @examples
+#' q1 = c(17, 8, 8, 0)
+#' q2 = c(25, 17, 17, 0)
+#' q3 = c(25, 8, 17, 0)
+#' q4 = c(25, 8, 0, 0)
+#'
+#' calc_severity_score(q1, q2, q3, q4)
+#' @export
+calc_severity_score = function(ostrc_1, ostrc_2, ostrc_3, ostrc_4){
+
+  possible_scores = c(0, 6, 8, 17, 25, 13, 19, NA)
+  if(!all(ostrc_1 %in% possible_scores) |
+     !all(ostrc_2 %in% possible_scores) |
+     !all(ostrc_3 %in% possible_scores) |
+     !all(ostrc_4 %in% possible_scores)
+  ){
+    stop("One or more values are not coded as an OSTRC score value.
+         Accepted values are 0, 6, 8, 13, 17, 19, 25, NA.
+         If responses are coded with other values, consider using the function `standardize_coding`.")
+  }
+  severity_scores = ostrc_1 + ostrc_2 + ostrc_3 + ostrc_4
+  severity_scores
+}
+
 #' Create health problem case data
 #'
 #' Function that identifies health problems in a longitudinal dataset with
 #' OSTRC questionnaire responses, and returns a dataframe with one row of data
 #' per health problem.
-#' The function also finds and adds
-#' the start date, end date, and duration (in days) of each health problem.
+#' The function also calculates and adds the severity score,
+#' the start date, end date, and duration (in weeks) of each health problem.
+#' This duration assumes the questionnaire was responded to on the same day
+#' it was sent. In other words, that it pertains to the week before the date.
 #' It also adds whether or not the health problem is substantial.
 #'
 #' @param d_ostrc a dateframe with OSTRC questionnaire responses
@@ -272,22 +309,24 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
 #'                Health problems, as identified by OSTRC questionnaire question 1,
 #'                that do not have a unique case ID will throw an error.
 #' @param date_ostrc vector of class date within `d_ostrc` that denotes
-#'                   the day of reply to the OSTRC questionnaire.
+#'                   the day the OSTRC questionnaire was sent,
+#'                   or should have been sent if there was a delay in sending.
 #' @param ostrc_1 vector within `d_ostrc` with responses to OSTRC questionnaire question 1.
 #' @param ostrc_2 vector within `d_ostrc` with responses to OSTRC questionnaire question 2.
 #' @param ostrc_3 vector within `d_ostrc` with responses to OSTRC questionnaire question 3.
 #' @param ostrc_4 vector within `d_ostrc` with responses to OSTRC questionnaire question 4.
 #' @return a dataframe with one entry per health problem.
 #'         Includes the original columns of the input data,
-#'         and also extra columns.
+#'         and also extra columns: start_date, end_date, duration, severity_score, hb_sub.
 #' @examples
-#' d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
-#'                   1, 1, "2023-01-01", 0, 0, 17, 25,
-#'                   1, 1, "2023-01-07", 8, 0, 17, 25,
-#'                   1, 1, "2023-01-19", 8, 0, 17, 0,
-#'                   1, 18, "2022-12-07", 25, 0, 0, 0,
-#'                   2, 2, "2023-01-12", 8, 8, NA, NA,
-#'                   3, 3, "2022-06-05", 0, 0, 0, 0)
+#' d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4, ~hb_type, ~inj_type,
+#'                   1, 1, "2023-01-01", 8, 0, 17, 25, "Injury", "Overuse",
+#'                   1, 1, "2023-01-07", 8, 0, 17, 25, "Injury", "Overuse",
+#'                   1, 1, "2023-01-14", 8, 0, 17, 0, "Injury", "Overuse",
+#'                   1, 18, "2022-12-07", 25, 0, 0, 0, "Illness", NA,
+#'                   2, 2, "2023-01-12", 8, 8, NA, NA, NA, NA,
+#'                   3, 3, "2022-06-05", 0, 0, 0, 0, NA, NA,
+#'                   4, 4, "2023-01-01", 8, 8, 8, 0, "Injury", "Acute")
 #' d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
 #' create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2, q3, q4)
 #' @export
@@ -316,20 +355,50 @@ create_case_data = function(d_ostrc, id_participant, id_case,
        Ensure all health problems have an ID.")
  }
 
+  # throw warning for duplicates
+  d_ids = d_ostrc %>% select(!!id_participant,!!date_ostrc,!!id_case)
+  if (any(duplicated(d_ids))) {
+    n_duplicates = length(which(duplicated(d_ostrc)))
+    warning(
+      paste0(
+        "The data has ",
+        n_duplicates,
+        " duplicate(s),
+        meaning they have the exact same id_participant, date_ostrc, and id_case.
+        The first row was chosen for each of these cases."
+      )
+    )
+  }
+  remove(d_ids)
+
+  # throw warning for missing data
+  ostrc_1_values = d_ostrc %>% pull(!!ostrc_1)
+  if (any(is.na(ostrc_1_values))) {
+    warning(
+        "At least one of the responses to ostrc_1 is missing data."
+    )
+  }
+
   # calculate duration per health problem
   d_cases_unselected = d_ostrc %>%
     filter(!is.na(!!id_case), hp == 1) %>%
     group_by(!!id_participant, !!id_case) %>%
     nest() %>%
     nest_mutate(data,
-                date_start = min(!!date_ostrc, na.rm = TRUE),
-                date_end = max(!!date_ostrc, na.rm = TRUE),
+                date_start = as.Date(min(!!date_ostrc, na.rm = TRUE)),
+                date_end = as.Date(max(!!date_ostrc, na.rm = TRUE)),
                 # Add 1 to ensure that dates with no diff counts as 1 day:
-                duration = as.numeric(difftime(date_end, date_start,
-                                             units = "days"))+1) %>%
+                duration = round(as.numeric(difftime(date_end, date_start,
+                                             units = "weeks"))+1)) %>%
     unnest(cols = c(data)) %>%
     ungroup() %>%
     distinct(!!id_participant, !!id_case, .keep_all = TRUE)
+
+  # calculate severity score
+  d_cases_unselected =
+    d_cases_unselected %>%
+    mutate(severity_score =
+             calc_severity_score(!!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4))
 
   # if find_hp_substantial throws an error,
   # the dataframe will be returned without it
@@ -347,7 +416,7 @@ create_case_data = function(d_ostrc, id_participant, id_case,
       select(!!id_case, !!id_participant,
              date_start, date_end, duration,
              !!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4,
-             everything(), -hp)
+             severity_score, everything(), -hp)
     warning("Substantial health problems could not be found.")
   } else {
     d_cases_unselected = d_cases_unselected %>%
@@ -359,7 +428,7 @@ create_case_data = function(d_ostrc, id_participant, id_case,
       select(!!id_case, !!id_participant,
              date_start, date_end, duration, hp_sub,
              !!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4,
-             everything(), -hp)
+             severity_score, everything(), -hp)
   }
 d_cases
 }

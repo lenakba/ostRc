@@ -4,13 +4,14 @@ library(tidyr)
 library(dplyr)
 library(magrittr)
 library(testthat)
+library(nplyr)
 
 d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
-                  1, 1, "2023-01-01", 0, 0, 17, 25,
+                  1, 1, "2023-01-01", 8, 0, 17, 25,
                   1, 1, "2023-01-07", 8, 0, 17, 25,
-                  1, 1, "2023-01-19", 8, 0, 17, 0,
+                  1, 1, "2023-01-14", 8, 0, 17, 0,
                   1, 18, "2022-12-07", 25, 0, 0, 0,
-                  2, 2, "2023-01-12", 8, 8, NA, NA,
+                  2, 2, "2023-01-12", 8, 8, 0, 0,
                   3, 3, "2022-06-05", 0, 0, 0, 0)
 
 d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
@@ -49,10 +50,10 @@ test_that("Returns a dataset with output columns
 
 test_that("Returns correct dates.",
           {
-            correct_startdate = as.Date(c("2023-01-07", "2022-12-07",
+            correct_startdate = as.Date(c("2023-01-01", "2022-12-07",
                                           "2023-01-12"))
 
-            correct_enddate = as.Date(c("2023-01-19", "2022-12-07",
+            correct_enddate = as.Date(c("2023-01-14", "2022-12-07",
                                           "2023-01-12"))
 
             d_created = create_case_data(d_ostrc, id_participant,
@@ -62,10 +63,10 @@ test_that("Returns correct dates.",
             expect_equal(d_created$date_end, correct_enddate)
           })
 
-test_that("Returns duration of 1 day if health problem
-          started and ended on same day.",
+test_that("Returns duration of 1 week if health problem
+          started and ended on one week.",
           {
-            correct_duration = c(13, 1, 1) # note that the current day is counted as 1
+            correct_duration = c(3, 1, 1) # note that the current week is counted as 1
             d_created = create_case_data(d_ostrc, id_participant,
                                          id_case, date_ostrc,
                                          q1, q2, q3, q4)
@@ -108,22 +109,25 @@ test_that("Throws error if a health problem does not have a case id.",
 test_that("Gives correct substantial health problems
           if older version of OSTRC is used.",
           {
-            d_1_0 = d_ostrc %>% mutate(q3 = c(0,
-                                              0,
-                                              0,
-                                              0, 13, 0),
+            d_1_0 = d_ostrc %>% mutate(q1 = c(17,
+                                              17,
+                                              17,
+                                              0, 8, 0),
+                                       q2 = c(13,
+                                              13,
+                                              13,
+                                              0, 0, 0),
                                        q3 = c(17,
                                            17,
                                            17,
-                                           0, NA, 0))
-            correct_hp_sub = c(1, 0, NA)
+                                           0, 0, 0))
+            correct_hp_sub = c(1, 0)
 
             d_created_oldversion = create_case_data(d_1_0, id_participant,
                                           id_case, date_ostrc,
                                           q1, q2, q3, q4, version = "1.0")
             expect_equal(d_created_oldversion$hp_sub, correct_hp_sub)
           })
-
 
 test_that("Returns error if OSTRC 1 is non-numeric.",
           {
@@ -156,4 +160,40 @@ test_that("will return dataframe without
                              q1, q2, q3, q4))
 
             expect_true(all(names(d_created) != "hp_sub"))
+          })
+
+test_that("Returns warning if there are any duplicates in the original data.",
+          {
+            d_duplicated = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
+                              1, 1, "2023-01-01", 8, 0, 17, 25,
+                              1, 1, "2023-01-07", 8, 0, 17, 25,
+                              1, 1, "2023-01-07", 8, 0, 17, 25)
+            d_duplicated = d_duplicated %>% mutate(date_ostrc = as.Date(date_ostrc))
+
+            expect_warning(create_case_data(d_duplicated, id_participant,
+                                          id_case, date_ostrc,
+                                          q1, q2, q3, q4))
+          })
+
+test_that("Returns warning if the first OSTRC Q has missing data.",
+          {
+            d_missing_q1 = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
+                                   1, 1, "2023-01-01", NA, 0, 17, 25,
+                                   1, 1, "2023-01-07", 8, 0, 17, 25)
+            expect_warning(create_case_data(d_missing_q1, id_participant,
+                                            id_case, date_ostrc,
+                                            q1, q2, q3, q4))
+          })
+
+test_that("Adds a column for severity scores.",
+          {
+            d_test = create_case_data(d_ostrc, id_participant,
+                                      id_case, date_ostrc,
+                                      q1, q2, q3, q4)
+
+            expect_true(any(names(d_test) %in% "severity_score"))
+            for(i in nrow(d_test)) {
+              expect_gte(d_test$severity_score[i], 0)
+              expect_lte(d_test$severity_score[i], 100)
+            }
           })
