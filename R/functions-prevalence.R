@@ -1,4 +1,4 @@
-#' @importFrom magrittr %>%
+#' @importFrom magrittr %>% %<>%
 #' @importFrom rlang enquo as_string quo_name
 #' @importFrom nplyr nest_mutate
 #' @importFrom confintr ci_proportion
