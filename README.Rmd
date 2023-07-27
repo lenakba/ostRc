@@ -186,6 +186,24 @@ d_ostrc = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial,
                   )
 ```
 
+Below, we calculate the weekly injury prevalence on the example data, 
+with the help of `calc_prevalence`. We need to provide the dataframe, 
+the column with participant or player ID, 
+the date or time the OSTRC questionnaire was sent, 
+and the health problem column.
+
+```{r calc_prevalence_example, echo = TRUE, warning = FALSE}
+calc_prevalence(d_ostrc, id_participant, date_sent, injury)
+```
+
+However, sometimes we are only interested in the mean weekly prevalence. 
+`calc_prevalence_mean` provides the mean, standard deviation, and confidence intervals. 
+You can choose confidence interval level, and the default is at 95%. 
+Note that the function arguments are the same as for `calc_prevalence`. 
+
+```{r calc_prevalence_mean_example, echo = TRUE, warning = FALSE}
+calc_prevalence_mean(d_ostrc, id_participant, date_sent, injury)
+```
 
 ### Find and add event IDs
 
