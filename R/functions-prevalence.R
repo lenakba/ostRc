@@ -208,15 +208,14 @@ calc_prevalence_all = function(d_ostrc, id_participant, time, hp_types, ci_level
 
   id_participant = enquo(id_participant)
   time = enquo(time)
-  hp_typs_syms = syms(hp_types)
+  hp_types_syms = syms(hp_types)
 
   l_prevalences = list()
   for(i in 1:length(hp_types)){
-    l_prevalences[[i]] = calc_prevalence_mean(d_ostrc, !!id_participant, !!time, !!hp_typs_syms[[i]], ci_level)
+    l_prevalences[[i]] = calc_prevalence_mean(d_ostrc, !!id_participant, !!time, !!hp_types_syms[[i]], ci_level)
     l_prevalences[[i]] = l_prevalences[[i]] %>% mutate(hp_type = hp_types[[i]])
   }
   d_prevalences = bind_rows(l_prevalences)
   d_prevalences %<>% select(hp_type, starts_with("prev"))
   d_prevalences
 }
-
