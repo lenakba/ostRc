@@ -164,6 +164,29 @@ This is practical in cases where you have multiple types of health problems,
 such as illnesses, injuries, contact injuries, acute injuries etc. 
 and you wish to calculate the prevalence for each type.
 
+```{r calc_prevalence_example_data, echo = TRUE, warning = FALSE}
+# Here we have some example data
+# note that we assume the date the questionnaire was sent
+# was the day that respondents replied
+d_ostrc = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial,
+                  1, "2023-01-07", 1, 0,
+                  1, "2023-01-14", 1, 1,
+                  1, "2023-01-21", 0, 0,
+                  2, "2023-01-07", 1, 1,
+                  2, "2023-01-14", 1, 1,
+                  3, "2023-01-07", 0, 0,
+                  3, "2023-01-14", 0, 0,
+                  4, "2023-01-07", 1, 0,
+                  4, "2023-01-14", 1, 0,
+                  4, "2023-01-21", 0, 0,
+                  5, "2023-01-07", 1, 0,
+                  5, "2023-01-14", 1, 0,
+                  6, "2023-01-07", 1, 1, 
+                  6, "2023-01-14", 1, 1,
+                  )
+```
+
+
 ### Find and add event IDs
 
 Function `add_event_id` finds intervals for each event in a longitudinal dataset, and

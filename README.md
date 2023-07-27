@@ -57,7 +57,7 @@ describes one unique health problem. The function also calculates and
 adds the severity score, startdate, enddate, and the duration (in weeks)
 of each health problem, given the date the OSTRC questionnaire was sent.
 It also identifies substantial health problems, with the help of
-`find_hp_substantial`, and adds a column for these.
+`find_hp_substantial`.
 
 ``` r
 library(tidyverse) # for tribble() and pipe %>% 
@@ -93,9 +93,9 @@ d_cases
     ## # ℹ Use `colnames()` to see all variable names
 
 Any extra columns in the dataset will be included at the end, like
-columns `hb_type` and `inj_typ` in the example above. Below, we show
-what these columns look like after being handled by the
-`create_case_data` function.
+columns `hb_type` and `inj_typ` in the example above. Below, we show how
+these columns appear after being handled by the `create_case_data`
+function.
 
 ``` r
 d_cases %>% select(id_participant, id_case, date_ostrc, hb_type, inj_type)
@@ -175,6 +175,39 @@ find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 ```
 
     ## [1]  1 NA NA  1
+
+### Calculate prevalence
+
+The OSTRC package has three functions for calculating the prevalence.
+`calc_prevalence` calculates the weekly prevalence.
+`calc_prevalence_mean` calculates the mean prevalence, after calculating
+the weekly prevalence with `calc_prevalence`. Finally,
+`calc_prevalence_all` calculates the prevalence of each given health
+problem type. This is practical in cases where you have multiple types
+of health problems, such as illnesses, injuries, contact injuries, acute
+injuries etc. and you wish to calculate the prevalence for each type.
+
+``` r
+# Here we have some example data
+# note that we assume the date the questionnaire was sent
+# was the day that respondents replied
+d_ostrc = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial,
+                  1, "2023-01-07", 1, 0,
+                  1, "2023-01-14", 1, 1,
+                  1, "2023-01-21", 0, 0,
+                  2, "2023-01-07", 1, 1,
+                  2, "2023-01-14", 1, 1,
+                  3, "2023-01-07", 0, 0,
+                  3, "2023-01-14", 0, 0,
+                  4, "2023-01-07", 1, 0,
+                  4, "2023-01-14", 1, 0,
+                  4, "2023-01-21", 0, 0,
+                  5, "2023-01-07", 1, 0,
+                  5, "2023-01-14", 1, 0,
+                  6, "2023-01-07", 1, 1, 
+                  6, "2023-01-14", 1, 1,
+                  )
+```
 
 ### Find and add event IDs
 
