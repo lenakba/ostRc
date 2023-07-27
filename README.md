@@ -191,21 +191,21 @@ injuries etc. and you wish to calculate the prevalence for each type.
 # Here we have some example data
 # note that we assume the date the questionnaire was sent
 # was the day that respondents replied
-d_ostrc = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial,
-                  1, "2023-01-07", 1, 0,
-                  1, "2023-01-14", 1, 1,
-                  1, "2023-01-21", 0, 0,
-                  2, "2023-01-07", 1, 1,
-                  2, "2023-01-14", 1, 1,
-                  3, "2023-01-07", 0, 0,
-                  3, "2023-01-14", 0, 0,
-                  4, "2023-01-07", 1, 0,
-                  4, "2023-01-14", 1, 0,
-                  4, "2023-01-21", 0, 0,
-                  5, "2023-01-07", 1, 0,
-                  5, "2023-01-14", 1, 0,
-                  6, "2023-01-07", 1, 1, 
-                  6, "2023-01-14", 1, 1,
+d_ostrc = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial, ~gender,
+                  1, "2023-01-07", 1, 0, "Male",
+                  1, "2023-01-14", 1, 1, "Male",
+                  1, "2023-01-21", 0, 0, "Male",
+                  2, "2023-01-07", 1, 1, "Female",
+                  2, "2023-01-14", 1, 1, "Female",
+                  3, "2023-01-07", 0, 0, "Male",
+                  3, "2023-01-14", 0, 0, "Male",
+                  4, "2023-01-07", 1, 0, "Male",
+                  4, "2023-01-14", 1, 0, "Male",
+                  4, "2023-01-21", 0, 0, "Male",
+                  5, "2023-01-07", 1, 0, "Female",
+                  5, "2023-01-14", 1, 0, "Female",
+                  6, "2023-01-07", 1, 1, "Female",
+                  6, "2023-01-14", 1, 1, "Female"
                   )
 ```
 
@@ -255,6 +255,22 @@ calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_subs
     ##   <chr>                  <dbl>   <dbl>         <dbl>         <dbl>
     ## 1 injury                 0.556   0.481        -0.640         1.75 
     ## 2 injury_substantial     0.278   0.255        -0.355         0.910
+
+In some cases, you may wish to calculate prevalences for subgroups. This
+can be per season, per sport, or for males and females separately. Below
+is an example.
+
+``` r
+calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"), "gender")
+```
+
+    ## # A tibble: 4 × 6
+    ##   gender hp_type            prev_mean prev_sd prev_ci_lower prev_ci_upper
+    ##   <chr>  <chr>                  <dbl>   <dbl>         <dbl>         <dbl>
+    ## 1 Male   injury                 0.444   0.385        -0.512         1.40 
+    ## 2 Female injury                 1       0             1             1    
+    ## 3 Male   injury_substantial     0.111   0.192        -0.367         0.589
+    ## 4 Female injury_substantial     0.667   0             0.667         0.667
 
 ### Find and add event IDs
 

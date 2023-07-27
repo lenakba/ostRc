@@ -168,21 +168,21 @@ and you wish to calculate the prevalence for each type.
 # Here we have some example data
 # note that we assume the date the questionnaire was sent
 # was the day that respondents replied
-d_ostrc = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial,
-                  1, "2023-01-07", 1, 0,
-                  1, "2023-01-14", 1, 1,
-                  1, "2023-01-21", 0, 0,
-                  2, "2023-01-07", 1, 1,
-                  2, "2023-01-14", 1, 1,
-                  3, "2023-01-07", 0, 0,
-                  3, "2023-01-14", 0, 0,
-                  4, "2023-01-07", 1, 0,
-                  4, "2023-01-14", 1, 0,
-                  4, "2023-01-21", 0, 0,
-                  5, "2023-01-07", 1, 0,
-                  5, "2023-01-14", 1, 0,
-                  6, "2023-01-07", 1, 1, 
-                  6, "2023-01-14", 1, 1,
+d_ostrc = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial, ~gender,
+                  1, "2023-01-07", 1, 0, "Male",
+                  1, "2023-01-14", 1, 1, "Male",
+                  1, "2023-01-21", 0, 0, "Male",
+                  2, "2023-01-07", 1, 1, "Female",
+                  2, "2023-01-14", 1, 1, "Female",
+                  3, "2023-01-07", 0, 0, "Male",
+                  3, "2023-01-14", 0, 0, "Male",
+                  4, "2023-01-07", 1, 0, "Male",
+                  4, "2023-01-14", 1, 0, "Male",
+                  4, "2023-01-21", 0, 0, "Male",
+                  5, "2023-01-07", 1, 0, "Female",
+                  5, "2023-01-14", 1, 0, "Female",
+                  6, "2023-01-07", 1, 1, "Female",
+                  6, "2023-01-14", 1, 1, "Female"
                   )
 ```
 
@@ -213,6 +213,13 @@ like in the example below.
 
 ```{r calc_prevalence_all_example, echo = TRUE, warning = FALSE}
 calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"))
+```
+
+In some cases, you may wish to calculate prevalences for subgroups. This can be per season,
+per sport, or for males and females separately. Below is an example.
+
+```{r calc_prevalence_all_group_example, echo = TRUE, warning = FALSE}
+calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"), "gender")
 ```
 
 ### Find and add event IDs
