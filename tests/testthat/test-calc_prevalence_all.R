@@ -44,7 +44,7 @@ test_that("Returns the same name on the group column as the one given.", {
 
   correct_column_names = c("season", "hp_type", "prev_mean", "prev_sd", "prev_ci_upper", "prev_ci_lower")
   hp_type_vector = c("hp", "hp_sub")
-  test_names = names(calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, season))
+  test_names = names(calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, "season"))
 
   expect_true(all(correct_column_names %in% test_names))
 })
@@ -53,7 +53,7 @@ test_that("Group column is the first group provided.", {
 
   correct_column_names = c("season", "hp_type", "prev_mean", "prev_sd", "prev_ci_upper", "prev_ci_lower")
   hp_type_vector = c("hp", "hp_sub")
-  test_names = names(calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, season))
+  test_names = names(calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, "season"))
 
   expect_true(all(correct_column_names %in% test_names))
 })
@@ -64,13 +64,13 @@ test_that("Returns 1 row of data per hp_type, per category in the given group.",
    n_cats = length(unique(d_ostrc$season))
    n_rows_expected = n_cats*n_types
 
-   d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, season)
+   d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, "season")
    expect_equal(nrow(d_test), n_rows_expected)
  })
 
 test_that("The group is the first column in the returned data.", {
   hp_type_vector = c("hp", "hp_sub")
-  d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, season)
+  d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, "season")
   pos = which(names(d_test)=="season")
   expect_equal(pos, 1)
 })
@@ -95,7 +95,7 @@ test_that("The function provides 0 for groups that do not have any health proble
                     3, 2, 1, 0, 2
   )
 
-  d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, season)
-  d_test_filtered = d_test %>% filter(season == 2)
+  d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, "season")
+  d_test_filtered = d_test %>% filter(season == 2, hp_type == "hp_sub")
   expect_equal(d_test_filtered$prev_mean, 0)
 })
