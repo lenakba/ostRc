@@ -240,6 +240,22 @@ calc_prevalence_mean(d_ostrc, id_participant, date_sent, injury)
     ##       <dbl>   <dbl>         <dbl>         <dbl>
     ## 1     0.556   0.481        -0.640          1.75
 
+When you have multiple health problem classifications, it can be tedious
+to calculate the prevalence manually for each one. With
+`calc_prevalence_all` you can do them all in one go, with one line of
+code. The name of each health problem column needs to be provided as a
+vector of strings, like in the example below.
+
+``` r
+calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"))
+```
+
+    ## # A tibble: 2 × 5
+    ##   hp_type            prev_mean prev_sd prev_ci_lower prev_ci_upper
+    ##   <chr>                  <dbl>   <dbl>         <dbl>         <dbl>
+    ## 1 injury                 0.556   0.481        -0.640         1.75 
+    ## 2 injury_substantial     0.278   0.255        -0.355         0.910
+
 ### Find and add event IDs
 
 Function `add_event_id` finds intervals for each event in a longitudinal

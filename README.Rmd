@@ -205,6 +205,16 @@ Note that the function arguments are the same as for `calc_prevalence`.
 calc_prevalence_mean(d_ostrc, id_participant, date_sent, injury)
 ```
 
+When you have multiple health problem classifications, it can be
+tedious to calculate the prevalence manually for each one. With 
+`calc_prevalence_all` you can do them all in one go, with one line of code.
+The name of each health problem column needs to be provided as a vector of strings, 
+like in the example below.
+
+```{r calc_prevalence_all_example, echo = TRUE, warning = FALSE}
+calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"))
+```
+
 ### Find and add event IDs
 
 Function `add_event_id` finds intervals for each event in a longitudinal dataset, and

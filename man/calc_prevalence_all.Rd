@@ -53,5 +53,5 @@ d_ostrc = tribble(~id_participant, ~week_nr, ~hp, ~hp_sub, ~season,
                  3, 2, 1, 1, 2
                  )
 hp_types_vector = c("hp", "hp_sub")
-calc_prevalence_mean(d_ostrc, id_participant, week_nr, hp_types_vector)
+calc_prevalence_all(d_ostrc, id_participant, week_nr, hp_types_vector)
 }
