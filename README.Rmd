@@ -154,6 +154,15 @@ ostrc_3_missing = c(NA, 8, NA, NA)
 find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 ```
 
+### Calculate prevalence
+
+The OSTRC package has three functions for calculating the prevalence. 
+`calc_prevalence` calculates the weekly prevalence. `calc_prevalence_mean` 
+calculates the mean prevalence, after calculating the weekly prevalence with `calc_prevalence`.
+Finally, `calc_prevalence_all` calculates the prevalence of each given health problem type. 
+This is practical in cases where you have multiple types of health problems, 
+such as illnesses, injuries, contact injuries, acute injuries etc. 
+and you wish to calculate the prevalence for each type.
 
 ### Find and add event IDs
 
