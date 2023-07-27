@@ -94,8 +94,43 @@ test_that("The function provides 0 for groups that do not have any health proble
                     3, 1, 1, 0, 2,
                     3, 2, 1, 0, 2
   )
-
-  d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, "season")
+  d_test = suppressWarnings(calc_prevalence_all(d_ostrc, id_participant,
+                                                day_nr, hp_type_vector, "season"))
   d_test_filtered = d_test %>% filter(season == 2, hp_type == "hp_sub")
   expect_equal(d_test_filtered$prev_mean, 0)
+})
+
+test_that("Returns a number for each combination of group and injury type.", {
+
+  hp_type_vector = c("hp", "hp_sub")
+  d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, "season")
+
+  expect_equal(nrow(d_test %>% filter(season == 1, hp_type == "hp")), 1)
+  expect_equal(nrow(d_test %>% filter(season == 1, hp_type == "hp_sub")), 1)
+
+})
+
+test_that("Returns a dataset with more than two types of health problem types if asked.", {
+
+  d_ostrc = tribble(~id_participant, ~day_nr, ~hp, ~hp_sub, ~inj, ~season,
+                    1, 1, 1, 0, 1, 1,
+                    1, 2, 1, 1, 1, 1,
+                    1, 3, 0, 0, 0, 1,
+                    2, 1, 1, 1, 0, 1,
+                    2, 2, 1, 1, 0, 1,
+                    3, 1, 0, 0, 0, 1,
+                    3, 2, 0, 0, 0, 1,
+                    1, 1, 1, 0, 1, 2,
+                    1, 2, 1, 0, 1, 2,
+                    1, 3, 0, 0, 0, 2,
+                    2, 1, 1, 1, 1, 2,
+                    2, 2, 1, 0, 1, 2,
+                    3, 1, 1, 0, 0, 2,
+                    3, 2, 1, 0, 0, 2
+  )
+
+  hp_type_vector = c("hp", "hp_sub", "inj")
+  d_test = calc_prevalence_all(d_ostrc, id_participant, day_nr, hp_type_vector, "season")
+
+  expect_equal(nrow(d_test %>% filter(season == 1, hp_type == "inj")), 1)
 })
