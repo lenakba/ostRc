@@ -1,7 +1,7 @@
 #' @importFrom magrittr %>% %<>%
 #' @importFrom rlang enquo as_string quo_name
 #' @importFrom nplyr nest_mutate
-#' @importFrom confintr ci_proportion
+#' @importFrom purrr pmap
 #' @import tibble
 #' @import dplyr
 
@@ -204,12 +204,13 @@ calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level
 #' hp_types_vector = c("hp", "hp_sub")
 #' calc_prevalence_all(d_ostrc, id_participant, week_nr, hp_types_vector)
 #' @export
-calc_prevalence_all = function(d_ostrc, id_participant, time, hp_types, ci_level = 0.95){
+calc_prevalence_all = function(d_ostrc, id_participant, time, hp_types, group = NULL, ci_level = 0.95){
 
   id_participant = enquo(id_participant)
   time = enquo(time)
   hp_types_syms = syms(hp_types)
 
+ if(is.null(group)){
   l_prevalences = list()
   for(i in 1:length(hp_types)){
     l_prevalences[[i]] = calc_prevalence_mean(d_ostrc, !!id_participant, !!time, !!hp_types_syms[[i]], ci_level)
@@ -217,5 +218,41 @@ calc_prevalence_all = function(d_ostrc, id_participant, time, hp_types, ci_level
   }
   d_prevalences = bind_rows(l_prevalences)
   d_prevalences %<>% select(hp_type, starts_with("prev"))
+ } else {
+  group = syms(group)
+  d_nested = d_ostrc %>% group_by(!!!group) %>%
+     nest()
+  n_groups = length(d_nested$data)
+  d_grouping_var = d_nested %>% select(-data) %>% ungroup()
+  var_name = names(d_grouping_var)
+
+  for(i in 1:length(d_nested$data)){
+    group_id = d_vars %>% slice(i) %>% pull
+    d_nested$data[[i]][var_name] = rep(group_id,
+                                       nrow(d_nested$data[[i]]))
+  }
+
+  l_datasets = rep(d_nested$data, length(hp_types_syms))
+  l_hp_types = rep(hp_types_syms, n_groups)
+  l_hp_names = rep(as.list(hp_types), n_groups)
+
+  pos = match(l_hp_types, hp_types_syms)
+  pos_wanted = sort(pos)
+  l_hp_types = l_hp_types[pos_wanted]
+  l_hp_names = l_hp_names[pos_wanted]
+
+  list_of_lists = list(x = l_hp_types, y = l_datasets, z = l_hp_names)
+
+  d_prevalences = purrr::pmap(list_of_lists,
+                              function(x, y, z) {
+                                d_prevs = calc_prevalence_mean(y, !!id_participant, !!time, !!x) %>%
+                                  mutate(hp_type = z)
+
+                                d_prevs[var_name] = y[var_name][1,]
+                                d_prevs
+                              }
+  ) %>% bind_rows
+  d_prevalences %<>% select(all_of(var_name), hp_type, starts_with("prev"))
+ }
   d_prevalences
 }
