@@ -356,7 +356,9 @@ create_case_data = function(d_ostrc, id_participant, id_case,
  }
 
   # throw warning for duplicates
-  d_ids = d_ostrc %>% select(!!id_participant,!!date_ostrc,!!id_case)
+  d_ids = d_ostrc %>%
+    select(!!id_participant,!!date_ostrc,!!id_case) %>%
+    filter(!is.na(!!id_case))
   if (any(duplicated(d_ids))) {
     n_duplicates = length(which(duplicated(d_ostrc)))
     warning(
