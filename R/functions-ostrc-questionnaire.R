@@ -356,7 +356,9 @@ create_case_data = function(d_ostrc, id_participant, id_case,
  }
 
   # throw warning for duplicates
-  d_ids = d_ostrc %>% select(!!id_participant,!!date_ostrc,!!id_case)
+  d_ids = d_ostrc %>%
+    select(!!id_participant,!!date_ostrc,!!id_case) %>%
+    filter(!is.na(!!id_case))
   if (any(duplicated(d_ids))) {
     n_duplicates = length(which(duplicated(d_ostrc)))
     warning(
@@ -376,6 +378,20 @@ create_case_data = function(d_ostrc, id_participant, id_case,
   if (any(is.na(ostrc_1_values))) {
     warning(
         "At least one of the responses to ostrc_1 is missing data."
+    )
+  }
+
+  id_participant_values = d_ostrc %>% pull(!!id_participant)
+  if (any(is.na(id_participant_values))) {
+    warning(
+      "At least one of the participant IDs is missing data."
+    )
+  }
+
+  date_ostrc_values = d_ostrc %>% pull(!!date_ostrc)
+  if (any(is.na(date_ostrc_values))) {
+    warning(
+      "At least one of the OSTRC dates is missing data."
     )
   }
 
