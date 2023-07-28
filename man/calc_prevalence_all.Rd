@@ -32,7 +32,9 @@ This can be health problem (1/0), injury (1/0),
 illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
 to calculate the prevalence of.}
 
-\item{group}{Optional. A subgroup variable provided as a string, such as "season", "gender" etc.
+\item{group}{Optional. A strins representing a variable name of
+a variable within `d_ostrc`. The variable must be
+class categorical or factor. Examples are "season", "gender" etc.
 Output will be calculated per subgroup.}
 
 \item{ci_level}{The level of the confidence intervals. Default is 0.95 for 95% confidence intervals.}
