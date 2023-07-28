@@ -381,6 +381,20 @@ create_case_data = function(d_ostrc, id_participant, id_case,
     )
   }
 
+  id_participant_values = d_ostrc %>% pull(!!id_participant)
+  if (any(is.na(id_participant_values))) {
+    warning(
+      "At least one of the participant IDs is missing data."
+    )
+  }
+
+  date_ostrc_values = d_ostrc %>% pull(!!date_ostrc)
+  if (any(is.na(date_ostrc_values))) {
+    warning(
+      "At least one of the OSTRC dates is missing data."
+    )
+  }
+
   # calculate duration per health problem
   d_cases_unselected = d_ostrc %>%
     filter(!is.na(!!id_case), hp == 1) %>%
