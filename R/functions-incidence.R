@@ -101,11 +101,20 @@ calc_incidence = function(d_ostrc, id_participant, time, hp_type){
     mutate(hp_type_atleast1 = ifelse(hp_type_n > 0, 1, 0)) %>%
     ungroup()
 
+  # find out if previous time period had a 1 or 0
+  d_hp_type_per_id_per_time =
+    d_hp_type_per_id_per_time %>%
+    mutate(previous_time_status = lag(hp_type_atleast1),
+           new_case = case_when(previous_time_status == 0 & hp_type_atleast1 == 1 ~ 1,
+                                previous_time_status == 1 ~ 0,
+                                hp_type_atleast1 == 0 ~ 0,
+                                is.na(previous_time_status) & hp_type_atleast1 == 1 ~ NA_real_))
+
   # calculate incidence
   d_incidence = d_hp_type_per_id_per_time %>%
     group_by(!!time) %>%
     summarise(n_responses = n(),
-              n_cases = sum(hp_type_atleast1, na.rm = TRUE),
+              n_cases = sum(new_case, na.rm = TRUE),
               inc_cases = n_cases/n_responses) %>%
     ungroup()
   d_incidence
