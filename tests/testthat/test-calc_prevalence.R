@@ -136,3 +136,19 @@ test_that("Throws warning if prevalence is constant.", {
                       3, 2, 1)
   expect_warning(calc_prevalence(d_fewrows, id_participant, day_nr, hp))
 })
+
+test_that("If the number of cases is 0, will show up as 0% prevalence.", {
+  d_zero_at_day2 = tribble(~id_participant, ~day_nr, ~hp,
+                      1, 1, 1,
+                      1, 2, 0,
+                      1, 3, 1,
+                      2, 1, 1,
+                      2, 2, 0,
+                      3, 1, 1,
+                      3, 2, 0)
+  n_cases = c(3, 0, 1)
+  prev_cases = c(1, 0, 1)
+  d_test = calc_prevalence(d_zero_at_day2, id_participant, day_nr, hp)
+  expect_equal(d_test$n_cases, n_cases)
+  expect_equal(d_test$prev_cases, prev_cases)
+})
