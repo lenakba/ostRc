@@ -2,6 +2,8 @@
 
 export(add_event_id)
 export(calc_incidence)
+export(calc_incidence_all)
+export(calc_incidence_mean)
 export(calc_prevalence)
 export(calc_prevalence_all)
 export(calc_prevalence_mean)
