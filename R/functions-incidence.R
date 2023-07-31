@@ -127,7 +127,7 @@ calc_incidence = function(d_ostrc, id_participant, time, hp_type){
     group_by(!!time) %>%
     summarise(n_responses = n(),
               n_new_cases = sum(new_case, na.rm = TRUE),
-              inc_cases = ifelse(n_new_cases == 0, n_new_cases, n_new_cases/n_responses)) %>%
+              inc_cases = n_new_cases/n_responses) %>%
     ungroup()
 
   d_incidence = bind_rows(d_incidence_firsttime, d_incidence_resttime)
