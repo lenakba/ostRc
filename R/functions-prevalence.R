@@ -109,7 +109,7 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
   d_prevalence
 }
 
-#' Calculate prevalance mean
+#' Calculate prevalence mean
 #'
 #' A function to calculate the mean prevalence per given time period, such as per week.
 #'
@@ -124,7 +124,7 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
 #'                and anything that is not the type of health problem as 0.
 #'                This can be health problem (1/0), injury (1/0),
 #'                illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
-#'                to calculate the prevalance on.
+#'                to calculate the prevalence of.
 #' @param ci_level The level of the confidence intervals. Default is 0.95 for 95% confidence intervals.
 #' @examples
 #' library(tidyr)
