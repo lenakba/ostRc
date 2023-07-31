@@ -152,9 +152,9 @@ calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level
 
   # calc CIs
   count = nrow(d_prevalence)
-  se = sd(d_prevalence$prev_cases) / sqrt(count)
-  ci_lower = mean(d_prevalence$prev_cases) - (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
-  ci_upper = mean(d_prevalence$prev_cases) + (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
+  se = sd(d_prevalence$prev_cases, na.rm = TRUE) / sqrt(count)
+  ci_lower = mean(d_prevalence$prev_cases, na.rm = TRUE) - (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
+  ci_upper = mean(d_prevalence$prev_cases, na.rm = TRUE) + (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
 
   d_prevmean = d_prevmean %>% mutate(prev_ci_lower = ci_lower, prev_ci_upper = ci_upper)
   d_prevmean

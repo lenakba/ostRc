@@ -177,9 +177,9 @@ calc_incidence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level 
 
   # calc CIs
   count = nrow(d_incidence)
-  se = sd(d_incidence$inc_cases) / sqrt(count)
-  ci_lower = mean(d_incidence$inc_cases) - (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
-  ci_upper = mean(d_incidence$inc_cases) + (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
+  se = sd(d_incidence$inc_cases, na.rm = TRUE) / sqrt(count)
+  ci_lower = mean(d_incidence$inc_cases, na.rm = TRUE) - (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
+  ci_upper = mean(d_incidence$inc_cases, na.rm = TRUE) + (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
 
   d_incmean = d_incmean %>% mutate(inc_ci_lower = ci_lower, inc_ci_upper = ci_upper)
   d_incmean
