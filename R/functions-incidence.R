@@ -101,7 +101,7 @@ calc_incidence = function(d_ostrc, id_participant, time, hp_type){
     mutate(hp_type_atleast1 = ifelse(hp_type_n > 0, 1, 0)) %>%
     ungroup()
 
-  # find out if incious time period had a 1 or 0
+  # find out if previous time period had a 1 or 0
   d_hp_type_per_id_per_time =
     d_hp_type_per_id_per_time %>%
     group_by(!!id_participant) %>%
