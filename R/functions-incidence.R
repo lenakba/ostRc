@@ -184,3 +184,104 @@ calc_incidence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level 
   d_incmean = d_incmean %>% mutate(inc_ci_lower = ci_lower, inc_ci_upper = ci_upper)
   d_incmean
 }
+
+#' Calculate incidence all
+#'
+#' A function to calculate the mean incidence for each health problem type
+#' given in a vector of health problems types. For instance, to provide the
+#' incidence of health problems, substantial health problems, injuries, substantial injuries,
+#' contact vs. noncontact injuries and so on.
+#' Uses `calc_incidence_mean` to calculate for each type.
+#'
+#' @param d_ostrc a dateframe with OSTRC questionnaire responses
+#' @param id_participant vector within `d_ostrc` that identifies
+#'                       a person, athlete, participant, etc.
+#' @param time vector within `d_ostrc` that identifies a time period,
+#'             such as a vector of dates or week-numbers. The incidences will be calculated per
+#'             value of this vector, such as per week.
+#'             Then, the mean of these incidences will be calculated, resulting in a single number.
+#' @param hp_types a vector of strings representing variable names of
+#'                health problem variables within `d_ostrc`. These variables must classify a
+#'                type of health problem as 1,
+#'                and anything that is not the type of health problem as 0.
+#'                This can be health problem (1/0), injury (1/0),
+#'                illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
+#'                to calculate the incidence of.
+#' @param group Optional. A strins representing a variable name of
+#'                a variable within `d_ostrc`. The variable must be
+#'                class categorical or factor. Examples are "season", "gender" etc.
+#'                Output will be calculated per subgroup.
+#' @param ci_level The level of the confidence intervals. Default is 0.95 for 95% confidence intervals.
+#' @examples
+#' library(tidyr)
+#' d_ostrc = tribble(~id_participant, ~week_nr, ~hp, ~hp_sub, ~season,
+#'                  1, 1, 1, 0, 1,
+#'                  1, 2, 1, 1, 1,
+#'                  1, 3, 0, 0, 1,
+#'                  2, 1, 1, 1, 1,
+#'                  2, 2, 1, 1, 1,
+#'                  3, 1, 0, 0, 1,
+#'                  3, 2, 0, 0, 1,
+#'                  1, 1, 1, 0, 2,
+#'                  1, 2, 1, 0, 2,
+#'                  1, 3, 0, 0, 2,
+#'                  2, 1, 1, 0, 2,
+#'                  2, 2, 1, 0, 2,
+#'                  3, 1, 1, 1, 2,
+#'                  3, 2, 1, 1, 2
+#'                  )
+#' hp_types_vector = c("hp", "hp_sub")
+#' calc_incidence_all(d_ostrc, id_participant, week_nr, hp_types_vector)
+#' @export
+calc_incidence_all = function(d_ostrc, id_participant, time, hp_types, group = NULL, ci_level = 0.95){
+
+  id_participant = enquo(id_participant)
+  time = enquo(time)
+  hp_types_syms = syms(hp_types)
+
+  if(is.null(group)){
+    l_incidences = list()
+    for(i in 1:length(hp_types)){
+      l_incidences[[i]] = calc_incidence_mean(d_ostrc, !!id_participant, !!time, !!hp_types_syms[[i]], ci_level)
+      l_incidences[[i]] = l_incidences[[i]] %>% mutate(hp_type = hp_types[[i]])
+    }
+    d_incidences = bind_rows(l_incidences)
+    d_incidences %<>% select(hp_type, starts_with("inc"))
+  } else {
+    group = syms(group)
+    d_nested = d_ostrc %>% group_by(!!!group) %>%
+      nest()
+    n_groups = length(d_nested$data)
+    d_grouping_var = d_nested %>% select(-data) %>% ungroup()
+    var_name = names(d_grouping_var)
+
+    for(i in 1:length(d_nested$data)){
+      group_id = d_grouping_var %>% slice(i) %>% pull
+      d_nested$data[[i]][var_name] = rep(group_id,
+                                         nrow(d_nested$data[[i]]))
+    }
+
+    l_datasets = rep(d_nested$data, length(hp_types_syms))
+    l_hp_types = rep(hp_types_syms, n_groups)
+    l_hp_names = rep(as.list(hp_types), n_groups)
+
+    pos = match(l_hp_types, hp_types_syms)
+    pos_wanted = sort(pos)
+    l_hp_types = l_hp_types[pos_wanted]
+    l_hp_names = l_hp_names[pos_wanted]
+
+    list_of_lists = list(x = l_hp_types, y = l_datasets, z = l_hp_names)
+
+    d_incidences = purrr::pmap(list_of_lists,
+                                function(x, y, z) {
+                                  d_incs = calc_incidence_mean(y, !!id_participant, !!time, !!x) %>%
+                                    mutate(hp_type = z)
+
+                                  d_incs[var_name] = y[var_name][1,]
+                                  d_incs
+                                }
+    ) %>% bind_rows
+    d_incidences %<>% select(all_of(var_name), hp_type, starts_with("inc"))
+  }
+  d_incidences
+}
