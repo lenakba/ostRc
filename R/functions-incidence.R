@@ -101,15 +101,15 @@ calc_incidence = function(d_ostrc, id_participant, time, hp_type){
     mutate(hp_type_atleast1 = ifelse(hp_type_n > 0, 1, 0)) %>%
     ungroup()
 
-  # find out if previous time period had a 1 or 0
+  # find out if incious time period had a 1 or 0
   d_hp_type_per_id_per_time =
     d_hp_type_per_id_per_time %>%
     group_by(!!id_participant) %>%
-    mutate(previous_time_status = lag(hp_type_atleast1),
-           new_case = case_when(previous_time_status == 0 & hp_type_atleast1 == 1 ~ 1,
-                                previous_time_status == 1 ~ 0,
+    mutate(incious_time_status = lag(hp_type_atleast1),
+           new_case = case_when(incious_time_status == 0 & hp_type_atleast1 == 1 ~ 1,
+                                incious_time_status == 1 ~ 0,
                                 hp_type_atleast1 == 0 ~ 0,
-                                is.na(previous_time_status) & hp_type_atleast1 == 1 ~ NA_real_))
+                                is.na(incious_time_status) & hp_type_atleast1 == 1 ~ NA_real_))
 
   # different calculation if it is the first timepoint of data or not
   d_first_time = d_hp_type_per_id_per_time %>% filter(!!time == min(!!time))
@@ -132,4 +132,55 @@ calc_incidence = function(d_ostrc, id_participant, time, hp_type){
 
   d_incidence = bind_rows(d_incidence_firsttime, d_incidence_resttime)
   d_incidence
+}
+
+#' Calculate incidence mean
+#'
+#' A function to calculate the mean incidence per given time period, such as per week.
+#'
+#' @param d_ostrc a dateframe with OSTRC questionnaire responses
+#' @param id_participant vector within `d_ostrc` that identifies
+#'                       a person, athlete, participant, etc.
+#' @param time vector within `d_ostrc` that identifies a time period,
+#'             such as a vector of dates or week-numbers. The incidences will be calculated per
+#'             value of this vector, such as per week.
+#'             Then, the mean of these incidences will be calculated, resulting in a single number.
+#' @param hp_type a binary vector within `d_ostrc` which classifies a type of health problem as 1,
+#'                and anything that is not the type of health problem as 0.
+#'                This can be health problem (1/0), injury (1/0),
+#'                illness (1/0), acute injury (1/0) or any other health problem type that the user wishes
+#'                to calculate the incidence of.
+#' @param ci_level The level of the confidence intervals. Default is 0.95 for 95% confidence intervals.
+#' @examples
+#' library(tidyr)
+#' d_ostrc = tribble(~id_participant, ~week_nr, ~hp,
+#'                  1, 1, 1,
+#'                  1, 1, 1,
+#'                  1, 2, 0,
+#'                  2, 1, 0,
+#'                  2, 2, 1,
+#'                  3, 1, 0,
+#'                  3, 2, 0)
+#' calc_incidence_mean(d_ostrc, id_participant, week_nr, hp)
+#' @export
+calc_incidence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level = 0.95){
+  id_participant = enquo(id_participant)
+  time = enquo(time)
+  hp_type = enquo(hp_type)
+
+  d_incidence = calc_incidence(d_ostrc, !!id_participant, !!time, !!hp_type)
+
+  # calc incidences
+  d_incmean = d_incidence %>%
+    summarise(inc_mean = mean(inc_cases, na.rm = TRUE),
+              inc_sd = sd(inc_cases, na.rm = TRUE))
+
+  # calc CIs
+  count = nrow(d_incidence)
+  se = sd(d_incidence$inc_cases) / sqrt(count)
+  ci_lower = mean(d_incidence$inc_cases) - (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
+  ci_upper = mean(d_incidence$inc_cases) + (qt(1 - ((1 - ci_level) / 2), count - 1) * se)
+
+  d_incmean = d_incmean %>% mutate(inc_ci_lower = ci_lower, inc_ci_upper = ci_upper)
+  d_incmean
 }
