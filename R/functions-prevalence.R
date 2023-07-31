@@ -33,6 +33,8 @@ NULL
 #' calc_prevalence(d_ostrc, id_participant, week_nr, hp)
 #' @export
 calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
+  options(dplyr.summarise.inform = FALSE)
+
   id_participant = enquo(id_participant)
   time = enquo(time)
   time_name = rlang::as_string(quo_name(time))
@@ -139,6 +141,8 @@ calc_prevalence = function(d_ostrc, id_participant, time, hp_type){
 #' calc_prevalence_mean(d_ostrc, id_participant, week_nr, hp)
 #' @export
 calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level = 0.95){
+  options(dplyr.summarise.inform = FALSE)
+
   id_participant = enquo(id_participant)
   time = enquo(time)
   hp_type = enquo(hp_type)
@@ -209,6 +213,7 @@ calc_prevalence_mean = function(d_ostrc, id_participant, time, hp_type, ci_level
 #' calc_prevalence_all(d_ostrc, id_participant, week_nr, hp_types_vector)
 #' @export
 calc_prevalence_all = function(d_ostrc, id_participant, time, hp_types, group = NULL, ci_level = 0.95){
+  options(dplyr.summarise.inform = FALSE)
 
   id_participant = enquo(id_participant)
   time = enquo(time)
