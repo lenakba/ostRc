@@ -196,16 +196,18 @@ d_ostrc = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial, ~ge
                   1, "2023-01-14", 1, 1, "Male",
                   1, "2023-01-21", 0, 0, "Male",
                   2, "2023-01-07", 1, 1, "Female",
-                  2, "2023-01-14", 1, 1, "Female",
-                  3, "2023-01-07", 0, 0, "Male",
+                  2, "2023-01-14", 0, 1, "Female",
+                  2, "2023-01-21", 1, 0, "Female",
+                  3, "2023-01-07", 1, 0, "Male",
                   3, "2023-01-14", 0, 0, "Male",
-                  4, "2023-01-07", 1, 0, "Male",
+                  4, "2023-01-07", 0, 0, "Male",
                   4, "2023-01-14", 1, 0, "Male",
-                  4, "2023-01-21", 0, 0, "Male",
+                  4, "2023-01-21", 1, 0, "Male",
                   5, "2023-01-07", 1, 0, "Female",
                   5, "2023-01-14", 1, 0, "Female",
                   6, "2023-01-07", 1, 1, "Female",
-                  6, "2023-01-14", 1, 1, "Female"
+                  6, "2023-01-14", 1, 1, "Female",
+                  6, "2023-01-21", 1, 0, "Female",
                   )
 ```
 
@@ -222,8 +224,8 @@ calc_prevalence(d_ostrc, id_participant, date_sent, injury)
     ##   date_sent  n_responses n_cases prev_cases
     ##   <chr>            <int>   <dbl>      <dbl>
     ## 1 2023-01-07           6       5      0.833
-    ## 2 2023-01-14           6       5      0.833
-    ## 3 2023-01-21           2       0      0
+    ## 2 2023-01-14           6       4      0.667
+    ## 3 2023-01-21           4       3      0.75
 
 However, sometimes we are only interested in the mean weekly prevalence.
 `calc_prevalence_mean` provides the mean, standard deviation, and
@@ -238,7 +240,7 @@ calc_prevalence_mean(d_ostrc, id_participant, date_sent, injury)
     ## # A tibble: 1 × 4
     ##   prev_mean prev_sd prev_ci_lower prev_ci_upper
     ##       <dbl>   <dbl>         <dbl>         <dbl>
-    ## 1     0.556   0.481        -0.640          1.75
+    ## 1      0.75  0.0833         0.543         0.957
 
 When you have multiple health problem classifications, it can be tedious
 to calculate the prevalence manually for each one. With
@@ -253,8 +255,8 @@ calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_subs
     ## # A tibble: 2 × 5
     ##   hp_type            prev_mean prev_sd prev_ci_lower prev_ci_upper
     ##   <chr>                  <dbl>   <dbl>         <dbl>         <dbl>
-    ## 1 injury                 0.556   0.481        -0.640         1.75 
-    ## 2 injury_substantial     0.278   0.255        -0.355         0.910
+    ## 1 injury                 0.75   0.0833         0.543         0.957
+    ## 2 injury_substantial     0.278  0.255         -0.355         0.910
 
 In some cases, you may wish to calculate prevalences for each category
 in a group. For instance, for males and females separately. Below is an
@@ -267,10 +269,88 @@ calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_subs
     ## # A tibble: 4 × 6
     ##   gender hp_type            prev_mean prev_sd prev_ci_lower prev_ci_upper
     ##   <chr>  <chr>                  <dbl>   <dbl>         <dbl>         <dbl>
-    ## 1 Male   injury                 0.444   0.385        -0.512         1.40 
-    ## 2 Female injury                 1       0             1             1    
-    ## 3 Male   injury_substantial     0.111   0.192        -0.367         0.589
-    ## 4 Female injury_substantial     0.667   0             0.667         0.667
+    ## 1 Male   injury                 0.611  0.0962         0.372         0.850
+    ## 2 Female injury                 0.889  0.192          0.411         1.37 
+    ## 3 Male   injury_substantial     0.111  0.192         -0.367         0.589
+    ## 4 Female injury_substantial     0.444  0.385         -0.512         1.40
+
+### Calculate incidence
+
+Similar to prevalence, calculating incidence also has three functions:
+`calc_incidence`, `calc_incidence_mean` and `calc_incidence_all`. The
+functions check whether or not the participant had a health problem of
+the given type in the previous response. If they did, any response of a
+continued health problem will not be considered a new case. If they did
+not, a response of a health problem will be considered a new health
+problem, and enter the numerator of the incidence calculation. Weekly
+incidences can therefore only be calculated if there are no gaps in the
+data, i.e. if the questionnaire was sent bi-weekly. If the questionnaire
+was sent monthly, this will provide a rough estimate of the monthly
+incidence.
+
+Using the same example as the prevalence calculations, here is the
+weekly incidence:
+
+``` r
+calc_incidence(d_ostrc, id_participant, date_sent, injury)
+```
+
+    ## # A tibble: 3 × 4
+    ##   date_sent  n_responses n_new_cases inc_cases
+    ##   <chr>            <int>       <dbl>     <dbl>
+    ## 1 2023-01-07           6          NA    NA    
+    ## 2 2023-01-14           6           1     0.167
+    ## 3 2023-01-21           4           1     0.25
+
+Note that the first row of incidence is missing data. This is because we
+do not have health problem information about any of the individuals
+before the study started. We therefore cannot know if a health problem
+response is a new or continued health problem. The only exception is if
+all of the responses are 0 for no health problem, then we can know for
+sure that the incidence is 0%. Below is an example.
+
+``` r
+ d_0atstart = tribble(~id_participant, ~week_nr, ~hp,
+                              1, 1, 0,
+                              1, 2, 0,
+                              1, 3, 1,
+                              2, 1, 0,
+                              2, 2, 0,
+                              2, 3, 1)
+calc_incidence(d_0atstart, id_participant, week_nr, hp)
+```
+
+    ## # A tibble: 3 × 4
+    ##   week_nr n_responses n_new_cases inc_cases
+    ##     <dbl>       <int>       <dbl>     <dbl>
+    ## 1       1           2           0         0
+    ## 2       2           2           0         0
+    ## 3       3           2           2         1
+
+As with prevalence, we can calculate the mean incidence.
+
+``` r
+calc_incidence_mean(d_ostrc, id_participant, date_sent, injury)
+```
+
+    ## # A tibble: 1 × 4
+    ##   inc_mean inc_sd inc_ci_lower inc_ci_upper
+    ##      <dbl>  <dbl>        <dbl>        <dbl>
+    ## 1    0.208 0.0589       0.0620        0.355
+
+And obtain the mean incidence for each health problem type, for a group.
+
+``` r
+calc_incidence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"), "gender")
+```
+
+    ## # A tibble: 4 × 6
+    ##   gender hp_type            inc_mean inc_sd inc_ci_lower inc_ci_upper
+    ##   <chr>  <chr>                 <dbl>  <dbl>        <dbl>        <dbl>
+    ## 1 Male   injury                0.167  0.236       -0.419        0.752
+    ## 2 Female injury                0.25   0.354       -0.628        1.13 
+    ## 3 Male   injury_substantial    0.111  0.192       -0.367        0.589
+    ## 4 Female injury_substantial    0      0            0            0
 
 ### Find and add event IDs
 

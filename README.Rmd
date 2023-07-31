@@ -173,16 +173,18 @@ d_ostrc = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial, ~ge
                   1, "2023-01-14", 1, 1, "Male",
                   1, "2023-01-21", 0, 0, "Male",
                   2, "2023-01-07", 1, 1, "Female",
-                  2, "2023-01-14", 1, 1, "Female",
-                  3, "2023-01-07", 0, 0, "Male",
+                  2, "2023-01-14", 0, 1, "Female",
+                  2, "2023-01-21", 1, 0, "Female",
+                  3, "2023-01-07", 1, 0, "Male",
                   3, "2023-01-14", 0, 0, "Male",
-                  4, "2023-01-07", 1, 0, "Male",
+                  4, "2023-01-07", 0, 0, "Male",
                   4, "2023-01-14", 1, 0, "Male",
-                  4, "2023-01-21", 0, 0, "Male",
+                  4, "2023-01-21", 1, 0, "Male",
                   5, "2023-01-07", 1, 0, "Female",
                   5, "2023-01-14", 1, 0, "Female",
                   6, "2023-01-07", 1, 1, "Female",
-                  6, "2023-01-14", 1, 1, "Female"
+                  6, "2023-01-14", 1, 1, "Female",
+                  6, "2023-01-21", 1, 0, "Female",
                   )
 ```
 
@@ -220,6 +222,57 @@ For instance, for males and females separately. Below is an example.
 
 ```{r calc_prevalence_all_group_example, echo = TRUE, warning = FALSE}
 calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"), "gender")
+```
+
+### Calculate incidence
+
+Similar to prevalence, calculating incidence also has three functions:
+`calc_incidence`, `calc_incidence_mean` and `calc_incidence_all`. 
+The functions check whether or not the participant had
+a health problem of the given type in the previous response. If they did,
+any response of a continued health problem will not be considered a new case.
+If they did not, a response of a health problem will be considered a new health problem,
+and enter the numerator of the incidence calculation. 
+Weekly incidences can therefore only be calculated if there are no gaps in the data, 
+i.e. if the questionnaire was sent bi-weekly. If the questionnaire was sent monthly, 
+this will provide a rough estimate of the monthly incidence.
+
+Using the same example as the prevalence calculations, here is 
+the weekly incidence:
+
+```{r calc_incidence_example, echo = TRUE, warning = FALSE}
+calc_incidence(d_ostrc, id_participant, date_sent, injury)
+```
+
+Note that the first row of incidence is missing data. 
+This is because we do not have 
+health problem information about any of the individuals before
+the study started. We therefore cannot know if a health problem response
+is a new or continued health problem. The only exception
+is if all of the responses are 0 for no health problem,
+then we can know for sure that the incidence is 0%. Below is an example.
+
+```{r calc_incidence_example_0start, echo = TRUE, warning = FALSE}
+ d_0atstart = tribble(~id_participant, ~week_nr, ~hp,
+                              1, 1, 0,
+                              1, 2, 0,
+                              1, 3, 1,
+                              2, 1, 0,
+                              2, 2, 0,
+                              2, 3, 1)
+calc_incidence(d_0atstart, id_participant, week_nr, hp)
+```
+
+As with prevalence, we can calculate the mean incidence.
+
+```{r calc_incidence_mean_example, echo = TRUE, warning = FALSE}
+calc_incidence_mean(d_ostrc, id_participant, date_sent, injury)
+```
+
+And obtain the mean incidence for each health problem type, for a group.
+
+```{r calc_eincidence_all_group_example, echo = TRUE, warning = FALSE}
+calc_incidence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"), "gender")
 ```
 
 ### Find and add event IDs
