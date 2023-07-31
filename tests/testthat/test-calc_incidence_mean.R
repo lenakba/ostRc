@@ -83,7 +83,7 @@ test_that("Calculates and returns correct CIs.", {
 
   d_test = calc_incidence(d_ostrc, id_participant, day_nr, hp)
   count = nrow(d_test)
-  se = sd(d_test$inc_cases) / sqrt(count)
+  se = sd(d_test$inc_cases, na.rm = TRUE) / sqrt(count)
   test_ci_lower = mean(d_test$inc_cases, na.rm = TRUE) - (qt(1 - ((1 - 0.95) / 2), count - 1) * se)
   test_ci_upper = mean(d_test$inc_cases, na.rm = TRUE) + (qt(1 - ((1 - 0.95) / 2), count - 1) * se)
 
