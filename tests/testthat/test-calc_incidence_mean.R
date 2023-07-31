@@ -34,8 +34,8 @@ test_that("Returns only 1 row of data - the mean for the given hp_type.", {
 test_that("Calculates and returns correct mean and sd.", {
 
   d_test = calc_incidence(d_ostrc, id_participant, day_nr, hp)
-  test_mean = mean(d_test$inc_cases)
-  test_sd = sd(d_test$inc_cases)
+  test_mean = mean(d_test$inc_cases, na.rm = TRUE)
+  test_sd = sd(d_test$inc_cases, na.rm = TRUE)
 
   d_incmean = calc_incidence_mean(d_ostrc, id_participant, day_nr, hp)
   expect_equal(d_incmean$inc_mean, test_mean)
