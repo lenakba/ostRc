@@ -15,7 +15,7 @@ d_ostrc = tribble(~id_participant, ~day_nr, ~hp,
 
 test_that("Returns a tibble with number of responses, number of cases, and incidence.",
           {
-            correct_columns = c("n_responses", "n_cases", "prev_cases")
+            correct_columns = c("n_responses", "n_cases", "inc_cases")
             expect_true(all(correct_columns %in% names(
               calc_incidence(d_ostrc, id_participant, day_nr, hp)
             )))
@@ -37,7 +37,7 @@ test_that("Returns correct number of cases (a response of 1 on an health problem
 test_that("Returns correct incidence (proportion).", {
   incidence = c(1, 0.5)
   d_test = calc_incidence(d_ostrc, id_participant, day_nr, hp)
-  expect_equal(d_test$prev_cases, incidence)
+  expect_equal(d_test$inc_cases, incidence)
 })
 
 test_that("Considers multiple cases on the same individual per time period only once.",
@@ -117,7 +117,7 @@ test_that("Will remove observation from numerator and denominator if hp_type is 
                          1, 1, NA,
                          1, 2, NA)
 
-  d_test_res = tribble(~day_nr, ~n_responses, ~n_cases, ~prev_cases,
+  d_test_res = tribble(~day_nr, ~n_responses, ~n_cases, ~inc_cases,
                        1, 1, 1, 1)
 
   d_res = suppressWarnings(calc_incidence(d_missing_hp, id_participant, day_nr, hp))
