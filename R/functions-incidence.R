@@ -24,12 +24,14 @@ NULL
 #'                to calculate the incidence on.
 #' @examples
 #' library(tidyr)
-#' d_ostrc = tribble(~id_participant, ~week_nr, ~hp,
+#' d_ostrc = tribble(~id_participant, ~day_nr, ~hp,
 #'                   1, 1, 1,
 #'                   1, 1, 1,
 #'                   1, 2, 0,
+#'                   1, 3, 1,
 #'                   2, 1, 1,
-#'                   2, 2, 1)
+#'                   2, 2, 0,
+#'                   2, 3, 1)
 #' calc_incidence(d_ostrc, id_participant, week_nr, hp)
 #' @export
 calc_incidence = function(d_ostrc, id_participant, time, hp_type){
