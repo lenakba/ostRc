@@ -158,7 +158,9 @@ test_that("Will remove observation from numerator and denominator if hp_type is 
                          1, 2, 1)
 
   d_test_res = tribble(~day_nr, ~n_responses, ~n_new_cases, ~inc_cases,
-                       2, 1, 1, 1)
+                       2, 1, NA, NA) %>%
+                       mutate(n_new_cases = as.numeric(n_new_cases),
+                              inc_cases = as.numeric(inc_cases))
 
   d_res = suppressWarnings(calc_incidence(d_missing_hp, id_participant, day_nr, hp))
 
