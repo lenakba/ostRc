@@ -11,12 +11,19 @@ d_ostrc = tribble(~id_participant, ~day_nr, ~hp,
                   1, 1, 1,
                   1, 2, 0,
                   1, 3, 1,
+                  1, 4, 0,
                   2, 1, 0,
                   2, 2, 1,
                   2, 3, 0,
+                  2, 4, 1,
                   3, 1, 0,
                   3, 2, 0,
-                  3, 3, 1)
+                  3, 3, 1,
+                  3, 3, 1,
+                  4, 1, 1,
+                  4, 2, 1,
+                  4, 3, 0,
+                  4, 4, 1)
 
 test_that("Returns a tibble with the mean, sd and lower and upper ci.",
           {
@@ -77,8 +84,8 @@ test_that("Calculates and returns correct CIs.", {
   d_test = calc_incidence(d_ostrc, id_participant, day_nr, hp)
   count = nrow(d_test)
   se = sd(d_test$inc_cases) / sqrt(count)
-  test_ci_lower = mean(d_test$inc_cases) - (qt(1 - ((1 - 0.95) / 2), count - 1) * se)
-  test_ci_upper = mean(d_test$inc_cases) + (qt(1 - ((1 - 0.95) / 2), count - 1) * se)
+  test_ci_lower = mean(d_test$inc_cases, na.rm = TRUE) - (qt(1 - ((1 - 0.95) / 2), count - 1) * se)
+  test_ci_upper = mean(d_test$inc_cases, na.rm = TRUE) + (qt(1 - ((1 - 0.95) / 2), count - 1) * se)
 
   d_incmean = calc_incidence_mean(d_ostrc, id_participant, day_nr, hp)
   expect_equal(d_incmean$inc_ci_lower, test_ci_lower)
