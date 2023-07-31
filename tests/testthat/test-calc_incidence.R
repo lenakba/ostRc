@@ -17,7 +17,7 @@ d_ostrc = tribble(~id_participant, ~day_nr, ~hp,
 
 test_that("Returns a tibble with number of responses, number of cases, and incidence.",
           {
-            correct_columns = c("n_responses", "n_cases", "inc_cases")
+            correct_columns = c("n_responses", "n_new_cases", "inc_cases")
             expect_true(all(correct_columns %in% names(
               calc_incidence(d_ostrc, id_participant, day_nr, hp)
             )))
@@ -33,9 +33,9 @@ test_that("Returns correct number of cases (a response of 1 on an health problem
           IF there was a 0 on the previous timepoint.
           IF no participant has data on the previous timepoint, it will be missing.).",
           {
-            n_cases = c(NA, 0, 2)
+            n_new_cases = c(NA, 0, 2)
             d_test = calc_incidence(d_ostrc, id_participant, day_nr, hp)
-            expect_equal(d_test$n_cases, n_cases)
+            expect_equal(d_test$n_new_cases, n_new_cases)
           })
 
 test_that("Returns correct incidence (proportion).", {
@@ -54,9 +54,9 @@ test_that("Considers multiple cases on the same individual per time period only 
                                     2, 1, 1,
                                     2, 2, 0,
                                     2, 3, 1)
-            n_cases = c(NA, 1, 1)
+            n_new_cases = c(NA, 1, 1)
             d_test = calc_incidence(d_multiple_hp, id_participant, day_nr, hp)
-            expect_equal(d_test$n_cases, n_cases)
+            expect_equal(d_test$n_new_cases, n_new_cases)
           })
 
 test_that("If timepoint on previous week only has missing data, a case result of 1 is consiered NA.
@@ -72,9 +72,9 @@ test_that("If timepoint on previous week only has missing data, a case result of
                               2, 1, 0,
                               2, 2, 0,
                               2, 3, 1)
-  n_cases_0atstart = c(0, 0, 2)
+  n_new_cases_0atstart = c(0, 0, 2)
   d_test_0atstart = calc_incidence(d_ostrc_0atstart, id_participant, day_nr, hp)
-  expect_equal(d_test_0atstart$n_cases, n_cases_0atstart)
+  expect_equal(d_test_0atstart$n_new_cases, n_new_cases_0atstart)
 
   d_ostrc_1atstart = tribble(~id_participant, ~day_nr, ~hp,
                              1, 1, 1,
@@ -83,9 +83,9 @@ test_that("If timepoint on previous week only has missing data, a case result of
                              2, 1, 0,
                              2, 2, 0,
                              2, 3, 1)
-  n_cases_1atstart = c(NA, 0, 2)
+  n_new_cases_1atstart = c(NA, 0, 2)
   d_test_1atstart = calc_incidence(d_ostrc_1atstart, id_participant, day_nr, hp)
-  expect_equal(d_test_1atstart$n_cases, n_cases_1atstart)
+  expect_equal(d_test_1atstart$n_new_cases, n_new_cases_1atstart)
 })
 
 test_that("Throws error if hp_type has any other values than 0, 1 or NA.", {
@@ -116,10 +116,10 @@ test_that("Ignores time periods with missing values.", {
                          1, 2, 1)
 
   n_responses = c(1, 1)
-  n_cases = c(0, 1)
+  n_new_cases = c(0, 1)
 
   d_test = calc_incidence(d_ostrc_miss, id_participant, day_nr, hp)
-  expect_equal(d_test$n_cases, n_cases)
+  expect_equal(d_test$n_new_cases, n_new_cases)
   expect_equal(d_test$n_responses, n_responses)
 })
 
@@ -157,7 +157,7 @@ test_that("Will remove observation from numerator and denominator if hp_type is 
                          1, 1, NA,
                          1, 2, 1)
 
-  d_test_res = tribble(~day_nr, ~n_responses, ~n_cases, ~inc_cases,
+  d_test_res = tribble(~day_nr, ~n_responses, ~n_new_cases, ~inc_cases,
                        2, 1, 1, 1)
 
   d_res = suppressWarnings(calc_incidence(d_missing_hp, id_participant, day_nr, hp))
