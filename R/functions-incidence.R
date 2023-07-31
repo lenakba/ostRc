@@ -110,12 +110,25 @@ calc_incidence = function(d_ostrc, id_participant, time, hp_type){
                                 hp_type_atleast1 == 0 ~ 0,
                                 is.na(previous_time_status) & hp_type_atleast1 == 1 ~ NA_real_))
 
+  # different calculation if it is the first timepoint of data or not
+  d_first_time = d_hp_type_per_id_per_time %>% filter(!!time == min(!!time))
+  d_rest_time = d_hp_type_per_id_per_time %>% filter(!!time != min(!!time))
+
   # calculate incidence
-  d_incidence = d_hp_type_per_id_per_time %>%
+  d_incidence_firsttime = d_first_time %>%
+    group_by(!!time) %>%
+    summarise(n_responses = n(),
+              n_cases = sum(new_case),
+              inc_cases = ifelse(n_cases == 0, 0, NA)) %>%
+    ungroup()
+
+  d_incidence_resttime = d_rest_time %>%
     group_by(!!time) %>%
     summarise(n_responses = n(),
               n_cases = sum(new_case, na.rm = TRUE),
-              inc_cases = n_cases/n_responses) %>%
+              inc_cases = ifelse(n_cases == 0, n_cases, n_cases/n_responses)) %>%
     ungroup()
+
+  d_incidence = bind_rows(d_incidence_firsttime, d_incidence_resttime)
   d_incidence
 }
