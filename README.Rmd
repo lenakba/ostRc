@@ -49,7 +49,9 @@ devtools::install_github("lenakba/ostrc")
 ## Functions
 Below is a brief overview of helpful functions.
 
-### Find health problems and substantial health problems
+### OSTRC questionnaire functions
+
+#### Find health problems and substantial health problems
 
 Given a vector of OSTRC responses to question 1, 
 The function `find_hp` identifies whether or not an observation
@@ -113,7 +115,20 @@ ostrc_3_missing = c(NA, 8, NA, NA)
 find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 ```
 
-### Create case data
+#### Calculate severity score
+
+Severity scores can also be calculated with `calc_severity_score`.
+
+```{r calc_severity_score_example, echo = TRUE, warning = FALSE}
+ostrc_1 = c(0, 8, 8, 8)
+ostrc_2 = c(0, 0, 0, 25)
+ostrc_3 = c(0, 0, 17, 0)
+ostrc_4 = c(0, 0, 25, 25)
+   
+calc_severity_score(ostrc_1, ostrc_2, ostrc_3, ostrc_4)
+```
+
+#### Create case data
 
 The function `create_case_data` finds 
 health problems in a dataset with OSTRC-questionnaire responses
@@ -154,11 +169,17 @@ the `create_case_data` function.
 d_cases %>% select(id_participant, id_case, date_ostrc, hb_type, inj_type)
 ```
 
-### Calculate prevalence
+### Functions for handling injury data in general
+
+#### Calculate prevalence
 
 The OSTRC package has three functions for calculating the prevalence. 
-`calc_prevalence` calculates the weekly prevalence. `calc_prevalence_mean` 
-calculates the mean prevalence, after calculating the weekly prevalence with `calc_prevalence`.
+`calc_prevalence` calculates the prevalence per given timepoint. 
+The timepoint can be given by dates, or numeric values, 
+such as study week number. The example in this readme is 
+an OSTRC-questionnaire sent weekly. `calc_prevalence_mean` calculates the mean prevalence, 
+after calculating the weekly prevalence with `calc_prevalence`. 
+Meaning in the exmaple below, we will obtain the mean weekly prevalence.
 Finally, `calc_prevalence_all` calculates the prevalence of each given health problem type. 
 This is practical in cases where you have multiple types of health problems, 
 such as illnesses, injuries, contact injuries, acute injuries etc. 
@@ -168,7 +189,7 @@ and you wish to calculate the prevalence for each type.
 # Here we have some example data
 # note that we assume the date the questionnaire was sent
 # was the day that respondents replied
-d_ostrc = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial, ~gender,
+d_injuries = tribble(~id_participant, ~date_sent, ~injury, ~injury_substantial, ~gender,
                   1, "2023-01-07", 1, 0, "Male",
                   1, "2023-01-14", 1, 1, "Male",
                   1, "2023-01-21", 0, 0, "Male",
@@ -195,7 +216,7 @@ the date or time the OSTRC questionnaire was sent,
 and the health problem column.
 
 ```{r calc_prevalence_example, echo = TRUE, warning = FALSE}
-calc_prevalence(d_ostrc, id_participant, date_sent, injury)
+calc_prevalence(d_injuries, id_participant, date_sent, injury)
 ```
 
 However, sometimes we are only interested in the mean weekly prevalence. 
@@ -204,7 +225,7 @@ You can choose confidence interval level, and the default is at 95%.
 Note that the function arguments are the same as for `calc_prevalence`. 
 
 ```{r calc_prevalence_mean_example, echo = TRUE, warning = FALSE}
-calc_prevalence_mean(d_ostrc, id_participant, date_sent, injury)
+calc_prevalence_mean(d_injuries, id_participant, date_sent, injury)
 ```
 
 When you have multiple health problem classifications, it can be
@@ -214,17 +235,17 @@ The name of each health problem column needs to be provided as a vector of strin
 like in the example below.
 
 ```{r calc_prevalence_all_example, echo = TRUE, warning = FALSE}
-calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"))
+calc_prevalence_all(d_injuries, id_participant, date_sent, c("injury", "injury_substantial"))
 ```
 
 In some cases, you may wish to calculate prevalences for each category in a group. 
 For instance, for males and females separately. Below is an example.
 
 ```{r calc_prevalence_all_group_example, echo = TRUE, warning = FALSE}
-calc_prevalence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"), "gender")
+calc_prevalence_all(d_injuries, id_participant, date_sent, c("injury", "injury_substantial"), "gender")
 ```
 
-### Calculate incidence
+#### Calculate incidence
 
 Similar to prevalence, calculating incidence also has three functions:
 `calc_incidence`, `calc_incidence_mean` and `calc_incidence_all`. 
@@ -241,7 +262,7 @@ Using the same example as the prevalence calculations, here is
 the weekly incidence:
 
 ```{r calc_incidence_example, echo = TRUE, warning = FALSE}
-calc_incidence(d_ostrc, id_participant, date_sent, injury)
+calc_incidence(d_injuries, id_participant, date_sent, injury)
 ```
 
 Note that the first row of incidence is missing data. 
@@ -266,16 +287,16 @@ calc_incidence(d_0atstart, id_participant, week_nr, hp)
 As with prevalence, we can calculate the mean incidence.
 
 ```{r calc_incidence_mean_example, echo = TRUE, warning = FALSE}
-calc_incidence_mean(d_ostrc, id_participant, date_sent, injury)
+calc_incidence_mean(d_injuries, id_participant, date_sent, injury)
 ```
 
 And obtain the mean incidence for each health problem type, for a group.
 
 ```{r calc_eincidence_all_group_example, echo = TRUE, warning = FALSE}
-calc_incidence_all(d_ostrc, id_participant, date_sent, c("injury", "injury_substantial"), "gender")
+calc_incidence_all(d_injuries, id_participant, date_sent, c("injury", "injury_substantial"), "gender")
 ```
 
-### Find and add event IDs
+#### Find and add event IDs
 
 Function `add_event_id` finds intervals for each event in a longitudinal dataset, and
 adds a column indexing them. The intervals may be of unequal lengths. 
