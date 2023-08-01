@@ -318,7 +318,7 @@ calc_timeloss = function(d_ostrc, id_participant, id_case, date_ostrc, ostrc_1){
     nest_summarise(data, weeks_lost = sum(week_lost_yn))
 
   l_timeloss = d_cases_timeloss$data %>% map(. %>% pull())
-  vector_timeloss = unlist(l_timeloss)
+  vector_timeloss = as.numeric(unlist(l_timeloss))
   vector_timeloss
 }
 
