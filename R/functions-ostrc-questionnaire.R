@@ -364,8 +364,8 @@ calc_timeloss = function(d_ostrc, id_participant, id_case, date_ostrc, ostrc_1){
 #' OSTRC questionnaire responses, and returns a dataframe with one row of data
 #' per health problem.
 #' The function also calculates and adds the severity score,
-#' the start date, end date, and duration (in weeks) of each health problem.
-#' This duration assumes the questionnaire was responded to on the same day
+#' the start date, end date, duration and timeloss (in weeks) of each health problem.
+#' The duration calculation assumes the questionnaire was responded to on the same day
 #' it was sent. In other words, that it pertains to the week before the date.
 #' It also adds whether or not the health problem is substantial.
 #'
@@ -516,7 +516,7 @@ create_case_data = function(d_ostrc, id_participant, id_case,
 
     d_cases = d_cases_unselected %>%
       select(!!id_case, !!id_participant,
-             date_start, date_end, duration, hp_sub,
+             date_start, date_end, duration, timeloss, hp_sub,
              !!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4,
              severity_score, everything(), -hp)
   }
