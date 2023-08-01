@@ -47,7 +47,7 @@ devtools::install_github("lenakba/ostrc")
 
 ## Functions
 
-Below is a brief overview of helpful functions.
+Below is a brief tutorial on helpful functions in the R package.
 
 ### OSTRC questionnaire functions
 
@@ -118,7 +118,7 @@ find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 
     ## [1]  1 NA NA  1
 
-#### Calculate severity score
+#### Calculate severity score and timeloss
 
 Severity scores can also be calculated with `calc_severity_score`.
 
@@ -133,15 +133,36 @@ calc_severity_score(ostrc_1, ostrc_2, ostrc_3, ostrc_4)
 
     ## [1]  0  8 50 58
 
+Finally, one can determine the timeloss of each health problem with
+`calc_timeloss`. You receive a vector with the number of weeks lost per
+health problem case in the data. In the example below, there are 3 case
+IDs representing 3 health problem cases, and we receive 3 values
+representing the number of weeks lost.
+
+``` r
+d_ostrc = tribble(~id_participant, ~id_case, ~date_sent, ~q1,
+                  1, 1, "2023-01-01", 8,
+                  1, 1, "2023-01-07", 8,
+                  1, 1, "2023-01-14", 8,
+                  1, 1, "2023-01-21", 25,
+                  1, 18, "2022-12-07", 25,
+                  1, 18, "2022-12-14", 25,
+                  2, 2, "2023-01-12", 8,
+                  3, NA, "2022-06-05", 0)
+   
+calc_timeloss(d_ostrc, id_participant, id_case, date_sent, q1)
+```
+
+    ## [1] 1 2 0
+
 #### Create case data
 
-The function `create_case_data` finds health problems in a dataset with
-OSTRC-questionnaire responses and returns a dataframe where one row
-describes one unique health problem. The function also calculates and
-adds the severity score, startdate, enddate, and the duration (in weeks)
-of each health problem, given the date the OSTRC questionnaire was sent.
-It also identifies substantial health problems, with the help of
-`find_hp_substantial`.
+The function `create_case_data` is a helper function that brings all the
+information you need on each health problem in one dataset. It finds
+health problems, substantial health problems, severity score, startdate,
+enddate, and duration (in weeks). Returns a dataframe where one row
+describes one unique health problem. Any other information on the health
+problem (type, location etc.) is retained.
 
 ``` r
 library(tidyverse) # for tribble() and pipe %>% 
