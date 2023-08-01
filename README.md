@@ -160,9 +160,9 @@ calc_timeloss(d_ostrc, id_participant, id_case, date_sent, q1)
 The function `create_case_data` is a helper function that brings all the
 information you need on each health problem in one dataset. It finds
 health problems, substantial health problems, severity score, startdate,
-enddate, and duration (in weeks). Returns a dataframe where one row
-describes one unique health problem. Any other information on the health
-problem (type, location etc.) is retained.
+enddate, and timeloss and duration (in weeks). Returns a dataframe where
+one row describes one unique health problem. Any other information on
+the health problem (type, location etc.) is retained.
 
 ``` r
 library(tidyverse) # for tribble() and pipe %>% 
@@ -185,16 +185,16 @@ d_cases = create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2,
 d_cases
 ```
 
-    ## # A tibble: 4 × 14
-    ##   id_case id_part…¹ date_start date_end   durat…² hp_sub    q1    q2    q3    q4
-    ##     <dbl>     <dbl> <date>     <date>       <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1       1         1 2023-01-01 2023-01-14       3      1     8     0    17    25
-    ## 2      18         1 2022-12-07 2022-12-07       1      1    25     0     0     0
-    ## 3       2         2 2023-01-12 2023-01-12       1      0     8     8     0     0
-    ## 4       4         4 2023-01-01 2023-01-01       1      0     8     8     8     0
-    ## # … with 4 more variables: severity_score <dbl>, date_ostrc <date>,
+    ## # A tibble: 4 × 15
+    ##   id_case id_pa…¹ date_start date_end   durat…² timel…³ hp_sub    q1    q2    q3
+    ##     <dbl>   <dbl> <date>     <date>       <dbl>   <dbl>  <dbl> <dbl> <dbl> <dbl>
+    ## 1       1       1 2023-01-01 2023-01-14       3       0      1     8     0    17
+    ## 2      18       1 2022-12-07 2022-12-07       1       1      1    25     0     0
+    ## 3       2       2 2023-01-12 2023-01-12       1       0      0     8     8     0
+    ## 4       4       4 2023-01-01 2023-01-01       1       0      0     8     8     8
+    ## # … with 5 more variables: q4 <dbl>, severity_score <dbl>, date_ostrc <date>,
     ## #   hb_type <chr>, inj_type <chr>, and abbreviated variable names
-    ## #   ¹​id_participant, ²​duration
+    ## #   ¹​id_participant, ²​duration, ³​timeloss
     ## # ℹ Use `colnames()` to see all variable names
 
 Any extra columns in the dataset will be included at the end, like

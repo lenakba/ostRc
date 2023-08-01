@@ -154,7 +154,7 @@ calc_timeloss(d_ostrc, id_participant, id_case, date_sent, q1)
 The function `create_case_data` is a helper function that brings 
 all the information you need on each health problem in one dataset. 
 It finds health problems, substantial health problems, 
-severity score, startdate, enddate, and duration (in weeks).
+severity score, startdate, enddate, and timeloss and duration (in weeks).
 Returns a dataframe where one row describes one unique health problem.
 Any other information on the health problem (type, location etc.) is retained. 
 
