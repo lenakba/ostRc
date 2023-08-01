@@ -18,14 +18,14 @@ d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1,
 
 test_that("Returns a numeric vector.",
           {
-            timeloss_vector = calc_timeloss(d_ostrc, id_case, date_ostrc, q1)
+            timeloss_vector = calc_timeloss(d_ostrc, id_participant, id_case, date_ostrc, q1)
             expect_vector(timeloss_vector, ptype = numeric())
           })
 
 test_that("Returns a numeric vector of length equal to the number of id_cases.",
           {
             n_cases = length(unique(na.omit(d_ostrc$id_case)))
-            timeloss_vector = calc_timeloss(d_ostrc, id_case, date_ostrc, q1)
+            timeloss_vector = calc_timeloss(d_ostrc, id_participant, id_case, date_ostrc, q1)
             expect_equal(length(timeloss_vector), n_cases)
           })
 
@@ -41,7 +41,7 @@ test_that("Results with OSTRC1 = 0 are ignored and not included in final vector.
                               2, 2, "2023-01-12", 8,
                               3, NA, "2022-06-05", 0)
             length_vector = 2
-            timeloss_vector = calc_timeloss(d_lotsof0s, id_case, date_ostrc, q1)
+            timeloss_vector = calc_timeloss(d_lotsof0s, id_participant, id_case, date_ostrc, q1)
             expect_equal(length(timeloss_vector), length_vector)
           })
 
@@ -56,7 +56,7 @@ test_that("If there are any responses of OSTRC1 = 0, but they still have a case_
                               1, 18, "2022-12-14", 25,
                               2, 2, "2023-01-12", 8,
                               3, 3, "2022-06-05", 0)
-            expect_warning(calc_timeloss(d_ostrc_nonmissing_and0, id_case, date_ostrc, q1))
+            expect_warning(calc_timeloss(d_ostrc_nonmissing_and0, id_participant, id_case, date_ostrc, q1))
           })
 
 test_that("Returns timeloss of 1 week if health problem
