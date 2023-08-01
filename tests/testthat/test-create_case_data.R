@@ -12,7 +12,7 @@ d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                   1, 1, "2023-01-14", 8, 0, 17, 0,
                   1, 18, "2022-12-07", 25, 0, 0, 0,
                   2, 2, "2023-01-12", 8, 8, 0, 0,
-                  3, 3, "2022-06-05", 0, 0, 0, 0)
+                  3, NA, "2022-06-05", 0, 0, 0, 0)
 
 d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
 
@@ -123,9 +123,9 @@ test_that("Gives correct substantial health problems
                                            0, 0, 0))
             correct_hp_sub = c(1, 0)
 
-            d_created_oldversion = create_case_data(d_1_0, id_participant,
+            d_created_oldversion = suppressWarnings(create_case_data(d_1_0, id_participant,
                                           id_case, date_ostrc,
-                                          q1, q2, q3, q4, version = "1.0")
+                                          q1, q2, q3, q4, version = "1.0"))
             expect_equal(d_created_oldversion$hp_sub, correct_hp_sub)
           })
 
