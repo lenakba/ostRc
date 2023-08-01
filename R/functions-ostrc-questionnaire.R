@@ -286,6 +286,42 @@ calc_severity_score = function(ostrc_1, ostrc_2, ostrc_3, ostrc_4){
   severity_scores
 }
 
+
+calc_timeloss = function(d_ostrc, id_participant, id_case, date_ostrc, ostrc_1){
+
+  id_participant = enquo(id_participant)
+  id_case = enquo(id_case)
+  date_ostrc = enquo(date_ostrc)
+  ostrc_1 = enquo(ostrc_1)
+
+  # check that all health problem cases have an ID
+  if(nrow(d_ostrc %>% filter(is.na(!!id_case) & !!ostrc_1 == 1) != 0)){
+    stop("Health problems were detected that did not have a case ID.
+       Ensure all health problems have an ID.")
+  }
+
+  # check that all health problem cases have an ID
+  if(nrow(d_ostrc %>% filter(!is.na(!!id_case) & !!ostrc_1 == 0) != 0)){
+    warning("One or more questionnaire responses have a case ID,
+            but have a response of 0, meaning no health problem.
+            These are removed from the calculations.")
+  }
+
+  # calculate duration per health problem
+  d_cases_unselected = d_ostrc %>%
+    filter(!is.na(!!id_case), !!ostrc_1 != 0) %>%
+    group_by(!!id_participant, !!id_case) %>%
+    nest()
+
+  d_cases_timeloss = d_cases_unselected %>%
+    nest_mutate(data, week_lost_yn = ifelse(!!ostrc_1 == 25, 1, 0)) %>%
+    nest_summarise(data, weeks_lost = sum(week_lost_yn))
+
+  l_timeloss = d_cases_timeloss$data %>% map(. %>% pull())
+  vector_timeloss = unlist(l_timeloss)
+  vector_timeloss
+}
+
 #' Create health problem case data
 #'
 #' Function that identifies health problems in a longitudinal dataset with
