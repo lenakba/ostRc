@@ -116,6 +116,21 @@ find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 
     ## [1]  1 NA NA  1
 
+### Calculate severity score
+
+Severity scores can also be calculated with `calc_severity_score`.
+
+``` r
+ostrc_1 = c(0, 8, 8, 8)
+ostrc_2 = c(0, 0, 0, 25)
+ostrc_3 = c(0, 0, 17, 0)
+ostrc_4 = c(0, 0, 25, 25)
+   
+calc_severity_score(ostrc_1, ostrc_2, ostrc_3, ostrc_4)
+```
+
+    ## [1]  0  8 50 58
+
 ### Create case data
 
 The function `create_case_data` finds health problems in a dataset with

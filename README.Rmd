@@ -113,6 +113,19 @@ ostrc_3_missing = c(NA, 8, NA, NA)
 find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 ```
 
+### Calculate severity score
+
+Severity scores can also be calculated with `calc_severity_score`.
+
+```{r calc_severity_score_example, echo = TRUE, warning = FALSE}
+ostrc_1 = c(0, 8, 8, 8)
+ostrc_2 = c(0, 0, 0, 25)
+ostrc_3 = c(0, 0, 17, 0)
+ostrc_4 = c(0, 0, 25, 25)
+   
+calc_severity_score(ostrc_1, ostrc_2, ostrc_3, ostrc_4)
+```
+
 ### Create case data
 
 The function `create_case_data` finds 
