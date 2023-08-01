@@ -16,7 +16,7 @@ calc_severity_score(ostrc_1, ostrc_2, ostrc_3, ostrc_4)
 \item{ostrc_4}{vector with responses to OSTRC questionnaire question 4.}
 }
 \value{
-a vector of severity scores
+a numeric vector of severity scores
 }
 \description{
 Calculates severity scores based on

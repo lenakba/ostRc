@@ -261,7 +261,7 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
 #' @param ostrc_2 vector with responses to OSTRC questionnaire question 2.
 #' @param ostrc_3 vector with responses to OSTRC questionnaire question 3.
 #' @param ostrc_4 vector with responses to OSTRC questionnaire question 4.
-#' @return a vector of severity scores
+#' @return a numeric vector of severity scores
 #' @examples
 #' q1 = c(17, 8, 8, 0)
 #' q2 = c(25, 17, 17, 0)
@@ -286,7 +286,38 @@ calc_severity_score = function(ostrc_1, ostrc_2, ostrc_3, ostrc_4){
   severity_scores
 }
 
-
+#' Calculate time loss
+#'
+#' Calculates time loss, in number of weeks, on OSTRC questionnaire data.
+#' @param d_ostrc a dateframe with OSTRC questionnaire responses
+#' @param id_participant vector within `d_ostrc` that identifies
+#'                       a person, athlete, participant, etc.
+#' @param id_case vector within `d_ostrc` that identifies a health problem case.
+#'                Duplicates of the same id_case on multiple rows are assumed to be the
+#'                same health problem sustained over a period of time.
+#'                If a health problem on one individual, sustained on the same day,
+#'                has a unique case id for different locations (e.g. left and right knee),
+#'                these will be treated as different health problems in the returned dataframe.
+#'                Health problems, as identified by OSTRC questionnaire question 1,
+#'                that do not have a unique case ID will throw an error.
+#' @param date_ostrc vector of class date within `d_ostrc` that denotes
+#'                   the day the OSTRC questionnaire was sent,
+#'                   or should have been sent if there was a delay in sending.
+#' @param ostrc_1 vector with responses to OSTRC questionnaire question 1.
+#' @return a numeric vector of time loss in number of weeks.
+#' @examples
+#' d_ostrc = tribble(~id_participant, ~id_case, ~date_sent, ~q1,
+#'                  1, 1, "2023-01-01", 8,
+#'                  1, 1, "2023-01-07", 8,
+#'                  1, 1, "2023-01-14", 8,
+#'                  1, 1, "2023-01-21", 25,
+#'                  1, 18, "2022-12-07", 25,
+#'                  1, 18, "2022-12-14", 25,
+#'                  2, 2, "2023-01-12", 8,
+#'                  3, NA, "2022-06-05", 0)
+#'
+#' calc_timeloss(d_ostrc, id_participant, id_case, date_sent, q1)
+#' @export
 calc_timeloss = function(d_ostrc, id_participant, id_case, date_ostrc, ostrc_1){
 
   id_participant = enquo(id_participant)
