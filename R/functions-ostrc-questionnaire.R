@@ -295,12 +295,17 @@ calc_timeloss = function(d_ostrc, id_participant, id_case, date_ostrc, ostrc_1){
   ostrc_1 = enquo(ostrc_1)
 
   # check that all health problem cases have an ID
-  if(nrow(d_ostrc %>% filter(is.na(!!id_case) & !!ostrc_1 == 1) != 0)){
+  if(nrow(d_ostrc %>% filter(is.na(!!id_case) & !!ostrc_1 > 0) != 0)){
     stop("Health problems were detected that did not have a case ID.
        Ensure all health problems have an ID.")
   }
 
-  # check that all health problem cases have an ID
+  if(!is.numeric(d_ostrc %>% pull(!!ostrc_1))){
+    stop("`ostrc_1` is not numeric. To find health problems and calculate timeloss,
+         `ostrc_1` must be numeric.")
+  }
+
+  # check that all cases with an ID are actually a health problem
   if(nrow(d_ostrc %>% filter(!is.na(!!id_case) & !!ostrc_1 == 0) != 0)){
     warning("One or more questionnaire responses have a case ID,
             but have a response of 0, meaning no health problem.
@@ -309,7 +314,7 @@ calc_timeloss = function(d_ostrc, id_participant, id_case, date_ostrc, ostrc_1){
 
   # calculate duration per health problem
   d_cases_unselected = d_ostrc %>%
-    filter(!is.na(!!id_case), !!ostrc_1 != 0) %>%
+    filter(!is.na(!!id_case), !!ostrc_1 > 0) %>%
     group_by(!!id_participant, !!id_case) %>%
     nest()
 
