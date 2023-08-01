@@ -483,10 +483,12 @@ create_case_data = function(d_ostrc, id_participant, id_case,
     distinct(!!id_participant, !!id_case, .keep_all = TRUE)
 
   # calculate severity score
+  # and time-loss
   d_cases_unselected =
     d_cases_unselected %>%
     mutate(severity_score =
-             calc_severity_score(!!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4))
+             calc_severity_score(!!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4),
+          timeloss = calc_timeloss(d_ostrc, !!id_participant, !!id_case, !!date_ostrc, !!ostrc_1))
 
   # if find_hp_substantial throws an error,
   # the dataframe will be returned without it
