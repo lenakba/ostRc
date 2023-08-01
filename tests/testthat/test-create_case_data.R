@@ -217,3 +217,11 @@ test_that("Adds a column for severity scores.",
               expect_lte(d_test$severity_score[i], 100)
             }
           })
+
+test_that("Adds a column for time loss.",
+          {d_test = create_case_data(d_ostrc, id_participant,
+                                      id_case, date_ostrc,
+                                      q1, q2, q3, q4)
+
+            expect_true(any(names(d_test) %in% "timeloss"))
+          })
