@@ -1,6 +1,6 @@
 #' @importFrom magrittr %>%
 #' @importFrom rlang enquo as_string quo_name
-#' @importFrom nplyr nest_mutate
+#' @importFrom nplyr nest_mutate nest_summarise
 #' @importFrom confintr ci_proportion
 #' @import tibble
 #' @import dplyr
