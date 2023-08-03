@@ -194,11 +194,21 @@ test_that("Returns warning if id_participant has missing data.",
                                             q1, q2, q3, q4))
           })
 
-test_that("Returns warning if id_participant has missing data.",
+test_that("Returns warning if date_ostrc has missing data.",
           {
             d_missing_q1 = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                                    1, 1, NA, 8, 0, 17, 25,
                                    1, 1, "2023-01-07", 8, 0, 17, 25)
+            expect_warning(create_case_data(d_missing_q1, id_participant,
+                                            id_case, date_ostrc,
+                                            q1, q2, q3, q4))
+          })
+
+test_that("Returns warning if a health problem has missing data on the other OSTRC Qs.",
+          {
+            d_missing_q1 = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
+                                   1, 1, "2023-01-01", 8, 0, NA, 25,
+                                   1, 1, "2023-01-07", 17, 0, 17, NA)
             expect_warning(create_case_data(d_missing_q1, id_participant,
                                             id_case, date_ostrc,
                                             q1, q2, q3, q4))
