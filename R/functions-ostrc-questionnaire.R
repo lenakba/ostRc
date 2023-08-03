@@ -1,6 +1,6 @@
 #' @importFrom magrittr %>%
 #' @importFrom rlang enquo as_string quo_name
-#' @importFrom nplyr nest_mutate
+#' @importFrom nplyr nest_mutate nest_summarise
 #' @importFrom confintr ci_proportion
 #' @import tibble
 #' @import dplyr
@@ -261,7 +261,7 @@ find_hp_substantial = function(ostrc_1, ostrc_2, ostrc_3, version = "2.0"){
 #' @param ostrc_2 vector with responses to OSTRC questionnaire question 2.
 #' @param ostrc_3 vector with responses to OSTRC questionnaire question 3.
 #' @param ostrc_4 vector with responses to OSTRC questionnaire question 4.
-#' @return a vector of severity scores
+#' @return a numeric vector of severity scores
 #' @examples
 #' q1 = c(17, 8, 8, 0)
 #' q2 = c(25, 17, 17, 0)
@@ -286,14 +286,86 @@ calc_severity_score = function(ostrc_1, ostrc_2, ostrc_3, ostrc_4){
   severity_scores
 }
 
+#' Calculate time loss
+#'
+#' Calculates time loss, in number of weeks, on OSTRC questionnaire data.
+#' @param d_ostrc a dateframe with OSTRC questionnaire responses
+#' @param id_participant vector within `d_ostrc` that identifies
+#'                       a person, athlete, participant, etc.
+#' @param id_case vector within `d_ostrc` that identifies a health problem case.
+#'                Duplicates of the same id_case on multiple rows are assumed to be the
+#'                same health problem sustained over a period of time.
+#'                If a health problem on one individual, sustained on the same day,
+#'                has a unique case id for different locations (e.g. left and right knee),
+#'                these will be treated as different health problems in the returned dataframe.
+#'                Health problems, as identified by OSTRC questionnaire question 1,
+#'                that do not have a unique case ID will throw an error.
+#' @param date_ostrc vector of class date within `d_ostrc` that denotes
+#'                   the day the OSTRC questionnaire was sent,
+#'                   or should have been sent if there was a delay in sending.
+#' @param ostrc_1 vector with responses to OSTRC questionnaire question 1.
+#' @return a numeric vector of time loss in number of weeks.
+#' @examples
+#' d_ostrc = tribble(~id_participant, ~id_case, ~date_sent, ~q1,
+#'                  1, 1, "2023-01-01", 8,
+#'                  1, 1, "2023-01-07", 8,
+#'                  1, 1, "2023-01-14", 8,
+#'                  1, 1, "2023-01-21", 25,
+#'                  1, 18, "2022-12-07", 25,
+#'                  1, 18, "2022-12-14", 25,
+#'                  2, 2, "2023-01-12", 8,
+#'                  3, NA, "2022-06-05", 0)
+#'
+#' calc_timeloss(d_ostrc, id_participant, id_case, date_sent, q1)
+#' @export
+calc_timeloss = function(d_ostrc, id_participant, id_case, date_ostrc, ostrc_1){
+
+  id_participant = enquo(id_participant)
+  id_case = enquo(id_case)
+  date_ostrc = enquo(date_ostrc)
+  ostrc_1 = enquo(ostrc_1)
+
+  # check that all health problem cases have an ID
+  if(nrow(d_ostrc %>% filter(is.na(!!id_case) & !!ostrc_1 > 0) != 0)){
+    stop("Health problems were detected that did not have a case ID.
+       Ensure all health problems have an ID.")
+  }
+
+  if(!is.numeric(d_ostrc %>% pull(!!ostrc_1))){
+    stop("`ostrc_1` is not numeric. To find health problems and calculate timeloss,
+         `ostrc_1` must be numeric.")
+  }
+
+  # check that all cases with an ID are actually a health problem
+  if(nrow(d_ostrc %>% filter(!is.na(!!id_case) & !!ostrc_1 == 0) != 0)){
+    warning("One or more questionnaire responses have a case ID,
+            but have a response of 0, meaning no health problem.
+            These are removed from the calculations.")
+  }
+
+  # calculate duration per health problem
+  d_cases_unselected = d_ostrc %>%
+    filter(!is.na(!!id_case), !!ostrc_1 > 0) %>%
+    group_by(!!id_participant, !!id_case) %>%
+    nest()
+
+  d_cases_timeloss = d_cases_unselected %>%
+    nest_mutate(data, week_lost_yn = ifelse(!!ostrc_1 == 25, 1, 0)) %>%
+    nest_summarise(data, weeks_lost = sum(week_lost_yn))
+
+  l_timeloss = d_cases_timeloss$data %>% map(. %>% pull())
+  vector_timeloss = as.numeric(unlist(l_timeloss))
+  vector_timeloss
+}
+
 #' Create health problem case data
 #'
 #' Function that identifies health problems in a longitudinal dataset with
 #' OSTRC questionnaire responses, and returns a dataframe with one row of data
 #' per health problem.
 #' The function also calculates and adds the severity score,
-#' the start date, end date, and duration (in weeks) of each health problem.
-#' This duration assumes the questionnaire was responded to on the same day
+#' the start date, end date, duration and timeloss (in weeks) of each health problem.
+#' The duration calculation assumes the questionnaire was responded to on the same day
 #' it was sent. In other words, that it pertains to the week before the date.
 #' It also adds whether or not the health problem is substantial.
 #'
@@ -381,6 +453,17 @@ create_case_data = function(d_ostrc, id_participant, id_case,
     )
   }
 
+  ostrc_2_values = d_ostrc %>% pull(!!ostrc_2)
+  ostrc_3_values = d_ostrc %>% pull(!!ostrc_3)
+  ostrc_4_values = d_ostrc %>% pull(!!ostrc_4)
+  if (any(ostrc_1_values > 0 &
+          (is.na(ostrc_2_values) | is.na(ostrc_3_values) | is.na(ostrc_4_values)))) {
+    warning(
+      "Some ostrc_1 responses are above 0 and denote a health problem,
+      but some of the other questions have missing data."
+    )
+  }
+
   id_participant_values = d_ostrc %>% pull(!!id_participant)
   if (any(is.na(id_participant_values))) {
     warning(
@@ -411,10 +494,12 @@ create_case_data = function(d_ostrc, id_participant, id_case,
     distinct(!!id_participant, !!id_case, .keep_all = TRUE)
 
   # calculate severity score
+  # and time-loss
   d_cases_unselected =
     d_cases_unselected %>%
     mutate(severity_score =
-             calc_severity_score(!!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4))
+             calc_severity_score(!!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4),
+          timeloss = calc_timeloss(d_ostrc, !!id_participant, !!id_case, !!date_ostrc, !!ostrc_1))
 
   # if find_hp_substantial throws an error,
   # the dataframe will be returned without it
@@ -442,9 +527,9 @@ create_case_data = function(d_ostrc, id_participant, id_case,
 
     d_cases = d_cases_unselected %>%
       select(!!id_case, !!id_participant,
-             date_start, date_end, duration, hp_sub,
-             !!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4,
-             severity_score, everything(), -hp)
+             date_start, date_end, duration, timeloss, hp_sub,
+             severity_score, everything(), -hp,
+             -!!ostrc_1, -!!ostrc_2, -!!ostrc_3, -!!ostrc_4, -!!date_ostrc)
   }
 d_cases
 }

@@ -12,7 +12,7 @@ d_ostrc = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                   1, 1, "2023-01-14", 8, 0, 17, 0,
                   1, 18, "2022-12-07", 25, 0, 0, 0,
                   2, 2, "2023-01-12", 8, 8, 0, 0,
-                  3, 3, "2022-06-05", 0, 0, 0, 0)
+                  3, NA, "2022-06-05", 0, 0, 0, 0)
 
 d_ostrc = d_ostrc %>% mutate(date_ostrc = as.Date(date_ostrc))
 
@@ -34,18 +34,17 @@ test_that("Non-healthproblems are not included in the final dataframe.",
             d_test = create_case_data(
               d_ostrc, id_participant, id_case, date_ostrc,
               q1, q2, q3, q4)
-            expect_true(all(d_test$q1 > 0))
+            expect_true(all(d_test$id_participant < 3))
           })
 
 test_that("Returns a dataset with output columns
           named the same as the input columns.",
           {
-           d_othernames = d_ostrc %>%
-                          rename(p_id = id_participant, injury_id = id_case)
+           othernames = c("p_id", "injury_id")
            creatednames = names(create_case_data(
                                   d_othernames, p_id, injury_id, date_ostrc,
                                   q1, q2, q3, q4))
-           expect_true(all(names(d_othernames) %in% creatednames))
+           expect_true(all(othernames %in% creatednames))
           })
 
 test_that("Returns correct dates.",
@@ -123,9 +122,9 @@ test_that("Gives correct substantial health problems
                                            0, 0, 0))
             correct_hp_sub = c(1, 0)
 
-            d_created_oldversion = create_case_data(d_1_0, id_participant,
+            d_created_oldversion = suppressWarnings(create_case_data(d_1_0, id_participant,
                                           id_case, date_ostrc,
-                                          q1, q2, q3, q4, version = "1.0")
+                                          q1, q2, q3, q4, version = "1.0"))
             expect_equal(d_created_oldversion$hp_sub, correct_hp_sub)
           })
 
@@ -195,11 +194,21 @@ test_that("Returns warning if id_participant has missing data.",
                                             q1, q2, q3, q4))
           })
 
-test_that("Returns warning if id_participant has missing data.",
+test_that("Returns warning if date_ostrc has missing data.",
           {
             d_missing_q1 = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
                                    1, 1, NA, 8, 0, 17, 25,
                                    1, 1, "2023-01-07", 8, 0, 17, 25)
+            expect_warning(create_case_data(d_missing_q1, id_participant,
+                                            id_case, date_ostrc,
+                                            q1, q2, q3, q4))
+          })
+
+test_that("Returns warning if a health problem has missing data on the other OSTRC Qs.",
+          {
+            d_missing_q1 = tribble(~id_participant, ~id_case, ~date_ostrc, ~q1, ~q2, ~q3, ~q4,
+                                   1, 1, "2023-01-01", 8, 0, NA, 25,
+                                   1, 1, "2023-01-07", 17, 0, 17, NA)
             expect_warning(create_case_data(d_missing_q1, id_participant,
                                             id_case, date_ostrc,
                                             q1, q2, q3, q4))
@@ -216,4 +225,12 @@ test_that("Adds a column for severity scores.",
               expect_gte(d_test$severity_score[i], 0)
               expect_lte(d_test$severity_score[i], 100)
             }
+          })
+
+test_that("Adds a column for time loss.",
+          {d_test = create_case_data(d_ostrc, id_participant,
+                                      id_case, date_ostrc,
+                                      q1, q2, q3, q4)
+
+            expect_true(any(names(d_test) %in% "timeloss"))
           })

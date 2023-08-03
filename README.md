@@ -47,7 +47,7 @@ devtools::install_github("lenakba/ostrc")
 
 ## Functions
 
-Below is a brief overview of helpful functions.
+Below is a brief tutorial on helpful functions in the R package.
 
 ### OSTRC questionnaire functions
 
@@ -118,7 +118,7 @@ find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 
     ## [1]  1 NA NA  1
 
-#### Calculate severity score
+#### Calculate severity score and timeloss
 
 Severity scores can also be calculated with `calc_severity_score`.
 
@@ -133,15 +133,36 @@ calc_severity_score(ostrc_1, ostrc_2, ostrc_3, ostrc_4)
 
     ## [1]  0  8 50 58
 
+Finally, one can determine the timeloss of each health problem with
+`calc_timeloss`. You receive a vector with the number of weeks lost per
+health problem case in the data. In the example below, there are 3 case
+IDs representing 3 health problem cases, and we receive 3 values
+representing the number of weeks lost.
+
+``` r
+d_ostrc = tribble(~id_participant, ~id_case, ~date_sent, ~q1,
+                  1, 1, "2023-01-01", 8,
+                  1, 1, "2023-01-07", 8,
+                  1, 1, "2023-01-14", 8,
+                  1, 1, "2023-01-21", 25,
+                  1, 18, "2022-12-07", 25,
+                  1, 18, "2022-12-14", 25,
+                  2, 2, "2023-01-12", 8,
+                  3, NA, "2022-06-05", 0)
+   
+calc_timeloss(d_ostrc, id_participant, id_case, date_sent, q1)
+```
+
+    ## [1] 1 2 0
+
 #### Create case data
 
-The function `create_case_data` finds health problems in a dataset with
-OSTRC-questionnaire responses and returns a dataframe where one row
-describes one unique health problem. The function also calculates and
-adds the severity score, startdate, enddate, and the duration (in weeks)
-of each health problem, given the date the OSTRC questionnaire was sent.
-It also identifies substantial health problems, with the help of
-`find_hp_substantial`.
+The function `create_case_data` is a helper function that brings all the
+information you need on each health problem in one dataset. It finds
+health problems, substantial health problems, severity score, startdate,
+enddate, and timeloss and duration (in weeks). Returns a dataframe where
+one row describes one unique health problem. Any other information on
+the health problem (type, location etc.) is retained.
 
 ``` r
 library(tidyverse) # for tribble() and pipe %>% 
@@ -164,16 +185,15 @@ d_cases = create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2,
 d_cases
 ```
 
-    ## # A tibble: 4 × 14
-    ##   id_case id_part…¹ date_start date_end   durat…² hp_sub    q1    q2    q3    q4
-    ##     <dbl>     <dbl> <date>     <date>       <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1       1         1 2023-01-01 2023-01-14       3      1     8     0    17    25
-    ## 2      18         1 2022-12-07 2022-12-07       1      1    25     0     0     0
-    ## 3       2         2 2023-01-12 2023-01-12       1      0     8     8     0     0
-    ## 4       4         4 2023-01-01 2023-01-01       1      0     8     8     8     0
-    ## # … with 4 more variables: severity_score <dbl>, date_ostrc <date>,
-    ## #   hb_type <chr>, inj_type <chr>, and abbreviated variable names
-    ## #   ¹​id_participant, ²​duration
+    ## # A tibble: 4 × 10
+    ##   id_case id_part…¹ date_start date_end   durat…² timel…³ hp_sub sever…⁴ hb_type
+    ##     <dbl>     <dbl> <date>     <date>       <dbl>   <dbl>  <dbl>   <dbl> <chr>  
+    ## 1       1         1 2023-01-01 2023-01-14       3       0      1      50 Injury 
+    ## 2      18         1 2022-12-07 2022-12-07       1       1      1      25 Illness
+    ## 3       2         2 2023-01-12 2023-01-12       1       0      0      16 <NA>   
+    ## 4       4         4 2023-01-01 2023-01-01       1       0      0      24 Injury 
+    ## # … with 1 more variable: inj_type <chr>, and abbreviated variable names
+    ## #   ¹​id_participant, ²​duration, ³​timeloss, ⁴​severity_score
     ## # ℹ Use `colnames()` to see all variable names
 
 Any extra columns in the dataset will be included at the end, like
@@ -182,16 +202,16 @@ these columns appear after being handled by the `create_case_data`
 function.
 
 ``` r
-d_cases %>% select(id_participant, id_case, date_ostrc, hb_type, inj_type)
+d_cases %>% select(id_participant, id_case, hb_type, inj_type)
 ```
 
-    ## # A tibble: 4 × 5
-    ##   id_participant id_case date_ostrc hb_type inj_type
-    ##            <dbl>   <dbl> <date>     <chr>   <chr>   
-    ## 1              1       1 2023-01-01 Injury  Overuse 
-    ## 2              1      18 2022-12-07 Illness <NA>    
-    ## 3              2       2 2023-01-12 <NA>    <NA>    
-    ## 4              4       4 2023-01-01 Injury  Acute
+    ## # A tibble: 4 × 4
+    ##   id_participant id_case hb_type inj_type
+    ##            <dbl>   <dbl> <chr>   <chr>   
+    ## 1              1       1 Injury  Overuse 
+    ## 2              1      18 Illness <NA>    
+    ## 3              2       2 <NA>    <NA>    
+    ## 4              4       4 Injury  Acute
 
 ### Functions for handling injury data in general
 
