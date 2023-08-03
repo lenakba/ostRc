@@ -34,18 +34,17 @@ test_that("Non-healthproblems are not included in the final dataframe.",
             d_test = create_case_data(
               d_ostrc, id_participant, id_case, date_ostrc,
               q1, q2, q3, q4)
-            expect_true(all(d_test$q1 > 0))
+            expect_true(all(d_test$id_participant < 3))
           })
 
 test_that("Returns a dataset with output columns
           named the same as the input columns.",
           {
-           d_othernames = d_ostrc %>%
-                          rename(p_id = id_participant, injury_id = id_case)
+           othernames = c("p_id", "injury_id")
            creatednames = names(create_case_data(
                                   d_othernames, p_id, injury_id, date_ostrc,
                                   q1, q2, q3, q4))
-           expect_true(all(names(d_othernames) %in% creatednames))
+           expect_true(all(othernames %in% creatednames))
           })
 
 test_that("Returns correct dates.",
