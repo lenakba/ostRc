@@ -453,6 +453,17 @@ create_case_data = function(d_ostrc, id_participant, id_case,
     )
   }
 
+  ostrc_2_values = d_ostrc %>% pull(!!ostrc_2)
+  ostrc_3_values = d_ostrc %>% pull(!!ostrc_3)
+  ostrc_4_values = d_ostrc %>% pull(!!ostrc_4)
+  if (any(ostrc_1_values > 0 &
+          (is.na(ostrc_2_values) | is.na(ostrc_3_values) | is.na(ostrc_4_values)))) {
+    warning(
+      "Some ostrc_1 responses are above 0 and denote a health problem,
+      but some of the other questions have missing data."
+    )
+  }
+
   id_participant_values = d_ostrc %>% pull(!!id_participant)
   if (any(is.na(id_participant_values))) {
     warning(
