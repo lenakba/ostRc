@@ -517,8 +517,8 @@ create_case_data = function(d_ostrc, id_participant, id_case,
     d_cases = d_cases_unselected %>%
       select(!!id_case, !!id_participant,
              date_start, date_end, duration, timeloss, hp_sub,
-             !!ostrc_1, !!ostrc_2, !!ostrc_3, !!ostrc_4,
-             severity_score, everything(), -hp)
+             severity_score, everything(), -hp,
+             -!!ostrc_1, -!!ostrc_2, -!!ostrc_3, -!!ostrc_4, -!!date_ostrc)
   }
 d_cases
 }
