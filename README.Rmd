@@ -185,7 +185,7 @@ we show how these columns appear after being handled by
 the `create_case_data` function.
 
 ```{r show_all_cols, echo = TRUE, warning = FALSE}
-d_cases %>% select(id_participant, id_case, date_ostrc, hb_type, inj_type)
+d_cases %>% select(id_participant, id_case, hb_type, inj_type)
 ```
 
 ### Functions for handling injury data in general

@@ -185,16 +185,15 @@ d_cases = create_case_data(d_ostrc, id_participant, id_case, date_ostrc, q1, q2,
 d_cases
 ```
 
-    ## # A tibble: 4 × 15
-    ##   id_case id_pa…¹ date_start date_end   durat…² timel…³ hp_sub    q1    q2    q3
-    ##     <dbl>   <dbl> <date>     <date>       <dbl>   <dbl>  <dbl> <dbl> <dbl> <dbl>
-    ## 1       1       1 2023-01-01 2023-01-14       3       0      1     8     0    17
-    ## 2      18       1 2022-12-07 2022-12-07       1       1      1    25     0     0
-    ## 3       2       2 2023-01-12 2023-01-12       1       0      0     8     8     0
-    ## 4       4       4 2023-01-01 2023-01-01       1       0      0     8     8     8
-    ## # … with 5 more variables: q4 <dbl>, severity_score <dbl>, date_ostrc <date>,
-    ## #   hb_type <chr>, inj_type <chr>, and abbreviated variable names
-    ## #   ¹​id_participant, ²​duration, ³​timeloss
+    ## # A tibble: 4 × 10
+    ##   id_case id_part…¹ date_start date_end   durat…² timel…³ hp_sub sever…⁴ hb_type
+    ##     <dbl>     <dbl> <date>     <date>       <dbl>   <dbl>  <dbl>   <dbl> <chr>  
+    ## 1       1         1 2023-01-01 2023-01-14       3       0      1      50 Injury 
+    ## 2      18         1 2022-12-07 2022-12-07       1       1      1      25 Illness
+    ## 3       2         2 2023-01-12 2023-01-12       1       0      0      16 <NA>   
+    ## 4       4         4 2023-01-01 2023-01-01       1       0      0      24 Injury 
+    ## # … with 1 more variable: inj_type <chr>, and abbreviated variable names
+    ## #   ¹​id_participant, ²​duration, ³​timeloss, ⁴​severity_score
     ## # ℹ Use `colnames()` to see all variable names
 
 Any extra columns in the dataset will be included at the end, like
@@ -203,16 +202,16 @@ these columns appear after being handled by the `create_case_data`
 function.
 
 ``` r
-d_cases %>% select(id_participant, id_case, date_ostrc, hb_type, inj_type)
+d_cases %>% select(id_participant, id_case, hb_type, inj_type)
 ```
 
-    ## # A tibble: 4 × 5
-    ##   id_participant id_case date_ostrc hb_type inj_type
-    ##            <dbl>   <dbl> <date>     <chr>   <chr>   
-    ## 1              1       1 2023-01-01 Injury  Overuse 
-    ## 2              1      18 2022-12-07 Illness <NA>    
-    ## 3              2       2 2023-01-12 <NA>    <NA>    
-    ## 4              4       4 2023-01-01 Injury  Acute
+    ## # A tibble: 4 × 4
+    ##   id_participant id_case hb_type inj_type
+    ##            <dbl>   <dbl> <chr>   <chr>   
+    ## 1              1       1 Injury  Overuse 
+    ## 2              1      18 Illness <NA>    
+    ## 3              2       2 <NA>    <NA>    
+    ## 4              4       4 Injury  Acute
 
 ### Functions for handling injury data in general
 
