@@ -2,7 +2,7 @@ Oslo Sports Trauma Research Centre R package
 ================
 Lena Kristin Bache-Mathiesen[^1]Benjamin Clarsen[^2]
 
-![](C:/Users/lenakb/OneDrive%20-%20nih.no/maler/logo-ostRc-cropped.png)
+![](./images/logo-ostRc-cropped.png)
 
 ## Overview
 
