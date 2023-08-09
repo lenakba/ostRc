@@ -10,7 +10,7 @@ library(tidyverse) # dplyr, tidyr, ggplot2, purrr and everything else you need t
 library(ostrc)
 ```
 
-![](./images/logo-ostRc-cropped.png)
+![](./images/logo-ostRc-tiny.png)
 
 ## Overview
 The ostRc package is a collection of R functions 
