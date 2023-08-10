@@ -1,4 +1,4 @@
-cff-version: 1.0.0
+cff-version: 2.0.0
 message: "If you use this software, please cite it as below."
 authors:
   - family-names: Bache-Mathiesen
@@ -7,7 +7,7 @@ authors:
   - family-names: Clarsen
     given-names: Benjamin Matthew
     orcid: https://orcid.org/0000-0003-3713-8938
-title: "Oslo Sports Trauma Research Centre R tools"
-version: 0.0.1
-url: https://github.com/lenakba/ostrc
-date-released: 2023-02-22
+title: "ostRc: Oslo Sports Trauma Research Centre tools for health problem data"
+version: 1.0.0
+url: https://github.com/lenakba/ostRc
+date-released: 2023-08-10
