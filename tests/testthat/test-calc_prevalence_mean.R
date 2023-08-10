@@ -1,5 +1,5 @@
 context("Calculate mean prevalence per time period")
-library(ostrc)
+library(ostRc)
 library(tidyr)
 library(dplyr)
 library(magrittr)

@@ -1,5 +1,5 @@
 context("Add event id function")
-library(ostrc)
+library(ostRc)
 library(lubridate)
 library(tidyr)
 library(dplyr)

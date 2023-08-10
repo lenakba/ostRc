@@ -1,5 +1,5 @@
 context("Calculate incidence")
-library(ostrc)
+library(ostRc)
 library(tidyr)
 library(dplyr)
 library(magrittr)
