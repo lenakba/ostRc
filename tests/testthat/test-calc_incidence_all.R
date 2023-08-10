@@ -1,5 +1,5 @@
 context("Calculate mean incidence for all given hp_types and groups")
-library(ostrc)
+library(ostRc)
 library(tidyr)
 library(dplyr)
 library(magrittr)

@@ -44,7 +44,7 @@ OSTRC-H 2.0](doi.org/10.1136/bjsports-2019-101337)
 # Requires the devtools package
 # If devtools is not installed, run code:
 # install.packages("devtools") before installing ostrc
-devtools::install_github("lenakba/ostrc")
+devtools::install_github("lenakba/ostRc")
 ```
 
 ## Functions
@@ -421,6 +421,16 @@ average of anything else per injury or other event.
 ``` r
 library(tidyverse)
 library(ostrc)
+```
+
+    ## 
+    ## Attaching package: 'ostrc'
+
+    ## The following objects are masked from 'package:ostRc':
+    ## 
+    ##     ewma, moving_range, ra
+
+``` r
 d_matches_sim = tribble(~date, ~match,
                           "2017-08-22", 0,
                           "2017-08-23", 1,

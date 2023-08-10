@@ -7,7 +7,7 @@ output: github_document
 ---
 ```{r packages, warning=FALSE, echo = FALSE, message=FALSE}
 library(tidyverse) # dplyr, tidyr, ggplot2, purrr and everything else you need to survive
-library(ostrc)
+library(ostRc)
 ```
 
 ![](./images/logo-ostRc-tiny.png)
@@ -45,7 +45,7 @@ in chronological order from the earliest to latest version:
 # Requires the devtools package
 # If devtools is not installed, run code:
 # install.packages("devtools") before installing ostrc
-devtools::install_github("lenakba/ostrc")
+devtools::install_github("lenakba/ostRc")
 ```
 
 ## Functions

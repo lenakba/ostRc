@@ -1,5 +1,5 @@
 context("Standardize coding function")
-library(ostrc)
+library(ostRc)
 library(tidyr)
 library(dplyr)
 library(magrittr)

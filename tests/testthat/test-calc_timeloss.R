@@ -1,5 +1,5 @@
 context("Calculate time loss from OSTRC questionnaires.")
-library(ostrc)
+library(ostRc)
 library(tidyr)
 library(dplyr)
 library(magrittr)
