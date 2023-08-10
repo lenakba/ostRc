@@ -6,10 +6,10 @@ Lena Kristin Bache-Mathiesen[^1]Benjamin Clarsen[^2]
 
 ## Overview
 
-The ostRc package is a collection of R functions for working with sports
-injury data. Among other functions, the package provides tools for
-handling data from the Oslo Sports Trauma Research Centre Questionnaire
-on overuse injuries (OSTRC-O) or health problems (OSTRC-H).
+`ostRc` is a collection of R functions for working with sports injury
+data. Among other functions, the package provides tools for handling
+data from the Oslo Sports Trauma Research Centre Questionnaire on
+overuse injuries (OSTRC-O) or health problems (OSTRC-H).
 
 ### OSTRC questionnaire
 
@@ -49,7 +49,7 @@ devtools::install_github("lenakba/ostrc")
 
 ## Functions
 
-Below is a brief tutorial on helpful functions in the ostRc package.
+Below is a brief tutorial on helpful functions in `ostRc`.
 
 ### OSTRC questionnaire functions
 
@@ -122,7 +122,9 @@ find_hp_substantial(ostrc_1_missing, ostrc_2_missing, ostrc_3_missing)
 
 #### Calculate severity score and timeloss
 
-Severity scores can also be calculated with `calc_severity_score`.
+The OSTRC questionnaire offers a method of calculating total severety of
+a health problem. Severity scores can be calculated with
+`calc_severity_score`.
 
 ``` r
 ostrc_1 = c(0, 8, 8, 8)

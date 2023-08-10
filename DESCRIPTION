@@ -1,6 +1,6 @@
-Package: ostrc
-Title: Oslo Sporta Trauma Research Center Tools
-Version: 0.0.0.9000
+Package: ostRc
+Title: Oslo Sporta Trauma Research Center R package
+Version: 1.0.0
 Authors@R: 
     person(given = "Lena Kristin",
            family = "Bache-Mathiesen",
